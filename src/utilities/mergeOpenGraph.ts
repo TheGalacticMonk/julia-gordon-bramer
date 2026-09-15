@@ -3,14 +3,16 @@ import { getServerSideURL } from './getURL'
 
 const defaultOpenGraph: Metadata['openGraph'] = {
   type: 'website',
-  description: 'An open-source website built with Payload and Next.js.',
+  description:
+    'Tarot reader, poet, and Sylvia Plath scholar. Books, tour dates, and writing from Julia Gordon-Bramer.',
   images: [
     {
+      // TODO: replace with a real branded share image — see agency/open-questions.md
       url: `${getServerSideURL()}/website-template-OG.webp`,
     },
   ],
-  siteName: 'Payload Website Template',
-  title: 'Payload Website Template',
+  siteName: 'Julia Gordon-Bramer',
+  title: 'Julia Gordon-Bramer',
 }
 
 export const mergeOpenGraph = (og?: Metadata['openGraph']): Metadata['openGraph'] => {

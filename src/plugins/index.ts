@@ -9,8 +9,11 @@ import { getServerSideURL } from '@/utilities/getURL'
 
 type SeoDoc = Book | Event | Page | Post
 
+// The " | Julia Gordon-Bramer" suffix is added once, at render time, by generateMeta.ts
+// (from the seoDefaults global) — not here, to avoid double-suffixing a title an editor
+// already generated.
 const generateTitle: GenerateTitle<SeoDoc> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Julia Gordon-Bramer` : 'Julia Gordon-Bramer'
+  return doc?.title || 'Julia Gordon-Bramer'
 }
 
 const collectionPathMap: Record<string, string> = {

@@ -1,4 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import sharp from 'sharp'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
@@ -14,8 +15,9 @@ import { Posts } from './collections/Posts'
 import { PressQuotes } from './collections/PressQuotes'
 import { Users } from './collections/Users'
 import { Venues } from './collections/Venues'
-import { Footer } from './Footer/config'
-import { Header } from './Header/config'
+import { Home } from './globals/Home/config'
+import { SEODefaults } from './globals/SEODefaults/config'
+import { Site } from './globals/Site/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -66,6 +68,22 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL,
     },
   }),
+  // With no SMTP_HOST set, this falls back to an Ethereal test inbox (logs a preview
+  // URL to the console) so contact-form email works out of the box in local dev.
+  email: nodemailerAdapter({
+    defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || 'no-reply@juliagordonbramer.com',
+    defaultFromName: process.env.EMAIL_FROM_NAME || 'Julia Gordon-Bramer',
+    transportOptions: process.env.SMTP_HOST
+      ? {
+          host: process.env.SMTP_HOST,
+          port: Number(process.env.SMTP_PORT) || 587,
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
+        }
+      : undefined,
+  }),
   collections: [
     Pages,
     Posts,
@@ -79,7 +97,7 @@ export default buildConfig({
     Users,
   ],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer],
+  globals: [Site, Home, SEODefaults],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,

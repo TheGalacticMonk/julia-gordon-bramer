@@ -6,8 +6,9 @@ import { GeistSans } from 'geist/font/sans'
 import React from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
-import { Footer } from '@/Footer/Component'
-import { Header } from '@/Header/Component'
+import { AnnouncementBar } from '@/globals/Site/AnnouncementBar/Component'
+import { Footer } from '@/globals/Site/Footer/Component'
+import { Header } from '@/globals/Site/Header/Component'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
@@ -34,6 +35,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             }}
           />
 
+          <AnnouncementBar />
           <Header />
           {children}
           <Footer />
@@ -48,6 +50,5 @@ export const metadata: Metadata = {
   openGraph: mergeOpenGraph(),
   twitter: {
     card: 'summary_large_image',
-    creator: '@payloadcms',
   },
 }

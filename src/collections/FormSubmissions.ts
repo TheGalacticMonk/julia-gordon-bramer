@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../access/authenticated'
+import { notifyOnFormSubmission } from './hooks/notifyOnFormSubmission'
 
 // Populated only by the public contact Server Action (src/app/(frontend)/contact/actions.ts).
 // No one gets create access here so submissions can't be spoofed through the API/admin.
@@ -61,5 +62,8 @@ export const FormSubmissions: CollectionConfig = {
       },
     },
   ],
+  hooks: {
+    afterChange: [notifyOnFormSubmission],
+  },
   timestamps: true,
 }

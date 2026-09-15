@@ -1,48 +1,44 @@
 import type { Metadata } from 'next'
 
-import type { Media, Page, Post, Config } from '../payload-types'
+import type { Book, Event, Media, Page, Post } from '../payload-types'
 
+import { getCachedGlobal } from './getGlobals'
 import { mergeOpenGraph } from './mergeOpenGraph'
 import { getServerSideURL } from './getURL'
 
-const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
+const getImageURL = (image: Media | number | null | undefined, fallback?: Media | number | null) => {
   const serverUrl = getServerSideURL()
+  const resolved = image && typeof image === 'object' ? image : null
+  const resolvedFallback = fallback && typeof fallback === 'object' ? fallback : null
+  const target = resolved || resolvedFallback
 
-  let url = serverUrl + '/website-template-OG.webp'
+  if (!target) return undefined
 
-  if (image && typeof image === 'object' && 'url' in image) {
-    const ogUrl = image.sizes?.og?.url
-
-    url = ogUrl ? serverUrl + ogUrl : serverUrl + image.url
-  }
-
-  return url
+  const ogUrl = target.sizes?.og?.url
+  return ogUrl ? serverUrl + ogUrl : serverUrl + target.url
 }
 
 export const generateMeta = async (args: {
-  doc: Partial<Page> | Partial<Post> | null
+  doc: Partial<Book> | Partial<Event> | Partial<Page> | Partial<Post> | null
 }): Promise<Metadata> => {
   const { doc } = args
+  const seoDefaults = await getCachedGlobal('seoDefaults', 1)()
 
-  const ogImage = getImageURL(doc?.meta?.image)
+  const ogImage = getImageURL(doc?.meta?.image, seoDefaults?.defaultOgImage)
 
   const title = doc?.meta?.title
-    ? doc?.meta?.title + ' | Payload Website Template'
-    : 'Payload Website Template'
+    ? `${doc.meta.title}${seoDefaults?.titleSuffix ? ` | ${seoDefaults.titleSuffix}` : ''}`
+    : seoDefaults?.titleSuffix || 'Julia Gordon-Bramer'
+
+  const description = doc?.meta?.description || seoDefaults?.defaultDescription || undefined
 
   return {
-    description: doc?.meta?.description,
+    description,
     openGraph: mergeOpenGraph({
-      description: doc?.meta?.description || '',
-      images: ogImage
-        ? [
-            {
-              url: ogImage,
-            },
-          ]
-        : undefined,
+      description: description || '',
+      images: ogImage ? [{ url: ogImage }] : undefined,
       title,
-      url: Array.isArray(doc?.slug) ? doc?.slug.join('/') : '/',
+      url: doc && 'slug' in doc && typeof doc.slug === 'string' ? `/${doc.slug}` : '/',
     }),
     title,
   }

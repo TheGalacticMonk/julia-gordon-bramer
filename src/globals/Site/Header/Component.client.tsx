@@ -4,13 +4,13 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
-import type { Header } from '@/payload-types'
+import type { Site } from '@/payload-types'
 
 import { Logo } from '@/components/Logo/Logo'
-import { HeaderNav } from './Nav'
+import { CMSLink } from '@/components/Link'
 
 interface HeaderClientProps {
-  data: Header
+  data: Site
 }
 
 export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
@@ -29,13 +29,22 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [headerTheme])
 
+  const navItems = data?.navItems || []
+
   return (
-    <header className="container relative z-20   " {...(theme ? { 'data-theme': theme } : {})}>
-      <div className="py-8 flex justify-between">
+    <header className="container relative z-20" {...(theme ? { 'data-theme': theme } : {})}>
+      <div className="flex justify-between py-8">
         <Link href="/">
           <Logo loading="eager" priority="high" className="invert dark:invert-0" />
         </Link>
-        <HeaderNav data={data} />
+        <nav className="flex items-center gap-6">
+          {navItems.map(({ link }, i) => (
+            <CMSLink key={i} {...link} appearance="link" />
+          ))}
+          {data?.bookingUrl && (
+            <CMSLink appearance="default" size="sm" url={data.bookingUrl} label="Book a reading" />
+          )}
+        </nav>
       </div>
     </header>
   )

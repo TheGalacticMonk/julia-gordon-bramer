@@ -108,12 +108,14 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
-    header: Header;
-    footer: Footer;
+    site: Site;
+    home: Home;
+    seoDefaults: SeoDefault;
   };
   globalsSelect: {
-    header: HeaderSelect<false> | HeaderSelect<true>;
-    footer: FooterSelect<false> | FooterSelect<true>;
+    site: SiteSelect<false> | SiteSelect<true>;
+    home: HomeSelect<false> | HomeSelect<true>;
+    seoDefaults: SeoDefaultsSelect<false> | SeoDefaultsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -1713,9 +1715,9 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "header".
+ * via the `definition` "site".
  */
-export interface Header {
+export interface Site {
   id: number;
   navItems?:
     | {
@@ -1745,16 +1747,7 @@ export interface Header {
         id?: string | null;
       }[]
     | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "footer".
- */
-export interface Footer {
-  id: number;
-  navItems?:
+  footerNavItems?:
     | {
         link: {
           type?: ('reference' | 'custom') | null;
@@ -1782,14 +1775,123 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Where "Book a reading" points. Use /contact to route through the form, or paste an external scheduler link.
+   */
+  bookingUrl?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  socials?:
+    | {
+        platform: 'instagram' | 'x' | 'facebook' | 'youtube' | 'tiktok';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  announcementEnabled?: boolean | null;
+  announcementMessage?: string | null;
+  announcementLinkUrl?: string | null;
+  announcementLinkLabel?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "header_select".
+ * via the `definition` "home".
  */
-export interface HeaderSelect<T extends boolean = true> {
+export interface Home {
+  id: number;
+  heroHeading: string;
+  /**
+   * The one-line "writer, scholar, poet, tarot reader" framing.
+   */
+  heroSubheading?: string | null;
+  heroRichText?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  heroImage?: (number | null) | Media;
+  links?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: number | Page;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: number | Post;
+              } | null)
+            | ({
+                relationTo: 'books';
+                value: number | Book;
+              } | null)
+            | ({
+                relationTo: 'events';
+                value: number | Event;
+              } | null);
+          url?: string | null;
+          label: string;
+          /**
+           * Choose how the link should be rendered.
+           */
+          appearance?: ('default' | 'outline') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  modules?:
+    (BioSplitBlock | BookShelfBlock | EventListBlock | PressStripBlock | PullQuoteBlock | CallToActionBlock)[] | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seoDefaults".
+ */
+export interface SeoDefault {
+  id: number;
+  /**
+   * Appended to every page title that doesn’t set its own, e.g. "About | Julia Gordon-Bramer".
+   */
+  titleSuffix?: string | null;
+  /**
+   * Used when a page has no meta description of its own.
+   */
+  defaultDescription?: string | null;
+  defaultOgImage?: (number | null) | Media;
+  organizationName?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site_select".
+ */
+export interface SiteSelect<T extends boolean = true> {
   navItems?:
     | T
     | {
@@ -1804,16 +1906,48 @@ export interface HeaderSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  footerNavItems?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        id?: T;
+      };
+  bookingUrl?: T;
+  contactEmail?: T;
+  contactPhone?: T;
+  socials?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  announcementEnabled?: T;
+  announcementMessage?: T;
+  announcementLinkUrl?: T;
+  announcementLinkLabel?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "footer_select".
+ * via the `definition` "home_select".
  */
-export interface FooterSelect<T extends boolean = true> {
-  navItems?:
+export interface HomeSelect<T extends boolean = true> {
+  heroHeading?: T;
+  heroSubheading?: T;
+  heroRichText?: T;
+  heroImage?: T;
+  links?:
     | T
     | {
         link?:
@@ -1824,9 +1958,41 @@ export interface FooterSelect<T extends boolean = true> {
               reference?: T;
               url?: T;
               label?: T;
+              appearance?: T;
             };
         id?: T;
       };
+  modules?:
+    | T
+    | {
+        bioSplit?: T | BioSplitBlockSelect<T>;
+        bookShelf?: T | BookShelfBlockSelect<T>;
+        eventList?: T | EventListBlockSelect<T>;
+        pressStrip?: T | PressStripBlockSelect<T>;
+        pullQuote?: T | PullQuoteBlockSelect<T>;
+        cta?: T | CallToActionBlockSelect<T>;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seoDefaults_select".
+ */
+export interface SeoDefaultsSelect<T extends boolean = true> {
+  titleSuffix?: T;
+  defaultDescription?: T;
+  defaultOgImage?: T;
+  organizationName?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
