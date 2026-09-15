@@ -2,18 +2,28 @@ import React, { Fragment } from 'react'
 
 import type { Page } from '@/payload-types'
 
-import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
+import { BioSplitBlock } from '@/blocks/BioSplit/Component'
+import { BookShelfBlock } from '@/blocks/BookShelf/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
-import { FormBlock } from '@/blocks/Form/Component'
-import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { EmbedBlock } from '@/blocks/Embed/Component'
+import { EventListBlock } from '@/blocks/EventList/Component'
+import { FAQBlock } from '@/blocks/FAQ/Component'
+import { ImageBlock } from '@/blocks/ImageBlock/Component'
+import { PressStripBlock } from '@/blocks/PressStrip/Component'
+import { PullQuote } from '@/blocks/PullQuote/Component'
 
 const blockComponents = {
-  archive: ArchiveBlock,
+  bioSplit: BioSplitBlock,
+  bookShelf: BookShelfBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
-  formBlock: FormBlock,
-  mediaBlock: MediaBlock,
+  embed: EmbedBlock,
+  eventList: EventListBlock,
+  faq: FAQBlock,
+  imageBlock: ImageBlock,
+  pressStrip: PressStripBlock,
+  pullQuote: PullQuote,
 }
 
 export const RenderBlocks: React.FC<{

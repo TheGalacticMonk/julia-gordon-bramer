@@ -1,14 +1,19 @@
-import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { postgresAdapter } from '@payloadcms/db-postgres'
 import sharp from 'sharp'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
+import { Books } from './collections/Books'
 import { Categories } from './collections/Categories'
+import { Events } from './collections/Events'
+import { FormSubmissions } from './collections/FormSubmissions'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
+import { PressQuotes } from './collections/PressQuotes'
 import { Users } from './collections/Users'
+import { Venues } from './collections/Venues'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
@@ -24,9 +29,8 @@ export default buildConfig({
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below.
       beforeLogin: ['@/components/BeforeLogin'],
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
-      beforeDashboard: ['@/components/BeforeDashboard'],
+      // TODO(cms-ux): replace with a custom dashboard (drafts, upcoming events, latest posts,
+      // unread contact submissions, announcement status, quick-add) per agency/cms-ux.md.
     },
     importMap: {
       baseDir: path.resolve(dirname),
@@ -57,29 +61,21 @@ export default buildConfig({
   },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
-  db: mongooseAdapter({
-    url: process.env.DATABASE_URL,
+  db: postgresAdapter({
+    pool: {
+      connectionString: process.env.DATABASE_URL,
+    },
   }),
   collections: [
-    {
-      slug: 'folders',
-      folders: true,
-      admin: {
-        useAsTitle: 'name',
-      },
-      fields: [
-        {
-          name: 'name',
-          type: 'text',
-          required: true,
-          label: 'Folder Name',
-        },
-      ],
-    },
     Pages,
     Posts,
-    Media,
+    Books,
+    Events,
+    Venues,
+    PressQuotes,
     Categories,
+    Media,
+    FormSubmissions,
     Users,
   ],
   cors: [getServerSideURL()].filter(Boolean),

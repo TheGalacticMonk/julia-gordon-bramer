@@ -2,12 +2,18 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { Archive } from '../../blocks/ArchiveBlock/config'
+import { BioSplit } from '../../blocks/BioSplit/config'
+import { BookShelf } from '../../blocks/BookShelf/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
 import { Content } from '../../blocks/Content/config'
-import { FormBlock } from '../../blocks/Form/config'
-import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { Embed } from '../../blocks/Embed/config'
+import { EventList } from '../../blocks/EventList/config'
+import { FAQ } from '../../blocks/FAQ/config'
+import { ImageBlock } from '../../blocks/ImageBlock/config'
+import { PressStrip } from '../../blocks/PressStrip/config'
+import { PullQuote } from '../../blocks/PullQuote/config'
 import { hero } from '@/heros/config'
+import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
@@ -74,7 +80,18 @@ export const Pages: CollectionConfig = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock],
+              blocks: [
+                Content,
+                PullQuote,
+                ImageBlock,
+                BookShelf,
+                EventList,
+                CallToAction,
+                BioSplit,
+                PressStrip,
+                FAQ,
+                Embed,
+              ],
               required: true,
               admin: {
                 initCollapsed: true,
@@ -119,11 +136,7 @@ export const Pages: CollectionConfig = {
         position: 'sidebar',
       },
     },
-    {
-      name: 'slug',
-      type: 'slug',
-      useAsSlug: 'title',
-    },
+    ...slugField(),
   ],
   hooks: {
     afterChange: [revalidatePage],
