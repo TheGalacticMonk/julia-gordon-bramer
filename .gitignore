@@ -22,3 +22,6 @@ public/sitemap*.xml
 
 # tsx / misc
 *.tsbuildinfo
+
+# Claude Code agent/team coordination state (local-only, not project config)
+.claude/
