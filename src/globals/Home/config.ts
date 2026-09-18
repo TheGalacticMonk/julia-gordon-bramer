@@ -88,6 +88,37 @@ export const Home: GlobalConfig = {
           ],
         },
         {
+          label: 'About',
+          fields: [
+            {
+              name: 'aboutImage',
+              label: 'About section avatar',
+              type: 'upload',
+              relationTo: 'media',
+              admin: {
+                description:
+                  'Falls back to the Hero tab’s photo if left empty.',
+              },
+            },
+            {
+              name: 'aboutRichText',
+              label: 'About section copy',
+              type: 'richText',
+              editor: lexicalEditor({
+                features: ({ rootFeatures }) => [
+                  ...rootFeatures,
+                  FixedToolbarFeature(),
+                  InlineToolbarFeature(),
+                ],
+              }),
+              admin: {
+                description:
+                  'Rendered as the magazine-style About card just above the footer. Reuses the Hero tab’s heading/subheading for the card’s title and badge — this field is body paragraphs only.',
+              },
+            },
+          ],
+        },
+        {
           name: 'meta',
           label: 'SEO',
           fields: [

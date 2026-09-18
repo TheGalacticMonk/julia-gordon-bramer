@@ -1,0 +1,58 @@
+/* Client-supplied component, used close to verbatim — see the pasted `.redes` block. Only two
+   additions beyond the original CSS: `position: fixed` (the given CSS had no positioning at
+   all — it assumed a parent placed it), and .twitter takes the bottom-right border-radius the
+   original gave to .discord, since X is now the last icon in a 2-item list instead of Instagram
+   being followed by three more platforms. */
+.redes {
+  /* Fixed to the viewport (not the document), so this sits at the same spot on load regardless
+     of scroll position — tuned to land between the hero card's top-corner doodles and her name
+     at load: measured getBoundingClientRect gap is ~192-365px (icons' bottom to title's top) on
+     desktop/tablet. 235px centers an 80px-tall (2-icon) rail in that gap with room either side. */
+  position: fixed;
+  top: 235px;
+  left: 0;
+  z-index: 30;
+  width: 80px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.redes a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+  transition: all 0.2s ease-in-out;
+}
+
+.redes a svg {
+  width: 30px;
+  fill: #ffffff;
+}
+
+.instagram {
+  background: linear-gradient(45deg, #833ab4, #fd1d1d, #f56040);
+  border-radius: 0 10px 0 0;
+}
+
+.twitter {
+  background-color: #000000;
+  border-radius: 0 0 10px 0;
+}
+
+.redes a:hover {
+  width: 130%;
+  border-radius: 0 10px 10px 0;
+}
+
+/* Below 640px, this rail (fixed-size, fixed-position) didn't work out at any size/position
+   tried — too cramped against the hero's tighter mobile rhythm regardless of tuning. Instagram/X
+   now live in the header instead on mobile (see Header/Component.client.tsx), underneath the
+   wordmark, so this is hidden rather than resized here. */
+@media (max-width: 640px) {
+  .redes {
+    display: none;
+  }
+}

@@ -1856,6 +1856,28 @@ export interface Home {
     | null;
   modules?:
     (BioSplitBlock | BookShelfBlock | EventListBlock | PressStripBlock | PullQuoteBlock | CallToActionBlock)[] | null;
+  /**
+   * Falls back to the Hero tab’s photo if left empty.
+   */
+  aboutImage?: (number | null) | Media;
+  /**
+   * Rendered as the magazine-style About card just above the footer. Reuses the Hero tab’s heading/subheading for the card’s title and badge — this field is body paragraphs only.
+   */
+  aboutRichText?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   meta?: {
     title?: string | null;
     /**
@@ -1972,6 +1994,8 @@ export interface HomeSelect<T extends boolean = true> {
         pullQuote?: T | PullQuoteBlockSelect<T>;
         cta?: T | CallToActionBlockSelect<T>;
       };
+  aboutImage?: T;
+  aboutRichText?: T;
   meta?:
     | T
     | {

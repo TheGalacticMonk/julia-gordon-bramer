@@ -34,7 +34,7 @@ primitive). Every class is named for what it *is*, not what it looks like.
 | `.tour-ribbon` | Angled ticket-stub-style date badge (clip-path + rotated pseudo-element) — genuinely bespoke geometry | `EventList` block |
 | `.ink-rule` | Double-hairline section divider (two offset border lines via `box-shadow`) reused across page templates — reusable enough to deserve a semantic name instead of repeating the box-shadow utility everywhere | global primitive, `globals.css` |
 | `.payload-richtext` | Pre-existing template primitive scoping typographic defaults for CMS-authored rich text (headings, lists, links) inside the `prose` container — kept from the base template since rich text output needs a stable target class for editor-authored HTML that Tailwind's `prose` plugin alone doesn't fully cover | `RichText` component |
-| `.nav-link-glow` | Pulsing `currentColor` text-shadow on hover (with a `@keyframes` loop), replacing the shadcn `link` button variant's `hover:underline` — a looping animation and multi-layer text-shadow aren't expressible as Tailwind utilities | header `nav`, `Header/Component.client.tsx` |
+| `.nav-link-glow` | Pulsing `currentColor` text-shadow on hover (with a `@keyframes` loop), replacing the shadcn `link` button variant's `hover:underline` — a looping animation and multi-layer text-shadow aren't expressible as Tailwind utilities | header `nav` (`Header/Component.client.tsx`), footer `nav`/email link (`Footer/Component.tsx`) |
 
 ## Motion
 

@@ -158,6 +158,35 @@
   opacity: 0.6;
   animation: rotateDoodle 15s linear infinite;
 }
+.lotus {
+  /* Bottom-left was the one corner without a doodle (top-right: note, top-left: sparkle,
+     bottom-right: swirl) — mirrors .swirl's offsets on the opposite side. Positioning/size/
+     animation only — fill and stroke live on the two child paths below, not here, since (unlike
+     .note) this glyph needs two overlapping copies of its own path rather than one fill+stroke
+     path; see the comment in HeroIntroCard.tsx for why. */
+  width: 2em;
+  height: 2em;
+  bottom: 2em;
+  left: 1em;
+  animation: pulseSparkle 3.5s infinite alternate ease-in-out;
+}
+.lotusOutline {
+  /* The back copy: filled AND stroked in ink, so its own interior seams (between the three
+     petals) are ink too, not just its stroke. Irrelevant once .lotusFill sits on top of it —
+     only the ring created by the stroke extending past the shared path's true edge peeks out,
+     since .lotusFill exactly re-covers everything inside that edge. Stroke-width is double what
+     a single fill+stroke path would use for the same final visual thickness (46, matching
+     .note's) — here only the OUTWARD half of the stroke is ever visible, the inward half always
+     gets painted over by .lotusFill, where a single-path approach shows both halves. */
+  fill: var(--ink-color);
+  stroke: var(--ink-color);
+  stroke-width: 52;
+  stroke-linejoin: round;
+}
+.lotusFill {
+  fill: var(--accent-coral);
+  stroke: none;
+}
 
 /* --- AVATAR / PHOTO --- */
 .cardPhoto {

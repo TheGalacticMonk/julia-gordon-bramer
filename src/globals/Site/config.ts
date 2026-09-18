@@ -37,7 +37,7 @@ export const Site: GlobalConfig = {
               label: 'Footer menu',
               type: 'array',
               fields: [link({ appearances: false })],
-              maxRows: 6,
+              maxRows: 8,
               admin: {
                 initCollapsed: true,
                 components: {

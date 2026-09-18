@@ -23,6 +23,7 @@
   height: 50%;
   width: 20px;
   flex-direction: column;
+  justify-content: center;
   gap: 3px;
 }
 
@@ -133,6 +134,28 @@
   content: none;
 }
 
+/* Instagram/X row, between the nav links and the CTA (not after it — "Book a reading" stays
+   the last, most prominent thing in the dropdown). Same .menu-list composition pattern as
+   .menu-cta (icon row instead of a full-width text line). Sitting mid-list rather than last
+   means it needs no special divider handling at all: the last nav link's own ::after (no longer
+   suppressed, since this row and the CTA now follow it) separates it from this row, and this
+   row's own ::after (also no longer last-child) separates it from the CTA in turn — both for
+   free from .menu-list's default rules. */
+.menu-social {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+}
+
+.menu-social a {
+  display: flex;
+}
+
+.menu-social a:hover {
+  color: var(--color-metal);
+}
+
 .inp:checked ~ .menu-container {
   clip-path: inset(10% 50% 90% 50% round 10px);
 }
@@ -142,8 +165,8 @@
   opacity: 1;
 }
 
-/* Staggered reveal — one rule per item, extended to 6 (the reference only had 4 menu items;
-   we have 5 nav links plus the "Book a reading" CTA appended after them). */
+/* Staggered reveal — one rule per item, extended to 7 (the reference only had 4 menu items; we
+   have 5 nav links, the "Book a reading" CTA, and the instagram/x row appended after them). */
 .inp:not(:checked) ~ .menu-container .menu-list:nth-child(1) {
   transition:
     transform 0.4s var(--delay),
@@ -173,4 +196,9 @@
   transition:
     transform 0.4s calc(var(--delay) + (var(--trdelay) * 5)),
     opacity 0.4s calc(var(--delay) + (var(--trdelay) * 5));
+}
+.inp:not(:checked) ~ .menu-container .menu-list:nth-child(7) {
+  transition:
+    transform 0.4s calc(var(--delay) + (var(--trdelay) * 6)),
+    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 6));
 }

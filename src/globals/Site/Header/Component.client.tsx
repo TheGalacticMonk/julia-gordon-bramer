@@ -46,6 +46,12 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   }, [headerTheme])
 
   const navItems = data?.navItems || []
+  // Only instagram/x — the sticky sidebar (SocialSidebar) covers sm and up; below that it hides
+  // entirely and these live in the hamburger dropdown instead (see MobileNavMenu).
+  const mobileSocials = (data?.socials || []).filter(
+    (s): s is typeof s & { platform: 'instagram' | 'x' } =>
+      s.platform === 'instagram' || s.platform === 'x',
+  )
 
   // 'dark' is the specific value hero components (HighImpact, PostHero) pass when a hero image
   // sits directly behind the header and needs forced light-on-image contrast; 'light' is what
@@ -76,22 +82,22 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
       )}
       {...(theme ? { 'data-theme': theme } : {})}
     >
-      <div className="container relative z-10 flex items-center justify-between gap-6 py-5">
+      <div className="container relative z-10 flex items-center justify-between gap-8 py-5">
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <TypingWordmark
             className={cn(isOverlay ? 'text-ink' : 'text-metal-ink dark:text-cream')}
           />
         </Link>
-        <nav className="flex items-center gap-4 xl:gap-6">
+        <nav className="flex items-center gap-6 xl:gap-8">
           {/* Desktop nav links — hidden below xl, replaced there by MobileNavMenu's dropdown.
               The nav content (wordmark + 5 links incl. "Decoding Sylvia Plath" + toggle + CTA)
               needs ~1000px of unbroken room. `.container` (globals.css) is capped at a FLAT
               1024px from lg all the way to xl — it doesn't grow again until xl (1280px), where
-              it steps up to 1152px. Switching the nav at lg left it stuck jumbling for that
+              it steps up to 1216px. Switching the nav at lg left it stuck jumbling for that
               entire 1024-1279px range, since the container's inner width never got wide enough
               in between; xl is where the container actually has room, so that's where the nav
               switches too. */}
-          <div className="hidden items-center gap-6 xl:flex">
+          <div className="hidden items-center gap-7 xl:flex">
             {navItems.map(({ link }, i) => {
               const href = resolveHref(link)
               const isActive = href ? (href === '/' ? pathname === '/' : pathname.startsWith(href)) : false
@@ -105,16 +111,19 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
                     'nav-link-glow flex items-center gap-1.5 font-sans text-sm font-medium uppercase tracking-wide',
                     // CMSLink doesn't forward arbitrary props like aria-current to the rendered
                     // <Link>, so the active state has to be driven by this className directly
-                    // rather than a CSS attribute-selector variant. Same bg echo as the header
-                    // bar itself: light theme (cream bar) gets dark/wine text, dark theme (navy
-                    // bar) gets light/gold text.
+                    // rather than a CSS attribute-selector variant. Base (non-active/hover) text
+                    // still echoes the header bar itself: light theme (cream bar) gets dark
+                    // metal-ink text, dark theme (navy bar) gets light cream text — but hover
+                    // and active now land on the same --metal gold in both themes, not wine in
+                    // light mode, so "current page" and "hovering" read identically regardless
+                    // of theme.
                     isOverlay
                       ? isActive
                         ? 'text-metal'
                         : 'text-ink hover:text-metal'
                       : isActive
-                        ? 'text-wine dark:text-metal'
-                        : 'text-metal-ink hover:text-wine dark:text-cream dark:hover:text-metal',
+                        ? 'text-metal'
+                        : 'text-metal-ink hover:text-metal dark:text-cream',
                   )}
                 >
                   {isActive && <PencilIcon className="size-5 shrink-0" aria-hidden="true" />}
@@ -155,6 +164,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
               isOverlay={isOverlay}
               navItems={navItems}
               resolveHref={resolveHref}
+              socials={mobileSocials}
             />
           </div>
         </nav>

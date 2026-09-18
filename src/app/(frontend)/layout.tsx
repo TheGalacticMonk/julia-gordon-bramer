@@ -6,6 +6,7 @@ import React from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
 import { JsonLd } from '@/components/JsonLd'
+import { SocialSidebar } from '@/components/SocialSidebar/Component'
 import { AnnouncementBar } from '@/globals/Site/AnnouncementBar/Component'
 import { Footer } from '@/globals/Site/Footer/Component'
 import { Header } from '@/globals/Site/Header/Component'
@@ -85,6 +86,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
           <AnnouncementBar />
           <Header />
+          <SocialSidebar />
           {children}
           <Footer />
         </Providers>

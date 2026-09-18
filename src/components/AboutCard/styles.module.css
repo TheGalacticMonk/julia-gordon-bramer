@@ -1,0 +1,283 @@
+/* AboutCard — layout modeled on https://galacticmonk.com/about/, recolored to this site's own
+   paper/ink/metal tokens. That reference site sits its card on a DARKER version of its own page
+   tone (dark purple page, lighter purple card). This section is styled as the next band in
+   RenderBlocks' raised/plain alternation (see the CurvedDivider comment in Component.tsx), so
+   its own background is --paper-raised, not --paper — meaning the card needs to be the lighter
+   of the two tones to preserve that reference relationship, i.e. --paper, not --paper-raised.
+   That inverts this component's very first pass (section=paper, card=paper-raised) but keeps
+   the actual visual relationship (card lighter than its backdrop) the same in both cases; it
+   also happens to hold up correctly in dark mode, where --paper is the LIGHTER navy of the two
+   tokens, same direction as the light-mode white-on-cream pairing below. */
+.section {
+  background-color: var(--color-paper-raised);
+}
+
+.cardWrap {
+  padding-block: 4rem;
+}
+
+.card {
+  /* No hard border — the reference card reads as floating via a soft diffused shadow lifting it
+     off the page, not an outline. A visible border-rule edge on a flat card was the "cheap and
+     flimsy" look; this replaces it with the same elevation cue .reading-card/.introCard already
+     use elsewhere on the site, just softer (large blur, low opacity, no offset) instead of their
+     hand-drawn hard-offset shadows, since this card is meant to read as a calm editorial surface
+     rather than a doodle-sticker one. */
+  background-color: var(--color-paper);
+  border-radius: 1.5rem;
+  box-shadow:
+    0 30px 60px -20px rgba(0, 0, 0, 0.25),
+    0 10px 20px -10px rgba(0, 0, 0, 0.15);
+  padding: 2.5rem;
+  max-width: 52rem;
+  margin-inline: auto;
+}
+
+@media (min-width: 640px) {
+  .card {
+    padding: 3.5rem;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.avatar {
+  /* 8rem/128px — measured off the reference's own avatar (h-32 w-32, 128x128 rendered). Was
+     4.5rem, which read small next to a name this size. Border was --color-rule (the sitewide
+     hairline-divider tone) at 2px — too close to the photo's own dark edge values to read as a
+     border at all. 3px, and in a real color, actually shows up against any photo: --color-blush
+     (the "lipstick" pink pulled from her portrait, constant across themes per globals.css) in
+     light mode, where gold read as too close to the card's own warm-white/cream tones to pop;
+     --color-metal (gold) in dark mode, where it already had plenty of contrast against the navy
+     card and blush would compete with --color-metal already doing double duty on the eyebrow/
+     title-adjacent accents right next to it. */
+  position: relative;
+  flex-shrink: 0;
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--color-blush);
+}
+
+:global([data-theme='dark']) .avatar {
+  border-color: var(--color-metal);
+}
+
+.headerText {
+  min-width: 0;
+}
+
+.eyebrowRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.eyebrowIcon {
+  width: 0.9rem;
+  height: 0.9rem;
+  flex-shrink: 0;
+  color: var(--color-metal);
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-metal);
+  white-space: nowrap;
+}
+
+/* The reference's thin rule trailing off after the eyebrow label, not a fixed-width element. */
+.eyebrowRule {
+  flex: 1 1 auto;
+  height: 1px;
+  background-color: var(--color-rule);
+  min-width: 1.5rem;
+}
+
+.title {
+  /* 3rem/48px at sm+ matches the reference h1's measured computed font-size exactly. */
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1.1;
+  color: var(--color-ink);
+  text-wrap: balance;
+}
+
+@media (min-width: 640px) {
+  .title {
+    font-size: 3rem;
+  }
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  padding-block: 0.75rem;
+  border-top: 1px solid var(--color-rule);
+  border-bottom: 1px solid var(--color-rule);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+.metaDivider {
+  color: var(--color-rule);
+}
+
+.metaLocation {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-metal);
+}
+
+.pinWrap {
+  position: relative;
+  display: flex;
+  width: 1rem;
+  height: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.pinPulse {
+  position: absolute;
+  display: inline-flex;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background-color: var(--color-metal);
+  opacity: 0.3;
+}
+
+.pinIcon {
+  position: relative;
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--color-metal);
+}
+
+.body {
+  margin-top: 1.75rem;
+  font-family: var(--font-reading);
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--color-ink);
+}
+
+.body :global(p) {
+  margin-top: 1.25rem;
+}
+
+.body :global(p:first-child) {
+  margin-top: 0;
+}
+
+/* Drop cap on the opening paragraph only — the reference's single large lead letter, sized off
+   the display font so it reads as a deliberate editorial flourish, not a rendering glitch. */
+.body :global(p:first-child)::first-letter {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 600;
+  line-height: 0.7;
+  color: var(--color-metal);
+  float: left;
+  padding-right: 0.5rem;
+  padding-top: 0.3rem;
+}
+
+.cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-rule);
+  text-align: center;
+}
+
+.ctaEyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+/* Exact copy of Hero's .introButton (src/components/Hero/styles.module.css), not a new take —
+   asked for explicitly, so the "Book a reading" CTA reads as literally the same button whether
+   it's in the hero card or here. Uses that file's --metal/--accent-ink/--ink-color/--accent-
+   coral custom properties directly rather than this site's --color-* tokens: those are declared
+   via :global(:root) / :global([data-theme='dark']) in Hero's stylesheet, i.e. real global CSS
+   variables (not CSS-module-scoped class names), so they're already available here as long as
+   Hero renders on the same page — which it always does above this component. @keyframes
+   btnWiggle is duplicated below rather than referenced across files because CSS Modules hash
+   keyframe names per-file, same as class names; a bare `animation: btnWiggle` here would not
+   resolve to Hero's copy. */
+.ctaButton {
+  font-family: var(--font-inter), sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-ink);
+  background: var(--metal);
+  padding: 0.6em 1.4em;
+  border: 0.15em solid var(--accent-ink);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 1em;
+  box-shadow: 0.2em 0.2em 0 var(--ink-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ctaButton:hover {
+  transform: translateY(-0.3em);
+  background: var(--accent-coral);
+  animation: ctaBtnWiggle 0.6s ease-in-out infinite;
+}
+
+.ctaButton:focus-visible {
+  outline: 0.2em dashed var(--accent-coral);
+  outline-offset: 0.3em;
+  transform: translateY(-0.3em);
+}
+
+.ctaButton:active {
+  transform: translate(0.1em, 0.1em);
+  box-shadow: 0.05em 0.05em 0 var(--ink-color);
+  animation: none;
+}
+
+@keyframes ctaBtnWiggle {
+  0%,
+  100% {
+    transform: translateY(-0.3em) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-0.3em) rotate(-8deg);
+  }
+  75% {
+    transform: translateY(-0.3em) rotate(8deg);
+  }
+}

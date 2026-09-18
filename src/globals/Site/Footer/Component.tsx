@@ -4,14 +4,7 @@ import React from 'react'
 
 import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
-
-const socialLabels: Record<string, string> = {
-  instagram: 'Instagram',
-  x: 'X / Twitter',
-  facebook: 'Facebook',
-  youtube: 'YouTube',
-  tiktok: 'TikTok',
-}
+import { socialIcons, socialLabels } from '@/utilities/socialMeta'
 
 export async function Footer() {
   const siteData = await getCachedGlobal('site', 1)()
@@ -20,42 +13,57 @@ export async function Footer() {
   const socials = siteData?.socials || []
 
   return (
-    <footer className="mt-auto border-t border-rule bg-paper-raised text-ink">
+    <footer className="mt-auto bg-paper-raised text-ink">
+      <hr className="ink-rule" />
       <div className="container flex flex-col gap-8 py-8 md:flex-row md:justify-between">
         <Link className="flex items-center" href="/">
-          <Logo className="text-ink" />
+          <Logo className="font-bold text-metal" />
         </Link>
 
         <div className="flex flex-col-reverse items-start gap-4 md:flex-row md:items-center">
           <nav className="flex flex-col gap-4 md:flex-row">
             {navItems.map(({ link }, i) => (
-              <CMSLink className="text-ink" key={i} {...link} />
+              <CMSLink
+                className="nav-link-glow text-ink hover:text-metal"
+                key={i}
+                {...link}
+              />
             ))}
           </nav>
           {socials.length > 0 && (
-            <nav className="flex gap-4">
-              {socials.map((social, i) => (
-                <a
-                  key={i}
-                  className="text-ink"
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {socialLabels[social.platform] || social.platform}
-                </a>
-              ))}
+            <nav className="flex items-center gap-4">
+              {socials.map((social, i) => {
+                const Icon = socialIcons[social.platform]
+                const label = socialLabels[social.platform] || social.platform
+
+                return (
+                  <a
+                    key={i}
+                    className="text-ink transition-colors hover:text-metal"
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                  >
+                    {Icon ? <Icon className="size-5" aria-hidden="true" /> : label}
+                  </a>
+                )
+              })}
             </nav>
           )}
         </div>
       </div>
-      {siteData?.contactEmail && (
-        <div className="container pb-8 text-sm text-ink-muted">
-          <a href={`mailto:${siteData.contactEmail}`} className="text-ink">
+      <div className="container flex flex-col gap-2 pb-8 text-sm text-ink-muted md:flex-row md:items-center md:justify-between">
+        <p>&copy; {new Date().getFullYear()} Julia Gordon-Bramer. All rights reserved.</p>
+        {siteData?.contactEmail && (
+          <a
+            href={`mailto:${siteData.contactEmail}`}
+            className="nav-link-glow text-ink hover:text-metal"
+          >
             {siteData.contactEmail}
           </a>
-        </div>
-      )}
+        )}
+      </div>
     </footer>
   )
 }

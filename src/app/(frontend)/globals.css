@@ -85,16 +85,19 @@
      that read as edge-to-edge on a real desktop window: the header's nav spanned almost the
      whole browser width with nothing to stop it. Capped at a single, smaller ceiling instead of
      two growing steps, so the page stops widening past lg's content measure rather than
-     chasing the viewport all the way out. */
+     chasing the viewport all the way out. Bumped from 72rem to 76rem to give the header's
+     wordmark/nav/CTA row more breathing room at xl (it had started feeling crowded against the
+     old cap) — still a single flat ceiling shared by xl and 2xl, not a return to two growing
+     steps. */
   @variant xl {
     .container {
-      max-width: 72rem; /* 1152px */
+      max-width: 76rem; /* 1216px */
     }
   }
 
   @variant 2xl {
     .container {
-      max-width: 72rem; /* 1152px — same as xl, on purpose; see comment above */
+      max-width: 76rem; /* 1216px — same as xl, on purpose; see comment above */
     }
   }
 }
@@ -433,8 +436,8 @@ html[data-theme='light'] {
 
 /* .nav-link-glow — header nav links: replaces the shadcn "link" button variant's hover:underline
    with a pulsing currentColor glow instead. Uses currentColor (not a fixed token) so the glow
-   always matches whatever hover text color already applies (wine in light mode, gold in dark,
-   gold again over a hero-image overlay header) without duplicating that logic here. */
+   always matches whatever hover text color already applies (gold in both themes, and again over
+   a hero-image overlay header) without duplicating that logic here. */
 .nav-link-glow:hover {
   text-decoration: none;
   text-shadow:

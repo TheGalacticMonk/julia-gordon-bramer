@@ -6,16 +6,19 @@ import React, { useEffect, useState } from 'react'
 import type { Site } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
+import { socialIcons, socialLabels } from '@/utilities/socialMeta'
 import { cn } from '@/utilities/ui'
 import styles from './hamburger.module.css'
 
 type NavLink = NonNullable<Site['navItems']>[number]['link']
+type Social = { platform: 'instagram' | 'x'; url: string }
 
 interface MobileNavMenuProps {
   navItems: Array<{ link: NavLink }>
   resolveHref: (link: NavLink) => string | null
   isOverlay: boolean
   bookingUrl?: string | null
+  socials?: Social[]
   className?: string
 }
 
@@ -24,6 +27,7 @@ export const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
   resolveHref,
   isOverlay,
   bookingUrl,
+  socials = [],
   className,
 }) => {
   // Reference markup starts `checked` (closed); tracked as `open` here (inverted) so it can be
@@ -39,9 +43,19 @@ export const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
 
   return (
     <label
+      aria-label="Menu"
       className={cn(styles.main, isOverlay ? 'text-ink' : 'text-metal-ink dark:text-cream', className)}
     >
-      <span className="sr-only">Menu</span>
+      {/* Visible label text — hidden below `sm` where the header row is tightest (wordmark +
+          theme toggle + this control, on the narrowest phones) so the hamburger stays icon-only
+          there. `aria-label` on the <label> above already gives the control an accessible name
+          in both states, so this is purely visual and doesn't need its own sr-only fallback.
+          text-xl (not the nav's usual text-sm) is a deliberate size bump: canvas-measured glyph
+          height for "Menu" set Inter/500 at 14px is ~10px tall, dwarfed by the hamburger's 15px
+          of actual bar ink (3 bars + 2 gaps at 3px each, inside the icon's 20px box). 20px is
+          the smallest standard step where the word's measured glyph height (~14.8px) closes
+          that gap and reads as the same visual weight as the icon next to it. */}
+      <span className="hidden font-sans text-xl font-medium tracking-wide sm:inline">Menu</span>
       <input
         checked={!open}
         className={styles.inp}
@@ -67,6 +81,30 @@ export const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
             />
           )
         })}
+        {socials.length > 0 && (
+          // Also .menu-list (for the same reveal timing), composed with .menu-social so its
+          // padding/layout can differ (icon row, not a full-width text line) — same pattern
+          // .menu-cta uses below. Placed before the CTA so "Book a reading" stays the last,
+          // most prominent thing in the dropdown.
+          <div className={cn(styles['menu-list'], styles['menu-social'])}>
+            {socials.map((social) => {
+              const Icon = socialIcons[social.platform]
+              const label = socialLabels[social.platform] || social.platform
+
+              return (
+                <a
+                  key={social.platform}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                >
+                  {Icon && <Icon className="size-5" aria-hidden="true" />}
+                </a>
+              )
+            })}
+          </div>
+        )}
         {bookingUrl && (
           // .menu-list for the staggered reveal timing; .menu-cta swaps its look for a filled
           // pill button (see hamburger.module.css) instead of gold text — the active nav link
