@@ -6,9 +6,7 @@ import React, { cache } from 'react'
 import configPromise from '@payload-config'
 
 import { RenderBlocks } from '@/blocks/RenderBlocks'
-import { CMSLink } from '@/components/Link'
-import { Media } from '@/components/Media'
-import RichText from '@/components/RichText'
+import { HeroIntroCard } from '@/components/Hero/HeroIntroCard'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { generateMeta } from '@/utilities/generateMeta'
 
@@ -33,28 +31,14 @@ export default async function HomePage() {
     <article className="pb-24">
       {draft && <LivePreviewListener />}
 
-      <div className="container grid grid-cols-1 items-center gap-8 pt-16 pb-8 md:grid-cols-2 md:gap-12 md:pt-24">
-        <div>
-          <h1 className="text-balance text-4xl font-semibold sm:text-5xl">{heroHeading}</h1>
-          {heroSubheading && (
-            <p className="mt-4 text-pretty text-xl text-ink-muted">{heroSubheading}</p>
-          )}
-          {heroRichText && (
-            <div className="mt-6">
-              <RichText data={heroRichText} enableGutter={false} enableProse={false} />
-            </div>
-          )}
-          {links && links.length > 0 && (
-            <div className="mt-8 flex flex-wrap gap-4">
-              {links.map(({ link }, i) => (
-                <CMSLink key={i} {...link} />
-              ))}
-            </div>
-          )}
-        </div>
-        {heroImage && typeof heroImage === 'object' && (
-          <Media resource={heroImage} imgClassName="w-full rounded-sm border border-rule" priority />
-        )}
+      <div className="container flex justify-center pt-8 pb-6 md:pt-12">
+        <HeroIntroCard
+          heroHeading={heroHeading}
+          heroSubheading={heroSubheading}
+          heroRichText={heroRichText}
+          heroImage={heroImage}
+          links={links}
+        />
       </div>
 
       <RenderBlocks blocks={modules as never} />

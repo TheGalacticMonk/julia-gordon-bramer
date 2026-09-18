@@ -1,0 +1,764 @@
+/* Doodle palette — hue-matched to julia-gordon-bramer-profile.png (silver-gray hair, wine
+   lipstick, warm skin) rather than the original candy-bright set, so the card still reads as
+   hers — but saturation/lightness are boosted well past the literal sampled pixel values,
+   which read as dusty/washed out at UI scale (a photo's actual skin/lipstick/hair tones are
+   muted in a way that doesn't translate to a bold accent). Declared as global custom
+   properties (not class-scoped) so both .card and .introCard can use them; the reference
+   snippet declared these inside .card itself, which left any sibling element using the same
+   var()s with nothing to inherit from.
+
+   The star icon and button no longer carry their own "shirt olive" swatch — they now use the
+   sitewide `var(--metal)` (globals.css) directly, so the card's CTA always matches whatever
+   accent color the rest of the site is using for buttons/links that day, instead of a
+   representational color that could drift out of sync with it (it did — the site moved its
+   accent to gold while this card stayed olive).
+
+   `:root` (light) and `[data-theme='dark']` below have IDENTICAL CSS specificity (both are
+   single attribute/pseudo-class selectors on the same <html> element) — when the page is in
+   dark mode, <html> matches both selectors at once, so whichever rule appears LAST in this
+   file wins the tie, not whichever is "more specific." `:root` must come first and
+   `[data-theme='dark']` second, or dark mode silently renders the light theme's colors.
+
+   The card echoes its page now, rather than inverting against it: Light Mode (white page,
+   globals.css `--paper`) shows the CREAM card, Dark Mode (near-black page) shows the NAVY
+   card — same swap as globals.css's `--paper`/`--paper-raised` and the header's background.
+   --accent-coral/mint/lavender (skin, lipstick, hair) stay the same literal values in both
+   blocks regardless — they're colors FROM THE PHOTO, representational facts about her,
+   unrelated to which of the two card looks is showing. */
+
+/* Light MODE — shows the CREAM-background card, echoing the light page behind it. */
+:global(:root) {
+  --bg-color: #f6f1e7;
+  --ink-color: #1c1812; /* dark "pen" tone on light paper */
+  --paper-line: rgba(28, 24, 18, 0.08); /* faint dark ruled lines on cream */
+  --tape-color: rgba(255, 221, 161, 0.85);
+  --accent-coral: #d86b5a;
+  --accent-mint: #db7680;
+  --accent-lavender: #a3a1d9;
+  /* Badge/button text+border must stay dark regardless of which card is showing (they sit on
+     the same light mint fill either way) — just a warmer near-black to match this card's ink. */
+  --accent-ink: #1c1812;
+  /* Wine-on-dark-ink would be too low-contrast to read as a distinct "pop" (both are dark,
+     similar value) — hair-silver gives the heading a soft light halo against its dark text
+     instead, the same role lavender played in the original (pre-navy) doodle reference. */
+  --title-shadow: #a3a1d9;
+}
+
+/* Dark MODE — shows the NAVY-background card (portrait's own backdrop), echoing the dark page
+   behind it. Must come AFTER :root above, per the specificity-tie note in the file comment. */
+:global([data-theme='dark']) {
+  --bg-color: #0a1f2e;
+  --ink-color: #f3ece0; /* light cream "chalk" — reads against the navy card */
+  --paper-line: rgba(243, 236, 224, 0.1); /* faint cream ruled lines on navy */
+  --tape-color: rgba(255, 221, 161, 0.85);
+  --accent-coral: #d86b5a;
+  --accent-mint: #db7680;
+  --accent-lavender: #a3a1d9;
+  --accent-ink: #04141f; /* near-black navy — text/border for chips sitting on the light accents */
+  /* Title text-shadow: wine reads as a crisp dark "pop" behind the card's light-cream heading
+     text. See :root above for why the navy card needs a different color for the same job. */
+  --title-shadow: #79202a;
+}
+
+.card {
+  font-size: 16px;
+  position: relative;
+  width: 17em;
+  background:
+    linear-gradient(var(--bg-color) 1.5em, transparent 1.5em) 0 0 / 100% 1.6em,
+    linear-gradient(var(--paper-line) 0.08em, transparent 0.08em) 0 1.5em / 100%
+      1.6em var(--bg-color);
+  border: 0.25em solid var(--ink-color);
+  /* Hand-drawn sketchy border radius */
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  box-shadow:
+    0.5em 0.5em 0 var(--ink-color),
+    inset 0 0 1.2em rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3em 1.5em 2em;
+  transition:
+    transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 0.4s ease,
+    border-radius 0.4s ease;
+  animation: floatCard 6s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* Paper Tape Corner */
+.card::before {
+  content: '';
+  position: absolute;
+  top: -0.7em;
+  left: 50%;
+  transform: translateX(-50%) rotate(-4deg);
+  width: 5em;
+  height: 1.4em;
+  background: var(--tape-color);
+  border: 0.1em solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0.1em 0.1em 0.2em rgba(0, 0, 0, 0.1);
+  border-radius: 2px 4px 2px 5px;
+  z-index: 10;
+  animation: tapeFlutter 4s infinite alternate ease-in-out;
+}
+
+/* Hover Dynamics */
+.card:hover {
+  transform: translateY(-0.8em) rotate(1deg);
+  box-shadow:
+    0.7em 0.9em 0 var(--ink-color),
+    inset 0 0 1.2em rgba(0, 0, 0, 0.03);
+  border-radius: 15px 255px 15px 225px / 255px 15px 225px 15px; /* Border sketch shift */
+}
+
+/* --- DOODLE DECORATIONS --- */
+.doodle {
+  position: absolute;
+  fill: none;
+  stroke: var(--ink-color);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  z-index: 0;
+}
+.note {
+  /* Was the 5-point .star doodle — swapped for the note.svg glyph. Its viewBox (set in
+     HeroIntroCard.tsx) is already cropped tight to the glyph's own bounding box, so — unlike
+     the raw Material Symbols asset — it can inherit .doodle's hand-drawn stroke outline like
+     the other doodles do; the stroke-width is much larger than .doodle's default because this
+     glyph's cropped viewBox is in much bigger coordinate units (~500 vs. 24) than the others. */
+  width: 1.9em;
+  height: 1.9em;
+  top: 1.35em;
+  right: 1.4em;
+  stroke: var(--ink-color);
+  stroke-width: 46;
+  fill: var(--metal); /* sitewide accent, not a shirt-color swatch — see file comment */
+  animation: pulseSparkle 3s infinite alternate ease-in-out;
+}
+.sparkle {
+  width: 1.5em;
+  height: 1.5em;
+  /* Sits in the top margin strip, clear of the tape (whose rotated corner dips lower/wider
+     than its un-rotated box) and the photo below it — the intro card's photo is bigger than
+     the original placeholder avatar and reaches further into the corner. */
+  top: 2.1em;
+  left: 0.7em;
+  fill: var(--accent-mint);
+  animation: pulseSparkle 2.5s infinite alternate-reverse ease-in-out;
+}
+.swirl {
+  width: 2.5em;
+  height: 2.5em;
+  bottom: 2em;
+  right: 1em;
+  stroke: var(--accent-lavender);
+  stroke-width: 6;
+  opacity: 0.6;
+  animation: rotateDoodle 15s linear infinite;
+}
+
+/* --- AVATAR / PHOTO --- */
+.cardPhoto {
+  width: 6.5em;
+  height: 6.5em;
+  position: relative;
+  margin-bottom: 1.2em;
+  background:
+    /* Spiky Hair */
+    radial-gradient(circle at 25% 10%, var(--accent-lavender) 15%, transparent 16%),
+    radial-gradient(circle at 50% 5%, var(--accent-lavender) 18%, transparent 19%),
+    radial-gradient(circle at 75% 10%, var(--accent-lavender) 15%, transparent 16%),
+    /* Hair Base */ radial-gradient(ellipse at 50% 20%, var(--accent-lavender) 45%, transparent 46%),
+    /* Skin Tone */ #ffdeb3;
+  border: 0.2em solid var(--ink-color);
+  border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%;
+  box-shadow: 0.3em 0.3em 0 var(--accent-coral);
+  animation: avatarBounce 4s ease-in-out infinite;
+  overflow: hidden;
+  z-index: 2;
+}
+
+/* Face Details (Eyes & Blush) */
+.cardPhoto::before {
+  content: '';
+  position: absolute;
+  width: 0.55em;
+  height: 0.55em;
+  background: var(--ink-color);
+  border-radius: 50%;
+  top: 3.2em;
+  left: 1.8em;
+  /* Right eye + two pink blushes */
+  box-shadow:
+    2.3em 0 0 var(--ink-color),
+    -0.4em 0.9em 0.3em rgba(255, 139, 167, 0.8),
+    2.7em 0.9em 0.3em rgba(255, 139, 167, 0.8);
+  animation: avatarBlink 5s infinite;
+  transform-origin: center;
+}
+
+/* Face Details (Smile) */
+.cardPhoto::after {
+  content: '';
+  position: absolute;
+  width: 1.4em;
+  height: 1.2em;
+  border: 0.2em solid transparent;
+  border-bottom-color: var(--ink-color);
+  border-radius: 50%;
+  top: 2.2em;
+  left: 2.35em;
+  animation: smileMove 3s ease-in-out infinite alternate;
+}
+
+/* --- TYPOGRAPHY --- */
+.cardTitle {
+  text-align: center;
+  color: var(--ink-color);
+  font-size: 1.3em;
+  font-weight: 900;
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5em;
+  text-shadow: 0.08em 0.08em 0 var(--accent-lavender);
+  z-index: 2;
+}
+
+.card:hover .cardTitle {
+  animation: titleWobble 0.6s ease-in-out infinite alternate;
+}
+
+/* Role Badge */
+.cardTitle span {
+  display: inline-block;
+  font-size: 0.55em;
+  color: var(--ink-color);
+  background: var(--accent-mint);
+  padding: 0.4em 1em;
+  border: 0.15em solid var(--ink-color);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  margin-top: 0.8em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: 0.2em 0.2em 0 var(--ink-color);
+  animation: badgeFloat 3s ease-in-out infinite alternate;
+  text-shadow: none;
+}
+
+/* --- SOCIAL BUTTONS --- */
+.cardSocials {
+  display: flex;
+  gap: 1em;
+  height: 0;
+  opacity: 0;
+  margin-top: 0;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 2;
+}
+
+.card:hover .cardSocials {
+  height: 3em;
+  opacity: 1;
+  margin-top: 1.5em;
+  overflow: visible;
+}
+
+.cardSocialsBtn {
+  width: 2.8em;
+  height: 2.8em;
+  border: 0.15em solid var(--ink-color);
+  background: #fff;
+  border-radius: 50% 40% 60% 40% / 40% 60% 40% 50%; /* Skewed circle */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0.2em 0.2em 0 var(--ink-color);
+  transition: all 0.2s ease;
+}
+
+.cardSocialsBtn svg {
+  width: 1.4em;
+  height: 1.4em;
+  fill: var(--ink-color);
+  transition: transform 0.2s ease;
+}
+
+/* Interactive Button States */
+.facebook:hover {
+  background: var(--accent-lavender);
+}
+.github:hover {
+  background: var(--accent-coral);
+}
+.linkedin:hover {
+  background: var(--accent-mint);
+}
+
+.cardSocialsBtn:hover {
+  transform: translateY(-0.3em);
+  animation: btnWiggle 0.6s ease-in-out infinite;
+}
+
+.cardSocialsBtn:focus-visible {
+  outline: 0.2em dashed var(--accent-coral);
+  outline-offset: 0.3em;
+  transform: translateY(-0.3em);
+}
+
+.cardSocialsBtn:active {
+  transform: translate(0.1em, 0.1em);
+  box-shadow: 0.05em 0.05em 0 var(--ink-color);
+  animation: none;
+}
+
+/* --- ANIMATIONS KEYFRAMES --- */
+@keyframes floatCard {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.4em);
+  }
+}
+
+@keyframes tapeFlutter {
+  0% {
+    transform: translateX(-50%) rotate(-4deg) scale(1);
+  }
+  100% {
+    transform: translateX(-50%) rotate(-2deg) scale(1.02);
+  }
+}
+
+@keyframes pulseSparkle {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes rotateDoodle {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes avatarBounce {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%;
+  }
+  50% {
+    transform: translateY(-0.3em) scale(1.02);
+    border-radius: 45% 55% 50% 50% / 45% 50% 50% 55%;
+  }
+}
+
+@keyframes avatarBlink {
+  0%,
+  4%,
+  10%,
+  100% {
+    transform: scaleY(1);
+  }
+  5%,
+  8% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes smileMove {
+  0% {
+    transform: translateY(0) scaleX(1);
+  }
+  100% {
+    transform: translateY(-0.1em) scaleX(1.1);
+  }
+}
+
+@keyframes titleWobble {
+  0% {
+    transform: rotate(-2deg) scale(1.02);
+  }
+  100% {
+    transform: rotate(2deg) scale(1.02);
+  }
+}
+
+@keyframes badgeFloat {
+  0% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  100% {
+    transform: translateY(-0.2em) rotate(1deg);
+  }
+}
+
+@keyframes btnWiggle {
+  0%,
+  100% {
+    transform: translateY(-0.3em) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-0.3em) rotate(-8deg);
+  }
+  75% {
+    transform: translateY(-0.3em) rotate(8deg);
+  }
+}
+
+/* ===================================================================
+ * LEFT-SIDE HERO INTRO CARD — same doodle-card language as .card above
+ * (palette, hand-drawn border, offset shadow, doodles), adapted to hold
+ * the real hero heading/subheading/copy/CTA instead of an avatar + social row.
+ *
+ * Typography: the display heading uses Cormorant — the "editorial" didone-style serif from
+ * the uiverse.io Cairn design system (https://uiverse.io/design/systems/cairn-2) — and the
+ * badge/body/button use Inter, matching Cairn's own serif+grotesk pairing. Everything else
+ * about the card (doodle shapes, tape, colors, animations) is unchanged.
+ * =================================================================== */
+
+/*
+ * Vertical rhythm: the ruled "paper" background below repeats every 1.6em (25.6px at this
+ * card's 16px base) — that's the pitch every block below is tuned to. Padding-top starts on a
+ * rule, the photo's height is a clean multiple of it, and each text block's line-height and
+ * margin-top are multiples of the same 25.6px, so the type actually sits on the lines instead
+ * of floating past them at an arbitrary cadence. Spacing is expressed in px (not em) below
+ * because `em` resolves against each element's OWN font-size — the title's 2.6em heading and
+ * the 1em body text would drift out of alignment with each other if both used relative units
+ * for the same nominal gap.
+ */
+.introCard {
+  font-size: 16px;
+  position: relative;
+  width: 100%;
+  max-width: 34em;
+  background:
+    linear-gradient(var(--bg-color) 1.5em, transparent 1.5em) 0 0 / 100% 1.6em,
+    linear-gradient(var(--paper-line) 0.08em, transparent 0.08em) 0 1.5em / 100%
+      1.6em var(--bg-color);
+  border: 0.25em solid var(--ink-color);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  /* Unlike every other shadow in this card, this one sits against the page (cream), not the
+     card's own navy fill — so it needs the dark accent-ink, not the light ink-color. */
+  box-shadow:
+    0.5em 0.5em 0 var(--accent-ink),
+    inset 0 0 1.2em rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* No flex `gap` here — each child sets its own margin-top below so the space before it can
+     be a deliberate multiple of the pitch (1 for closely-related lines, 2 to give the CTA more
+     room), not one uniform value regardless of role. */
+  padding: 51.2px 2em 38.4px; /* 2x / — / 1.5x pitch */
+  z-index: 1;
+}
+
+.introCard::before {
+  content: '';
+  position: absolute;
+  top: -0.7em;
+  left: 3em;
+  transform: rotate(-4deg);
+  width: 5em;
+  height: 1.4em;
+  background: var(--tape-color);
+  border: 0.1em solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0.1em 0.1em 0.2em rgba(0, 0, 0, 0.1);
+  border-radius: 2px 4px 2px 5px;
+  z-index: 10;
+  animation: tapeFlutter 4s infinite alternate ease-in-out;
+}
+
+/* .introPhotoWrap owns size + the spinning rainbow halo, which now stands in for a border
+   entirely (.introPhoto no longer has one of its own — see below). Split into two elements
+   because the halo and the photo's own circular clip can't live on the same one: the halo has
+   to extend PAST the circle's edge to read as a ring around it, but .introPhoto's own
+   overflow:hidden — needed to clip the rectangular <Media> image into a circle — would clip
+   that ring right back off if it were the halo's own positioning context too. */
+.introPhotoWrap {
+  position: relative;
+  width: 153.6px; /* 6x pitch, so whatever follows still lands on a rule */
+  height: 153.6px;
+  z-index: 2;
+}
+
+.introPhotoWrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  z-index: -1;
+  /* Same 7-color rainbow spread as the reference spinner, but pulled way in from its original
+     offset/blur (10px/10px on a 48px icon — a huge diffuse aura at this photo's size) down to
+     a tight few px, so this reads as a thin colorful RING hugging the photo's edge — standing
+     in for the plain coral border that used to sit there — instead of a big soft glow.
+
+     Offset a bit bigger than blur (4px vs 3px, was 3px/5px — blur bigger than offset smeared
+     each color into its neighbors, leaving no distinct edge for the eye to actually track as
+     it rotates) so each color reads as its own blob with a real boundary, not one continuous
+     soft gradient — at this photo's size a smooth gradient barely reads as "spinning" at all,
+     just a static-looking glow, since there's nothing to visibly track moving. */
+  box-shadow:
+    -4px -4px 3px #6359f8,
+    0 -4px 3px 0 #9c32e2,
+    4px -4px 3px #f36896,
+    4px 0 3px #ff0b0b,
+    4px 4px 3px 0 #ff5500,
+    0 4px 3px 0 #ff9500,
+    -4px 4px 3px 0 #ffb700;
+  /* Faster than the original 8s — at this small a size, a full slow rotation barely displaces
+     each color blob far enough per second for the eye to register it as motion rather than a
+     static (if oddly colored) ring. Still well short of the reference's 0.7s "loading spinner"
+     speed — this should read as a calm, obvious spin, not urgency. */
+  animation: introPhotoSpin 2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .introPhotoWrap::before {
+    animation: none;
+  }
+}
+
+@keyframes introPhotoSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.introPhoto {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.introTitle {
+  color: var(--ink-color);
+  font-family: var(--font-cormorant), 'Cormorant', serif;
+  font-weight: 600;
+  font-size: 2.6em;
+  line-height: 51.2px; /* 2x pitch */
+  letter-spacing: 0.01em;
+  text-shadow: 0.08em 0.08em 0 var(--title-shadow);
+  text-align: center;
+  z-index: 2;
+  margin: 25.6px 0 0; /* 1x pitch after the photo */
+}
+
+.introBadge {
+  display: inline-block;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 1em;
+  line-height: 25.6px; /* 1x pitch per wrapped line */
+  color: var(--accent-ink);
+  background: var(--accent-mint);
+  padding: 0.4em 1em;
+  border: 0.15em solid var(--accent-ink);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: 0.2em 0.2em 0 var(--ink-color);
+  animation: badgeFloat 3s ease-in-out infinite alternate;
+  margin-top: 25.6px; /* 1x pitch after the title */
+  text-align: center;
+  z-index: 2;
+}
+
+.introBody {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 1em;
+  line-height: 25.6px; /* 1x pitch per line */
+  color: var(--ink-color);
+  text-align: center;
+  /* Measured empirically (getBoundingClientRect on the actual rendered glyphs vs. the
+     background rule position): Inter's baseline sits ~11px above the bottom of a 25.6px line
+     box, so a plain 1x-pitch margin leaves the rule floating below the text instead of under
+     it. Cormorant's heading needed no such correction (measured ~0.2px off) — this offset is
+     specific to Inter at this line-height, not a general rule. */
+  margin: 36.57px 0 0;
+  z-index: 2;
+}
+
+/* Belt-and-suspenders: the site-wide .payload-richtext rule already resolves to Inter too, but
+   pin it explicitly so this stays correct even if the global rule ever changes. */
+.introBody :global(.payload-richtext) {
+  font-family: inherit;
+}
+
+/* Wraps the CTA link(s) below the body copy. Was 2x pitch (51.2px) on the theory that the
+   primary action deserved more room than the closely-set text blocks above it — in practice
+   that read as a stray gap of blank ruled paper between the last line of body copy and the
+   button, not "breathing room". 1x pitch keeps it on the same rhythm as everything else. */
+.linksRow {
+  margin-top: 25.6px;
+}
+
+.introButton {
+  font-family: var(--font-inter), sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-ink);
+  background: var(--metal); /* sitewide accent, not a shirt-color swatch — see file comment */
+  padding: 0.6em 1.4em;
+  border: 0.15em solid var(--accent-ink);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 1em;
+  box-shadow: 0.2em 0.2em 0 var(--ink-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+.introButton:hover {
+  transform: translateY(-0.3em);
+  background: var(--accent-coral);
+  animation: btnWiggle 0.6s ease-in-out infinite;
+}
+
+.introButton:focus-visible {
+  outline: 0.2em dashed var(--accent-coral);
+  outline-offset: 0.3em;
+  transform: translateY(-0.3em);
+}
+
+.introButton:active {
+  transform: translate(0.1em, 0.1em);
+  box-shadow: 0.05em 0.05em 0 var(--ink-color);
+  animation: none;
+}
+
+/* Small-viewport rhythm: same 6-value pitch system as the rest of the card, just recomputed at
+   0.75x (19.2px instead of 25.6px) so the CTA lands inside the fold on a phone-height screen on
+   load, instead of requiring a scroll before the page even shows its own "book a reading"
+   button. Only the values whose SIZE (not just spacing) was eating vertical room are touched —
+   photo, title font-size/line-height — everything else keeps the desktop rhythm's shape, just
+   at the smaller pitch. */
+@media (max-width: 640px) {
+  .introCard {
+    padding-top: 38.4px; /* 2x mobile pitch */
+  }
+
+  .introPhotoWrap {
+    width: 115.2px; /* 6x mobile pitch */
+    height: 115.2px;
+  }
+
+  .introTitle {
+    font-size: 2em;
+    line-height: 38.4px; /* 2x mobile pitch */
+    margin-top: 19.2px; /* 1x mobile pitch */
+  }
+
+  .introBadge {
+    margin-top: 19.2px; /* 1x mobile pitch */
+  }
+
+  .introBody {
+    margin-top: 27px; /* same Inter-baseline correction as desktop, scaled by 0.75x */
+  }
+
+  .linksRow {
+    margin-top: 19.2px; /* 1x mobile pitch */
+  }
+}
+
+/* Large-viewport geometry: at 34em max-width (544px) the card sat lost in a sea of empty page
+   on any real desktop viewport (a 2xl container is 1376px — that's ~400px of dead space on
+   each side). Widened in three steps so it keeps scaling with the container instead of topping
+   out early. Deliberately NOT touching .introCard's font-size to get there — every vertical
+   measurement in this file (padding, line-heights, margins) is a hardcoded px multiple of the
+   16px-rooted 25.6px pitch, calibrated against that specific font-size (see the Inter-baseline
+   correction comment on .introBody); scaling font-size would scale the em-based ruled-paper
+   background out of step with those fixed px values and desync the "text sits on the lines"
+   effect. Width is independent of that system, so it's the only knob turned here.
+
+   .introPhoto deliberately does NOT grow alongside the card here (an earlier pass grew it up to
+   12x pitch, which pushed total hero height — header + top padding + card — past what a normal
+   laptop browser window (~760-800px tall) shows on load, forcing a scroll to see the CTA before
+   the visitor had even scrolled once). Width and height are decoupled on purpose: the card gets
+   wider so it doesn't look lost in the page, but nothing here is allowed to add height, since
+   the budget for that is fixed by the viewport, not the container. .introTitle/.introBody get
+   their own measure cap instead of stretching to the card's full width — unconstrained, body
+   copy would run past a comfortable reading line length well before the card itself stopped
+   looking sparse. */
+@media (min-width: 1024px) {
+  .introCard {
+    max-width: 40em; /* 640px */
+  }
+
+  .introTitle,
+  .introBody {
+    max-width: 30em;
+    margin-inline: auto;
+  }
+}
+
+@media (min-width: 1280px) {
+  .introCard {
+    max-width: 46em; /* 736px */
+  }
+}
+
+@media (min-width: 1376px) {
+  .introCard {
+    max-width: 50em; /* 800px */
+  }
+}
+
+/* Short-viewport rhythm: a wide desktop window can still be short (a laptop's actual browser
+   client area is routinely 700-800px tall once toolbars/bookmarks bars are counted). A more
+   moderate compression than the <=640px phone block above — that tier was tuned to still leave
+   room to scroll on a genuinely tiny phone screen, which read as noticeably squat/small here.
+   On a real desktop the goal isn't "as compact as possible," just "don't push the CTA below
+   the fold" — so this only trims enough to keep the whole card (photo through the button)
+   inside a ~760-800px-tall viewport, with the next section's heading still safely below it. */
+@media (max-height: 820px) {
+  .introCard {
+    padding-top: 44.8px;
+  }
+
+  .introPhotoWrap {
+    width: 160px;
+    height: 160px;
+  }
+
+  .introTitle {
+    font-size: 2.3em;
+    line-height: 44px;
+    margin-top: 22px;
+  }
+
+  .introBadge {
+    margin-top: 22px;
+  }
+
+  .introBody {
+    margin-top: 30px;
+  }
+
+  .linksRow {
+    margin-top: 22px;
+  }
+}

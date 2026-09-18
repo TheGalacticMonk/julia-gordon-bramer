@@ -1,0 +1,249 @@
+/* Same doodle-notepad language as the homepage hero card (Hero/styles.module.css) — hand-drawn
+   border, hard offset shadow, tape corner — scaled down to fit several per row instead of one
+   large centered card. Reuses the SITEWIDE palette tokens (globals.css: --cream/--navy/--ink/
+   --metal/--metal-ink), not Hero's private --bg-color/--ink-color custom properties: those only
+   exist because Hero/styles.module.css happens to be loaded on whatever page renders the hero,
+   which this block can't assume (a page could show upcoming events without a hero above it).
+   --card-bg is the one thing this file still swaps per theme, same as Hero does, since the
+   sitewide tokens don't have a single "raised card surface that's cream in light mode, navy in
+   dark mode" value of their own.
+
+   A flat "sticky note" fill, deliberately NOT the hero's ruled-paper background: that only
+   stays convincingly on-line when every text block's line-height/margin is hand-tuned as an
+   exact multiple of the paper's pitch, which is workable for the hero's fixed copy but not for
+   these — title, venue, and ticket note are entered by the client and vary in length, so the
+   lines would drift out of register the moment someone types a longer title.
+
+   Left out, on purpose, at this smaller repeated scale: the hero's sparkle/note/swirl SVG
+   doodles. One of each reads as a nice hand-drawn flourish on a single large card; three of
+   each repeated across a grid would compete with the actual event info instead of framing it.
+   The tape corner is kept — it's the single strongest "this is the same card" signal and reads
+   fine repeated. */
+
+.card {
+  --card-bg: var(--cream);
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  font-size: 15px;
+  background: var(--card-bg);
+  border: 0.2em solid var(--ink);
+  border-radius: 80px 14px 60px 14px / 14px 60px 14px 80px;
+  box-shadow: 0.4em 0.4em 0 var(--metal-ink);
+  padding: 2.2em 1.4em 1.5em;
+  transition:
+    transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 0.3s ease;
+}
+
+:global([data-theme='dark']) .card {
+  --card-bg: var(--navy);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card:hover {
+    transform: translateY(-0.35em) rotate(-0.75deg);
+    box-shadow: 0.55em 0.6em 0 var(--metal-ink);
+  }
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: -0.65em;
+  left: 2em;
+  transform: rotate(-4deg);
+  width: 3.4em;
+  height: 1.15em;
+  background: rgba(255, 221, 161, 0.85);
+  border: 0.08em solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0.08em 0.08em 0.15em rgba(0, 0, 0, 0.1);
+  border-radius: 2px 3px 2px 4px;
+  z-index: 2;
+}
+
+.ribbon {
+  align-self: flex-start;
+}
+
+.title {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4em;
+  font-family: var(--font-display);
+  font-size: 1.25em;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.titleIcon {
+  flex-shrink: 0;
+  /* Nudges the icon down onto the same optical line as the first line of a (possibly
+     multi-line) title instead of centering against the whole block. */
+  margin-top: 0.2em;
+}
+
+.meta {
+  font-family: var(--font-sans);
+  font-size: 0.875em;
+  color: var(--ink-muted);
+}
+
+.footer {
+  margin-top: auto;
+  padding-top: 0.6em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75em;
+}
+
+.ticketButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0.45em 1em;
+  border: 0.15em solid var(--ink);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  background: var(--metal);
+  color: var(--metal-ink);
+  font-family: var(--font-sans);
+  font-size: 0.8em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  box-shadow: 0.15em 0.15em 0 var(--ink);
+  transition: all 0.15s ease;
+}
+
+.ticketButton:hover {
+  transform: translateY(-0.15em);
+  background: var(--blush);
+}
+
+.ticketButton:active {
+  transform: translate(0.05em, 0.05em);
+  box-shadow: 0.05em 0.05em 0 var(--ink);
+}
+
+/* Explore — links to the event's own detail page, always present (unlike Tickets, which only
+   shows when there's an external registration URL). Supplied as a generic stone/yellow button
+   with an elaborate 12-layer "pixel-staircase + outline ring" shadow; simplified down to a
+   single offset shadow instead, matching .ticketButton right next to it (and the header's
+   "Book a reading" button) rather than trying to preserve that two-tone structure. Two reasons:
+   first, a stray custom-property swap for just the ring layer tested as visibly stuck on its
+   light-theme color even after a hard reload — box-shadow with many var()-layered colors didn't
+   reliably repaint off a var() value change alone. Second, and more basically, even once
+   correctly colored, a vivid pink outer ring next to dark inner steps read as its own separate
+   halo floating outside the shadow rather than "the same shadow, recolored" — which is what was
+   actually wanted. A single shadow sidesteps both: nothing to desync, and only one color to see. */
+.exploreButton {
+  font-size: 1em;
+  cursor: pointer;
+  position: relative;
+  display: block;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  line-height: 1;
+  outline: 2px solid transparent;
+  outline-offset: 4px;
+  border-radius: 9999px;
+  transition: all 150ms ease;
+  text-align: center;
+  box-shadow: 0.15em 0.15em 0 0 var(--ink);
+}
+
+.exploreButton:hover {
+  transform: translateY(-0.15em);
+}
+
+.exploreButton:active {
+  transform: translate(0.05em, 0.05em);
+  box-shadow: 0.05em 0.05em 0 0 var(--ink);
+}
+
+:global([data-theme='dark']) .exploreButton {
+  box-shadow: 0.15em 0.15em 0 0 var(--blush);
+}
+
+:global([data-theme='dark']) .exploreButton:active {
+  box-shadow: 0.05em 0.05em 0 0 var(--blush);
+}
+
+.exploreButton:active,
+.exploreButton:focus-visible {
+  outline-color: var(--metal);
+}
+
+.exploreButton:focus-visible {
+  outline-style: dashed;
+}
+
+.exploreButtonFace {
+  position: relative;
+  display: block;
+  background-color: var(--metal);
+  /* Was a fixed rgba(255,255,255,0.3) in the original — a glossy highlight rim that never
+     changed with theme, which is why it still read as "white" after everything else here
+     started following light/dark. var(--ink) matches .card's and .ticketButton's own borders
+     in light mode; dark mode below swaps it to --blush, same pink as .exploreButton's own
+     shadow, so the pill's rim and its shadow read as one consistent accent rather than two
+     different colors. */
+  border: 2px solid var(--ink);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+:global([data-theme='dark']) .exploreButtonFace {
+  border-color: var(--blush);
+}
+
+.exploreButtonFace::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  opacity: 0.5;
+  background-image:
+    radial-gradient(rgb(255 255 255 / 80%) 20%, transparent 20%),
+    radial-gradient(rgb(255 255 255 / 100%) 20%, transparent 20%);
+  background-position:
+    0 0,
+    4px 4px;
+  background-size: 8px 8px;
+  mix-blend-mode: hard-light;
+  animation: exploreDots 0.5s infinite linear;
+}
+
+.exploreButtonLabel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4em 0.9em;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--metal-ink);
+  filter: drop-shadow(0 -1px 0 rgba(255, 255, 255, 0.25));
+}
+
+.exploreButtonLabel:active {
+  transform: translateY(2px);
+}
+
+@keyframes exploreDots {
+  0% {
+    background-position:
+      0 0,
+      4px 4px;
+  }
+  100% {
+    background-position:
+      8px 0,
+      12px 4px;
+  }
+}

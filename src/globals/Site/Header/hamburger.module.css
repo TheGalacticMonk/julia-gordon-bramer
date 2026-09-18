@@ -1,0 +1,176 @@
+/* .main — the hamburger control itself: label wraps the hidden checkbox so clicking it (or
+   the bars) toggles state natively, no JS handler needed for that part. Sized to content
+   (not the reference's fixed 12rem) since this sits crowded against the wordmark, theme
+   toggle, and CTA button in a real mobile header, not alone on a demo page. */
+.main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding-inline: 0.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.inp {
+  display: none;
+}
+
+.bar {
+  display: flex;
+  height: 50%;
+  width: 20px;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.bar-list {
+  --transform: -25%;
+  display: block;
+  width: 100%;
+  height: 3px;
+  border-radius: 50px;
+  background-color: currentcolor;
+  transition: all 0.4s;
+  position: relative;
+}
+
+.inp:not(:checked) ~ .bar > .top {
+  transform-origin: top right;
+  transform: translateY(var(--transform)) rotate(-45deg);
+}
+
+.inp:not(:checked) ~ .bar > .middle {
+  transform: translateX(-50%);
+  opacity: 0;
+}
+
+.inp:not(:checked) ~ .bar > .bottom {
+  transform-origin: bottom right;
+  transform: translateY(calc(var(--transform) * -1)) rotate(45deg);
+}
+
+/* .menu-container — anchored right (not the reference's left:0): this button lives at the far
+   right of the header, so a left-anchored dropdown wide enough for "Decoding Sylvia Plath"
+   would run off the viewport edge. */
+.menu-container {
+  position: absolute;
+  right: 0;
+  top: 130%;
+  width: max-content;
+  min-width: 100%;
+  max-width: 80vw;
+  overflow: hidden;
+  border: 1px solid var(--color-rule);
+  border-radius: 10px;
+  background-color: var(--color-paper-raised);
+  color: var(--color-ink);
+  clip-path: inset(0% 0% 0% 0% round 10px);
+  transition: all 0.4s;
+  z-index: 30;
+}
+
+.menu-list {
+  --delay: 0.4s;
+  --trdelay: 0.15s;
+  display: block;
+  padding: 10px 16px;
+  border-radius: inherit;
+  transition: background-color 0.2s 0s;
+  position: relative;
+  transform: translateY(30px);
+  opacity: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.menu-list::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 1px;
+  width: 95%;
+  background-color: var(--color-rule);
+}
+
+.menu-list:last-child::after {
+  display: none;
+}
+
+.menu-list:hover {
+  background-color: var(--color-rule);
+}
+
+/* Booking CTA row — plain .menu-list styling made it just a gold/bold text link, same look
+   the ACTIVE nav item already uses (text-metal font-semibold) for "you are here." Sitting
+   next to each other in the same list, both read as gold text and were easy to mix up. This
+   gives the CTA its own affordance instead of relying on a color the active state also owns:
+   a filled pill button, echoing the desktop header's "Book a reading" button so the same
+   action reads the same way at both sizes. Composed with .menu-list (not replacing it) so it
+   keeps that class's stagger-reveal timing and divider-suppression-on-last-child. */
+.menu-cta {
+  margin: 4px 16px 6px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background-color: var(--color-metal);
+  color: var(--color-metal-ink);
+  font-weight: 700;
+  text-align: center;
+  width: auto;
+}
+
+.menu-cta:hover {
+  background-color: var(--color-metal);
+  opacity: 0.9;
+}
+
+.menu-cta::after {
+  content: none;
+}
+
+.inp:checked ~ .menu-container {
+  clip-path: inset(10% 50% 90% 50% round 10px);
+}
+
+.inp:not(:checked) ~ .menu-container .menu-list {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Staggered reveal — one rule per item, extended to 6 (the reference only had 4 menu items;
+   we have 5 nav links plus the "Book a reading" CTA appended after them). */
+.inp:not(:checked) ~ .menu-container .menu-list:nth-child(1) {
+  transition:
+    transform 0.4s var(--delay),
+    opacity 0.4s var(--delay);
+}
+.inp:not(:checked) ~ .menu-container .menu-list:nth-child(2) {
+  transition:
+    transform 0.4s calc(var(--delay) + (var(--trdelay) * 1)),
+    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 1));
+}
+.inp:not(:checked) ~ .menu-container .menu-list:nth-child(3) {
+  transition:
+    transform 0.4s calc(var(--delay) + (var(--trdelay) * 2)),
+    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 2));
+}
+.inp:not(:checked) ~ .menu-container .menu-list:nth-child(4) {
+  transition:
+    transform 0.4s calc(var(--delay) + (var(--trdelay) * 3)),
+    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 3));
+}
+.inp:not(:checked) ~ .menu-container .menu-list:nth-child(5) {
+  transition:
+    transform 0.4s calc(var(--delay) + (var(--trdelay) * 4)),
+    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 4));
+}
+.inp:not(:checked) ~ .menu-container .menu-list:nth-child(6) {
+  transition:
+    transform 0.4s calc(var(--delay) + (var(--trdelay) * 5)),
+    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 5));
+}

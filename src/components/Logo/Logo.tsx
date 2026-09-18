@@ -3,27 +3,24 @@ import React from 'react'
 
 interface Props {
   className?: string
-  loading?: 'lazy' | 'eager'
-  priority?: 'auto' | 'high' | 'low'
 }
 
+// Text wordmark, not an image — no real logo file exists yet (see agency/open-questions.md,
+// "Brand"). Swap this for a <Media> render once Julia supplies one; the surrounding <Link href="/">
+// in Header/Footer won't need to change.
+//
+// No default text color here on purpose: Header sits on a background that can flip
+// independently of the page (see HeaderTheme), and Footer's background is the inverse of the
+// page's ink/paper pairing — each caller passes the color that's actually correct for its own
+// background via `className`. Tailwind utility classes don't reliably override by JSX source
+// order (same specificity, resolved by declaration order in the compiled stylesheet instead),
+// so baking in a default here and trying to override it from a caller would be fragile.
 export const Logo = (props: Props) => {
-  const { loading: loadingFromProps, priority: priorityFromProps, className } = props
-
-  const loading = loadingFromProps || 'lazy'
-  const priority = priorityFromProps || 'low'
+  const { className } = props
 
   return (
-    /* eslint-disable @next/next/no-img-element */
-    <img
-      alt="Payload Logo"
-      width={193}
-      height={34}
-      loading={loading}
-      fetchPriority={priority}
-      decoding="async"
-      className={clsx('max-w-[9.375rem] w-full h-[34px]', className)}
-      src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-logo-light.svg"
-    />
+    <span className={clsx('font-display text-xl leading-none', className)}>
+      Julia Gordon-Bramer
+    </span>
   )
 }

@@ -6,6 +6,7 @@ import type { Book, BookShelfBlock as BookShelfBlockProps } from '@/payload-type
 import config from '@payload-config'
 import { Media } from '@/components/Media'
 import { CMSLink } from '@/components/Link'
+import { SectionHeading } from '@/components/SectionHeading'
 import { cn } from '@/utilities/ui'
 
 type Props = BookShelfBlockProps & {
@@ -30,25 +31,22 @@ export const BookShelfBlock: React.FC<Props> = async ({ heading, books: selected
 
   return (
     <div className={cn('container', className)}>
-      {heading && <h2 className="mb-6 text-2xl font-semibold">{heading}</h2>}
+      {heading && <SectionHeading>{heading}</SectionHeading>}
       <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4">
         {books.map((book) => (
           <li key={book.id}>
             <CMSLink
               appearance="inline"
-              className="group flex flex-col gap-2"
+              className="reading-card group flex flex-col gap-2 p-3"
               type="reference"
               reference={{ relationTo: 'books', value: book }}
             >
               {book.coverImage && typeof book.coverImage === 'object' && (
-                <Media
-                  resource={book.coverImage}
-                  imgClassName="w-full rounded-sm border border-border shadow-sm transition group-hover:shadow-md"
-                />
+                <Media resource={book.coverImage} imgClassName="w-full" />
               )}
-              <span className="text-sm font-medium">{book.title}</span>
+              <span className="font-sans text-sm font-medium text-ink">{book.title}</span>
               {book.publisher && (
-                <span className="text-xs text-muted-foreground">
+                <span className="font-sans text-xs text-ink-muted">
                   {book.publisher}
                   {book.publishYear ? `, ${book.publishYear}` : ''}
                 </span>

@@ -52,6 +52,13 @@ anything that depends on them.
   on the Events/Speaking page, or soften the copy until one exists.
 
 ## Content migration
+- [ ] **The full 79-URL list (46 essay slugs + 33 blog slugs) was never captured.** The audit
+  fork that would have written `raw-content-dump.md` was interrupted before finishing (see
+  `agency/audit.md`'s note), so only a handful of example slugs survive. Only the 5 confirmed
+  top-level `.html` redirects (`/tarot.html`, `/books.html`, `/blog.html`,
+  `/decoding-sylvia-plath.html`, seeded via `pnpm seed`/`src/seed/index.ts`) are live today.
+  Per-essay and per-post redirects can't be seeded accurately until either a fresh crawl of
+  `/sitemap.xml` recovers the full slug list, or Julia supplies it.
 - [ ] **Scope of the 46 Decoding Sylvia Plath essay migration.** These are real, substantial
   scholarly essays (one per Ariel poem) — full-text migration of all 46 wasn't feasible inside
   this build session (would require scraping/importing each essay's full body, footnotes, and
@@ -64,9 +71,13 @@ anything that depends on them.
   parent index rather than migrate — confirm nothing links to them externally first.
 
 ## Brand
-- [ ] **UK/press-worthy assets** (headshots, book cover files, event photography) — none of
-  this was fetchable from the live site at usable resolution. Need real image files from Julia
-  before the Media library can hold anything but placeholders.
+- [x] **Headshot** — resolved: a real studio portrait (`julia-gordon-bramer-profile.png`) was
+  supplied and is seeded as the homepage hero image.
+- [ ] **Book cover files, event photography, additional headshot crops.** Still none of this
+  was fetchable from the live site at usable resolution. The `assets/` folder also has 10
+  more raw shoot photos (`26-299` through `26-316`) that haven't been reviewed/used yet — worth
+  asking Julia which of those, if any, she wants used (e.g. for the BioSplit module, which
+  needs a portrait but hasn't been given one).
 - [ ] **Favicon and default social-share (OG) image.** Currently still pointing at the
   scaffold's generic placeholder (`public/website-template-OG.webp`) — needs a real 1200×630
   branded image and a real favicon before launch.

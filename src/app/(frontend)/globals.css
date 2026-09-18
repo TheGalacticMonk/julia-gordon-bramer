@@ -19,6 +19,8 @@
   h6 {
     font-weight: unset;
     font-size: unset;
+    font-family: var(--font-display);
+    text-wrap: balance;
   }
 }
 
@@ -43,8 +45,14 @@
   --breakpoint-lg: 64rem;
   --breakpoint-xl: 80rem;
   --breakpoint-2xl: 86rem;
-  --font-mono: var(--font-geist-mono);
-  --font-sans: var(--font-geist-sans);
+  /* UI chrome and body copy (nav, buttons, labels, metadata, long-form reading) is Inter,
+     site-wide — matching the homepage hero's font pairing. */
+  --font-sans: var(--font-inter);
+  --font-mono: ui-monospace, monospace;
+  /* Headings — Cormorant, the "editorial" didone-style serif from the uiverse.io Cairn design
+     system (https://uiverse.io/design/systems/cairn-2), matching the homepage hero. */
+  --font-display: var(--font-cormorant);
+  --font-reading: var(--font-inter);
 }
 
 @layer utilities {
@@ -73,45 +81,102 @@
     }
   }
 
+  /* xl/2xl deliberately do NOT grow to their full --breakpoint-xl/2xl widths (1280/1376px) —
+     that read as edge-to-edge on a real desktop window: the header's nav spanned almost the
+     whole browser width with nothing to stop it. Capped at a single, smaller ceiling instead of
+     two growing steps, so the page stops widening past lg's content measure rather than
+     chasing the viewport all the way out. */
   @variant xl {
     .container {
-      max-width: var(--breakpoint-xl);
+      max-width: 72rem; /* 1152px */
     }
   }
 
   @variant 2xl {
     .container {
-      max-width: var(--breakpoint-2xl);
+      max-width: 72rem; /* 1152px — same as xl, on purpose; see comment above */
     }
   }
 }
 
+/*
+ * Site-wide palette. `[data-theme='dark']` is "what we have" — the navy/cream scheme matching
+ * the homepage hero card's portrait colors. `:root` (light) is a real tan/cream palette — warm
+ * paper, near-black ink — reviving the original "Literary Mystic" direction from
+ * agency/design-system.md rather than reusing the dark theme's navy hues. `--metal` is gold in
+ * BOTH themes (not olive in dark) — it started tied to her photographed shirt color, but that
+ * read as bland/muddy for buttons, so it's a plain warm-gold UI accent now. Light theme's
+ * version used to sit noticeably duller/browner (#c1801f) than dark theme's (#f2b336) on the
+ * reasoning that it needed to be "deeper" to read against the light cream page — in practice
+ * that just made it look muted next to how vivid the dark-theme buttons are. It's bumped to a
+ * punchier, more saturated gold-orange now (#e8a10c) — still dark enough in L to hold contrast
+ * against `--paper`, but with S pushed up close to dark theme's so the two don't feel like a
+ * strong version and a washed-out version of the same accent. `--blush`/`--wine` (below) stay
+ * constant across both themes — they read fine against either paper color and don't need a
+ * variant.
+ *
+ * Accent saturation was deliberately pushed up from the first pass at these (sampled almost
+ * literally off portrait pixels, which read as dusty/washed out at full site scale — a photo's
+ * actual skin/lipstick/hair tones are muted in a way that doesn't translate to bold UI accents)
+ * — same hue family as the source photo, boosted S/L for actual presence instead of blending
+ * into the background. Same adjustment applied to Hero/styles.module.css's accent-coral/
+ * mint/lavender, which share these hues.
+ */
 :root {
-  --background: oklch(100% 0 0deg);
-  --foreground: oklch(14.5% 0 0deg);
-  --card: oklch(96.5% 0.005 265deg);
-  --card-foreground: oklch(14.5% 0 0deg);
-  --popover: oklch(100% 0 0deg);
-  --popover-foreground: oklch(14.5% 0 0deg);
-  --primary: oklch(20.5% 0 0deg);
-  --primary-foreground: oklch(98.5% 0 0deg);
-  --secondary: oklch(97% 0 0deg);
-  --secondary-foreground: oklch(20.5% 0 0deg);
-  --muted: oklch(97% 0 0deg);
-  --muted-foreground: oklch(55.6% 0 0deg);
-  --accent: oklch(97% 0 0deg);
-  --accent-foreground: oklch(20.5% 0 0deg);
+  /* --paper/--paper-raised swapped from the original #f6f1e7/#ffffff pairing: the page canvas
+     is now the whiter of the two, and the cream tone moved to raised surfaces (cards, header,
+     the homepage hero card) so chrome reads as a warm sheet sitting ON the page rather than a
+     hard color inversion against it. See the header-chrome comment below and
+     Hero/styles.module.css for the matching swap. */
+  --paper: #ffffff;
+  --paper-raised: #f6f1e7;
+  --ink: #1c1812;
+  --ink-muted: #5b5346;
+  --rule: #ded4bf;
+  --metal: #e8a10c;
+  --metal-ink: #5c3f16;
+  /* Two more colors from her portrait (lipstick, lightened / lipstick, true) — used for site
+     chrome that wants to stand apart from the page (header) rather than blend into it. Kept
+     constant across light/dark (see file comment above). Named independently from the
+     near-identical values in Hero/styles.module.css: that module is only loaded on the
+     homepage, so anything sitewide (like the header) needs its own copy in this always-loaded
+     stylesheet rather than depending on a page-specific one. */
+  --blush: #db7680;
+  --wine: #79202a;
+  /* Fixed cream/navy, independent of --paper — used for site chrome (header) and the homepage
+     hero card, which now echo whichever of the two --paper-raised already is for the current
+     theme (cream in light, navy in dark) rather than inverting against the page. Only declared
+     once, here — constant across both themes the same way --blush/--wine are, so
+     [data-theme='dark'] doesn't need to redeclare them; the cascade carries them through
+     unchanged. */
+  --cream: #f6f1e7;
+  --navy: #0a1f2e;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper-raised);
+  --card-foreground: var(--ink);
+  --popover: var(--paper-raised);
+  --popover-foreground: var(--ink);
+  --primary: var(--metal);
+  --primary-foreground: var(--metal-ink);
+  --secondary: var(--paper-raised);
+  --secondary-foreground: var(--ink);
+  --muted: var(--rule);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--metal);
+  --accent-foreground: var(--metal-ink);
   --destructive: oklch(57.7% 0.245 27.325deg);
   --destructive-foreground: oklch(57.7% 0.245 27.325deg);
-  --border: oklch(92.2% 0 0deg);
-  --input: oklch(92.2% 0 0deg);
-  --ring: oklch(70.8% 0 0deg);
+  --border: var(--rule);
+  --input: var(--rule);
+  --ring: var(--metal);
   --chart-1: oklch(64.6% 0.222 41.116deg);
   --chart-2: oklch(60% 0.118 184.704deg);
   --chart-3: oklch(39.8% 0.07 227.392deg);
   --chart-4: oklch(82.8% 0.189 84.429deg);
   --chart-5: oklch(76.9% 0.188 70.08deg);
-  --radius: 0.625rem;
+  --radius: 0.25rem;
   --sidebar: oklch(98.5% 0 0deg);
   --sidebar-foreground: oklch(14.5% 0 0deg);
   --sidebar-primary: oklch(20.5% 0 0deg);
@@ -126,25 +191,42 @@
 }
 
 [data-theme='dark'] {
-  --background: oklch(14.5% 0 0deg);
-  --foreground: oklch(98.5% 0 0deg);
-  --card: oklch(17% 0 0deg);
-  --card-foreground: oklch(98.5% 0 0deg);
-  --popover: oklch(14.5% 0 0deg);
-  --popover-foreground: oklch(98.5% 0 0deg);
-  --primary: oklch(98.5% 0 0deg);
-  --primary-foreground: oklch(20.5% 0 0deg);
-  --secondary: oklch(26.9% 0 0deg);
-  --secondary-foreground: oklch(98.5% 0 0deg);
-  --muted: oklch(26.9% 0 0deg);
-  --muted-foreground: oklch(70.8% 0 0deg);
-  --accent: oklch(26.9% 0 0deg);
-  --accent-foreground: oklch(98.5% 0 0deg);
+  /* Mirrors :root's --paper/--paper-raised swap, but in the opposite direction: the page canvas
+     goes to a LIGHTER navy (the site's original dark-theme --paper-raised value) while the old
+     page navy (#0a1f2e) moves up to raised surfaces — header, homepage hero card — via the
+     fixed --navy token above. That also keeps the hero card's drop-shadow (drawn in
+     --accent-ink, which equals --metal-ink below) visible against the page instead of the two
+     colliding, the way a same-hex near-black choice for --paper would have. */
+  --paper: #132a3d;
+  --paper-raised: #0a1f2e;
+  --ink: #f3ece0;
+  --ink-muted: rgba(243, 236, 224, 0.65);
+  --rule: rgba(243, 236, 224, 0.16);
+  /* Bright gold, not olive — moved off her literal shirt color per direct feedback that the
+     olive read as bland/muddy for buttons. */
+  --metal: #f2b336;
+  --metal-ink: #04141f;
+  --blush: #db7680;
+  --wine: #79202a;
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper-raised);
+  --card-foreground: var(--ink);
+  --popover: var(--paper-raised);
+  --popover-foreground: var(--ink);
+  --primary: var(--metal);
+  --primary-foreground: var(--metal-ink);
+  --secondary: var(--paper-raised);
+  --secondary-foreground: var(--ink);
+  --muted: var(--rule);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--metal);
+  --accent-foreground: var(--metal-ink);
   --destructive: oklch(39.6% 0.141 25.723deg);
   --destructive-foreground: oklch(63.7% 0.237 25.331deg);
-  --border: oklch(26.9% 0 0deg);
-  --input: oklch(26.9% 0 0deg);
-  --ring: oklch(43.9% 0 0deg);
+  --border: var(--rule);
+  --input: var(--rule);
+  --ring: var(--metal);
   --chart-1: oklch(48.8% 0.243 264.376deg);
   --chart-2: oklch(69.6% 0.17 162.48deg);
   --chart-3: oklch(76.9% 0.188 70.08deg);
@@ -164,6 +246,17 @@
 }
 
 @theme inline {
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-rule: var(--rule);
+  --color-metal: var(--metal);
+  --color-metal-ink: var(--metal-ink);
+  --color-blush: var(--blush);
+  --color-wine: var(--wine);
+  --color-cream: var(--cream);
+  --color-navy: var(--navy);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -221,4 +314,166 @@ html {
 html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
+}
+
+/*
+ * Bespoke classes documented in agency/css-strategy.md. Everything here earned its way out of
+ * plain Tailwind utilities; keep that file in sync if a class here changes.
+ */
+
+/* Long-form reading copy (blog posts, essays, book descriptions) — Inter, site-wide. */
+.payload-richtext {
+  font-family: var(--font-reading);
+}
+
+.payload-richtext :where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-display);
+}
+
+/* .pull-quote — PullQuote block: an oversized display-serif quote with a single metal rule. */
+.pull-quote {
+  padding-inline-start: 1.25rem;
+  border-inline-start: 3px solid var(--color-metal);
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2.25rem);
+  font-optical-sizing: auto;
+  font-style: italic;
+  line-height: 1.25;
+  color: var(--color-ink);
+}
+
+.pull-quote blockquote {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.pull-quote figcaption {
+  margin-top: 0.75rem;
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-size: 0.875rem;
+  color: var(--color-ink-muted);
+}
+
+/* .reading-card — shared book/event card: paper-raised surface, corner rule draws in on hover. */
+.reading-card {
+  position: relative;
+  background-color: var(--color-paper-raised);
+  border: 1px solid var(--color-rule);
+  isolation: isolate;
+}
+
+.reading-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1px solid var(--color-metal);
+  clip-path: polygon(0 0, 22% 0, 22% 1px, 1px 1px, 1px 22%, 0 22%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reading-card::before {
+    transition: clip-path 150ms ease-out;
+  }
+
+  .reading-card:hover::before,
+  .reading-card:focus-within::before {
+    clip-path: polygon(0 0, 100% 0, 100% 1px, 1px 1px, 1px 100%, 0 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reading-card::before {
+    clip-path: polygon(0 0, 100% 0, 100% 1px, 1px 1px, 1px 100%, 0 100%);
+  }
+}
+
+/* .tour-ribbon — EventList date badge: an angled ticket-stub marker, not a plain pill. */
+.tour-ribbon {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.5rem;
+  /* Bottom padding is bigger than the other three sides on purpose: the clip-path below cuts a
+     ticket-stub notch inward at the bottom-center (100% -> 88% of the box height), and the
+     original 0.375rem bottom padding put the day number's own descent right at that cut line —
+     tall single digits like "5" were visibly clipped by the notch. Extra bottom padding pushes
+     the text baseline up, clear of where the notch cuts in. */
+  padding: 0.375rem 0.5rem 0.75rem;
+  background-color: var(--color-metal);
+  color: var(--color-metal-ink);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.75rem;
+  line-height: 1.1;
+  text-align: center;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 88%, 0 100%);
+}
+
+.tour-ribbon .tour-ribbon-month {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tour-ribbon .tour-ribbon-day {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+}
+
+/* .ink-rule — double-hairline section divider, used between page sections and in FAQ lists. */
+.ink-rule {
+  border: none;
+  height: 3px;
+  background-color: var(--color-rule);
+  box-shadow: 0 2px 0 0 var(--color-rule);
+}
+
+/* .nav-link-glow — header nav links: replaces the shadcn "link" button variant's hover:underline
+   with a pulsing currentColor glow instead. Uses currentColor (not a fixed token) so the glow
+   always matches whatever hover text color already applies (wine in light mode, gold in dark,
+   gold again over a hero-image overlay header) without duplicating that logic here. */
+.nav-link-glow:hover {
+  text-decoration: none;
+  text-shadow:
+    0 0 4px currentcolor,
+    0 0 10px currentcolor;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nav-link-glow:hover {
+    animation: nav-link-glow-pulse 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes nav-link-glow-pulse {
+  0%,
+  100% {
+    text-shadow:
+      0 0 4px currentcolor,
+      0 0 10px currentcolor;
+  }
+  50% {
+    text-shadow:
+      0 0 8px currentcolor,
+      0 0 20px currentcolor;
+  }
+}
+
+/*
+ * Global reduced-motion safety net: every transition/animation on the site (including
+ * Tailwind utility transitions on ui/* primitives) collapses to an instant state change
+ * rather than being skipped ungracefully. Mandatory per agency/design-system.md.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

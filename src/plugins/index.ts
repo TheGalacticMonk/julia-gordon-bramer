@@ -20,7 +20,7 @@ const collectionPathMap: Record<string, string> = {
   books: '/books',
   events: '/events',
   pages: '',
-  posts: '/posts',
+  posts: '/blog',
 }
 
 const generateURL: GenerateURL<SeoDoc> = ({ collectionSlug, doc }) => {

@@ -19,6 +19,7 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { PullQuote } from '@/blocks/PullQuote/Component'
 import type { PullQuoteBlock as PullQuoteBlockProps } from '@/payload-types'
 import { cn } from '@/utilities/ui'
+import { getCollectionPath } from '@/utilities/collectionPath'
 
 type NodeTypes = WithDefaultNodes<
   | SerializedBlockNode<CTABlockProps>
@@ -31,8 +32,7 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
   if (typeof value !== 'object') {
     throw new Error('Expected value to be an object')
   }
-  const slug = value.slug
-  return relationTo === 'pages' ? `/${slug}` : `/${relationTo}/${slug}`
+  return getCollectionPath(relationTo, value.slug)
 }
 
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({

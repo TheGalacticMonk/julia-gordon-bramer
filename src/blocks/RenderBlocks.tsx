@@ -12,6 +12,8 @@ import { FAQBlock } from '@/blocks/FAQ/Component'
 import { ImageBlock } from '@/blocks/ImageBlock/Component'
 import { PressStripBlock } from '@/blocks/PressStrip/Component'
 import { PullQuote } from '@/blocks/PullQuote/Component'
+import { CurvedDivider } from '@/components/CurvedDivider'
+import { cn } from '@/utilities/ui'
 
 const blockComponents = {
   bioSplit: BioSplitBlock,
@@ -28,34 +30,59 @@ const blockComponents = {
 
 export const RenderBlocks: React.FC<{
   blocks: Page['layout'][0][]
-}> = (props) => {
+}> = async (props) => {
   const { blocks } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
 
-  if (hasBlocks) {
-    return (
-      <Fragment>
-        {blocks.map((block, index) => {
-          const { blockType } = block
+  if (!hasBlocks) return null
 
-          if (blockType && blockType in blockComponents) {
-            const Block = blockComponents[blockType]
+  // Renders each block up front (rather than as JSX further down) so a block that has nothing
+  // to show yet — e.g. the homepage's Book Shelf module, seeded with no featured books on
+  // purpose until real ones exist — can be dropped entirely instead of leaving an empty
+  // Squarespace-style band with no content in it. Alternation below is keyed off this filtered
+  // list's own position, not the original array index, so a dropped block doesn't throw off
+  // the raised/plain rhythm for everything after it.
+  const rendered = await Promise.all(
+    blocks.map(async (block) => {
+      const { blockType } = block
+      if (!blockType || !(blockType in blockComponents)) return null
 
-            if (Block) {
-              return (
-                <div className="my-16" key={index}>
-                  {/* @ts-expect-error there may be some mismatch between the expected types here */}
-                  <Block {...block} disableInnerContainer />
-                </div>
-              )
-            }
-          }
-          return null
-        })}
-      </Fragment>
-    )
-  }
+      const Block = blockComponents[blockType]
+      if (!Block) return null
 
-  return null
+      // @ts-expect-error there may be some mismatch between the expected types here
+      const content = await Block({ ...block, disableInnerContainer: true })
+      return content || null
+    }),
+  )
+
+  const visibleBlocks = rendered.filter((content) => content !== null)
+
+  return (
+    <Fragment>
+      {visibleBlocks.map((content, index) => {
+        const isRaised = index % 2 === 0
+        // The color of whatever sits above this band — the plain page background (--paper)
+        // for every "raised" band, including the very first one (the hero sits directly on
+        // that plain background, so the seam right after it needs the same curve as any other
+        // band boundary, not a hard edge) — or --paper-raised for every "plain" band, which
+        // always follows a raised one. CurvedDivider draws this sweeping down over this band's
+        // top edge — see that component for why it's drawn this way round.
+        const previousFill = isRaised ? 'fill-paper' : 'fill-paper-raised'
+
+        return (
+          // Squarespace-style section seams: full-bleed bands that alternate between the
+          // page's own background and --paper-raised (the same "slightly warmer/darker
+          // surface" tone the header, hero card, and reading-cards already use elsewhere),
+          // stacked directly against each other with no gap — CurvedDivider draws the actual
+          // gaia.com-style curved seam between them instead of a hard flat edge.
+          <div className={cn(isRaised && 'bg-paper-raised')} key={index}>
+            <CurvedDivider fillClassName={previousFill} flip={isRaised} />
+            <div className="py-16">{content}</div>
+          </div>
+        )
+      })}
+    </Fragment>
+  )
 }

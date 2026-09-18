@@ -20,8 +20,10 @@ const getImageURL = (image: Media | number | null | undefined, fallback?: Media 
 
 export const generateMeta = async (args: {
   doc: Partial<Book> | Partial<Event> | Partial<Page> | Partial<Post> | null
+  /** Full site-relative path (e.g. `/blog/my-post`). Defaults to `/${doc.slug}` for pages-style routes. */
+  path?: string
 }): Promise<Metadata> => {
-  const { doc } = args
+  const { doc, path } = args
   const seoDefaults = await getCachedGlobal('seoDefaults', 1)()
 
   const ogImage = getImageURL(doc?.meta?.image, seoDefaults?.defaultOgImage)
@@ -38,7 +40,7 @@ export const generateMeta = async (args: {
       description: description || '',
       images: ogImage ? [{ url: ogImage }] : undefined,
       title,
-      url: doc && 'slug' in doc && typeof doc.slug === 'string' ? `/${doc.slug}` : '/',
+      url: path ?? (doc && 'slug' in doc && typeof doc.slug === 'string' ? `/${doc.slug}` : '/'),
     }),
     title,
   }

@@ -117,7 +117,7 @@ export default async function ContactPage({ searchParams }: Props) {
 
         <button
           type="submit"
-          className="w-fit rounded-sm bg-ink px-6 py-3 font-medium text-paper transition-colors hover:bg-metal-ink dark:bg-paper dark:text-ink"
+          className="w-fit rounded-sm bg-primary px-6 py-3 font-medium text-primary-foreground motion-safe:transition-opacity hover:opacity-90"
         >
           Send message
         </button>

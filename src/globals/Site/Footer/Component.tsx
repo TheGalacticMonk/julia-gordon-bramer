@@ -2,7 +2,6 @@ import { getCachedGlobal } from '@/utilities/getGlobals'
 import Link from 'next/link'
 import React from 'react'
 
-import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
 
@@ -21,17 +20,16 @@ export async function Footer() {
   const socials = siteData?.socials || []
 
   return (
-    <footer className="mt-auto border-t border-rule bg-ink text-paper dark:bg-paper-raised">
+    <footer className="mt-auto border-t border-rule bg-paper-raised text-ink">
       <div className="container flex flex-col gap-8 py-8 md:flex-row md:justify-between">
         <Link className="flex items-center" href="/">
-          <Logo />
+          <Logo className="text-ink" />
         </Link>
 
         <div className="flex flex-col-reverse items-start gap-4 md:flex-row md:items-center">
-          <ThemeSelector />
           <nav className="flex flex-col gap-4 md:flex-row">
             {navItems.map(({ link }, i) => (
-              <CMSLink className="text-paper" key={i} {...link} />
+              <CMSLink className="text-ink" key={i} {...link} />
             ))}
           </nav>
           {socials.length > 0 && (
@@ -39,7 +37,7 @@ export async function Footer() {
               {socials.map((social, i) => (
                 <a
                   key={i}
-                  className="text-paper"
+                  className="text-ink"
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -52,8 +50,8 @@ export async function Footer() {
         </div>
       </div>
       {siteData?.contactEmail && (
-        <div className="container pb-8 text-sm text-paper/70">
-          <a href={`mailto:${siteData.contactEmail}`} className="text-paper">
+        <div className="container pb-8 text-sm text-ink-muted">
+          <a href={`mailto:${siteData.contactEmail}`} className="text-ink">
             {siteData.contactEmail}
           </a>
         </div>

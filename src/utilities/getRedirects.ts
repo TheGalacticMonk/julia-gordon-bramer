@@ -8,7 +8,9 @@ export async function getRedirects(depth = 1) {
   const { docs: redirects } = await payload.find({
     collection: 'redirects',
     depth,
-    limit: 0,
+    // NOTE: `limit: 0` does not mean "unlimited" on this Payload version — it returns zero
+    // rows. Use an explicit high limit instead (see AGENTS.md re: breaking changes).
+    limit: 1000,
     pagination: false,
   })
 

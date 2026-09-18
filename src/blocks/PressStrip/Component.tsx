@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import type { PressQuote, PressStripBlock as PressStripBlockProps } from '@/payload-types'
 
 import config from '@payload-config'
+import { SectionHeading } from '@/components/SectionHeading'
 import { cn } from '@/utilities/ui'
 
 type Props = PressStripBlockProps & {
@@ -30,12 +31,15 @@ export const PressStripBlock: React.FC<Props> = async ({ heading, quotes: select
 
   return (
     <div className={cn('container', className)}>
-      {heading && <h2 className="mb-6 text-2xl font-semibold">{heading}</h2>}
+      {heading && <SectionHeading>{heading}</SectionHeading>}
       <ul className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
         {quotes.map((quote) => (
-          <li key={quote.id} className="press-strip-item border-t border-border pt-4">
-            <blockquote className="text-balance text-sm">&ldquo;{quote.quote}&rdquo;</blockquote>
-            <p className="mt-2 text-xs uppercase tracking-wide text-muted-foreground">
+          <li key={quote.id} className="pt-4">
+            <hr className="ink-rule mb-4" />
+            <blockquote className="text-balance font-display text-lg text-ink">
+              &ldquo;{quote.quote}&rdquo;
+            </blockquote>
+            <p className="mt-2 font-sans text-xs uppercase tracking-wide text-ink-muted">
               {quote.source}
               {quote.context ? ` — ${quote.context}` : ''}
             </p>

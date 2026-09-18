@@ -27,7 +27,7 @@ export const BioSplitBlock: React.FC<Props> = ({
         )}
       >
         {image && typeof image === 'object' && (
-          <Media resource={image} imgClassName="w-full rounded-sm border border-border" />
+          <Media resource={image} imgClassName="w-full rounded-sm border border-rule" />
         )}
         <div>
           {richText && <RichText data={richText} enableGutter={false} />}

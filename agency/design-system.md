@@ -1,5 +1,13 @@
 # Design System — Literary Mystic
 
+> **Superseded 2026-09-15.** The site retheme to match the homepage hero card replaced the
+> cream-paper palette and Fraunces/Newsreader fonts below with a navy-canvas palette (sourced
+> from Julia's own portrait) and Cormorant/Inter. The direction/motion/"what this rules out"
+> sections below still hold — no doodles, no sparkle, no illustration outside the hero itself —
+> only the color tokens and type section are stale. Current values live in
+> `src/app/(frontend)/globals.css` (`:root` / `[data-theme='dark']`); treat that file as the
+> source of truth over the specific hex values quoted here.
+
 ## Direction
 
 Paper, ink, night, one warm metal accent. Tarot as craft and literacy — a card is a well-made
