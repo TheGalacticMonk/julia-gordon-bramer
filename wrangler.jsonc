@@ -1,0 +1,72 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  "name": "julia-gordon-bramer",
+  "compatibility_date": "2025-08-15",
+  "compatibility_flags": [
+    // Node.js APIs (required by Payload and OpenNext)
+    "nodejs_compat",
+    // Only allow fetch() to public URLs
+    "global_fetch_strictly_public",
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+
+  // Non-secret runtime config. Secrets (PAYLOAD_SECRET, RESEND_API_KEY, CRON_SECRET,
+  // PREVIEW_SECRET) are set in the dashboard / with `wrangler secret put`, never here.
+  "vars": {
+    "NEXT_PUBLIC_SERVER_URL": "https://juliagordonbramer.com",
+    "EMAIL_FROM_ADDRESS": "no-reply@juliagordonbramer.com",
+    "EMAIL_FROM_NAME": "Julia Gordon-Bramer",
+    "CONTACT_NOTIFY_TO": "julia@juliagordonbramer.com",
+  },
+
+  // Payload database. Create it with `pnpm wrangler d1 create julia-gordon-bramer`
+  // and paste the returned id below.
+  "d1_databases": [
+    {
+      "binding": "D1",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "database_name": "julia-gordon-bramer",
+      "remote": true,
+    },
+  ],
+
+  "r2_buckets": [
+    // Payload media uploads
+    {
+      "binding": "R2",
+      "bucket_name": "julia-gordon-bramer-media",
+    },
+    // Next.js incremental cache (see open-next.config.ts)
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "julia-gordon-bramer-cache",
+    },
+  ],
+
+  // Next.js on-demand revalidation (revalidateTag / revalidatePath / unstable_cache)
+  "durable_objects": {
+    "bindings": [
+      { "name": "NEXT_CACHE_DO_QUEUE", "class_name": "DOQueueHandler" },
+      { "name": "NEXT_TAG_CACHE_DO_SHARDED", "class_name": "DOShardedTagCache" },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["DOQueueHandler", "DOShardedTagCache"],
+    },
+  ],
+  "services": [
+    // Must match "name" above
+    { "binding": "WORKER_SELF_REFERENCE", "service": "julia-gordon-bramer" },
+  ],
+
+  // next/image optimization (Cloudflare Images)
+  "images": {
+    "binding": "IMAGES",
+  },
+}

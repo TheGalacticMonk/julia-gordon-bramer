@@ -43,6 +43,11 @@ const nextConfig: NextConfig = {
   redirects,
   turbopack: {
     root: path.resolve(dirname),
+    // Production builds only: dev still needs the real drizzle-kit for automatic schema push.
+    resolveAlias:
+      process.env.NODE_ENV === 'production'
+        ? { 'drizzle-kit/api': './src/utilities/stubs/drizzle-kit-api.ts' }
+        : {},
   },
 }
 

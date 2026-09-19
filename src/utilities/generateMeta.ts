@@ -14,8 +14,7 @@ const getImageURL = (image: Media | number | null | undefined, fallback?: Media 
 
   if (!target) return undefined
 
-  const ogUrl = target.sizes?.og?.url
-  return ogUrl ? serverUrl + ogUrl : serverUrl + target.url
+  return serverUrl + target.url
 }
 
 export const generateMeta = async (args: {

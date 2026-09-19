@@ -41,7 +41,7 @@ export const slugField: Slug = (fieldToUse = 'title', overrides = {}) => {
     hooks: {
       beforeValidate: [formatSlugHook(fieldToUse)],
     },
-  }
+  } as TextField
 
   return [generatedSlugField, checkBoxField]
 }

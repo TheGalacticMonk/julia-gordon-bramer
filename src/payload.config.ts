@@ -1,9 +1,12 @@
-import { postgresAdapter } from '@payloadcms/db-postgres'
-import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
-import sharp from 'sharp'
+import { CloudflareContext, getCloudflareContext } from '@opennextjs/cloudflare'
+import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'
+import { resendAdapter } from '@payloadcms/email-resend'
+import { r2Storage } from '@payloadcms/storage-r2'
+import fs from 'fs'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
+import type { GetPlatformProxyOptions } from 'wrangler'
 
 import { Books } from './collections/Books'
 import { Categories } from './collections/Categories'
@@ -24,6 +27,40 @@ import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(value) : undefined)
+
+// The Payload CLI (`payload migrate`, `generate:types`, `build`, …) runs in plain Node,
+// outside the Workers runtime, so bindings have to come from wrangler's platform proxy.
+const isCLI = process.argv.some((value) =>
+  realpath(value)?.endsWith(path.join('payload', 'bin.js')),
+)
+const isProduction = process.env.NODE_ENV === 'production'
+
+// Workers has no console-backed pino, so log structured JSON straight to the console.
+const createLog =
+  (level: string, fn: typeof console.log) => (objOrMsg: object | string, msg?: string) => {
+    if (typeof objOrMsg === 'string') {
+      fn(JSON.stringify({ level, msg: objOrMsg }))
+    } else {
+      fn(JSON.stringify({ level, ...objOrMsg, msg: msg ?? (objOrMsg as { msg?: string }).msg }))
+    }
+  }
+
+const cloudflareLogger = {
+  level: process.env.PAYLOAD_LOG_LEVEL || 'info',
+  trace: createLog('trace', console.debug),
+  debug: createLog('debug', console.debug),
+  info: createLog('info', console.log),
+  warn: createLog('warn', console.warn),
+  error: createLog('error', console.error),
+  fatal: createLog('fatal', console.error),
+  silent: () => {},
+} as any // Use PayloadLogger type when it's exported
+
+const cloudflare =
+  isCLI || !isProduction
+    ? await getCloudflareContextFromWrangler()
+    : await getCloudflareContext({ async: true })
 
 export default buildConfig({
   admin: {
@@ -63,27 +100,16 @@ export default buildConfig({
   },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
-  db: postgresAdapter({
-    pool: {
-      connectionString: process.env.DATABASE_URL,
-    },
-  }),
-  // With no SMTP_HOST set, this falls back to an Ethereal test inbox (logs a preview
-  // URL to the console) so contact-form email works out of the box in local dev.
-  email: nodemailerAdapter({
-    defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || 'no-reply@juliagordonbramer.com',
-    defaultFromName: process.env.EMAIL_FROM_NAME || 'Julia Gordon-Bramer',
-    transportOptions: process.env.SMTP_HOST
-      ? {
-          host: process.env.SMTP_HOST,
-          port: Number(process.env.SMTP_PORT) || 587,
-          auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-          },
-        }
-      : undefined,
-  }),
+  db: sqliteD1Adapter({ binding: cloudflare.env.D1 }),
+  // Workers can't open raw SMTP sockets, so email goes out through Resend's HTTP API.
+  // With no RESEND_API_KEY set (local dev), Payload logs emails to the console instead.
+  email: process.env.RESEND_API_KEY
+    ? resendAdapter({
+        apiKey: process.env.RESEND_API_KEY,
+        defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || 'no-reply@juliagordonbramer.com',
+        defaultFromName: process.env.EMAIL_FROM_NAME || 'Julia Gordon-Bramer',
+      })
+    : undefined,
   collections: [
     Pages,
     Posts,
@@ -98,12 +124,19 @@ export default buildConfig({
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Site, Home, SEODefaults],
-  plugins,
+  plugins: [
+    ...plugins,
+    // Media lives in R2 (the plugin also disables local disk storage on the collection).
+    r2Storage({
+      bucket: cloudflare.env.R2,
+      collections: { media: true },
+    }),
+  ],
   secret: process.env.PAYLOAD_SECRET,
-  sharp,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
+  logger: isProduction ? cloudflareLogger : undefined,
   jobs: {
     access: {
       run: ({ req }: { req: PayloadRequest }): boolean => {
@@ -123,3 +156,14 @@ export default buildConfig({
     tasks: [],
   },
 })
+
+// Adapted from https://github.com/opennextjs/opennextjs-cloudflare/blob/d00b3a13e42e65aad76fba41774815726422cc39/packages/cloudflare/src/api/cloudflare-context.ts#L328C36-L328C46
+function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
+  return import(/* webpackIgnore: true */ `${'__wrangler'.replaceAll('_', '')}`).then(
+    ({ getPlatformProxy }) =>
+      getPlatformProxy({
+        environment: process.env.CLOUDFLARE_ENV,
+        remoteBindings: isProduction,
+      } satisfies GetPlatformProxyOptions),
+  )
+}

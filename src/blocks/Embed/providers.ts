@@ -46,7 +46,7 @@ export const resolveEmbedUrl = (provider: string, rawUrl: string): string | null
     return null
   }
 
-  if (!config.hosts.includes(url.hostname)) return null
+  if (!(config.hosts as readonly string[]).includes(url.hostname)) return null
 
   return config.toEmbedUrl(url)
 }
