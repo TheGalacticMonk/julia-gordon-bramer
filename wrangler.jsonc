@@ -39,11 +39,13 @@
     {
       "binding": "R2",
       "bucket_name": "julia-gordon-bramer-media",
+      "remote": true,
     },
     // Next.js incremental cache (see open-next.config.ts)
     {
       "binding": "NEXT_INC_CACHE_R2_BUCKET",
       "bucket_name": "julia-gordon-bramer-cache",
+      "remote": true,
     },
   ],
 
@@ -94,10 +96,12 @@
         {
           "binding": "R2",
           "bucket_name": "julia-gordon-bramer-staging-media",
+          "remote": true,
         },
         {
           "binding": "NEXT_INC_CACHE_R2_BUCKET",
           "bucket_name": "julia-gordon-bramer-staging-cache",
+          "remote": true,
         },
       ],
       "durable_objects": {

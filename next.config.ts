@@ -7,9 +7,15 @@ const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 import { redirects } from './redirects'
 
-const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : process.env.__NEXT_PRIVATE_ORIGIN || 'http://localhost:3000'
+// process.env.VERCEL_PROJECT_PRODUCTION_URL never applies here (not Vercel). Must resolve
+// to the real deployed origin at build time, since it seeds images.remotePatterns below —
+// wrangler.jsonc's vars.NEXT_PUBLIC_SERVER_URL is what Workers Builds injects into the build
+// environment (see DEPLOYMENT.md's build-variables table).
+const NEXT_PUBLIC_SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL
+  ? process.env.NEXT_PUBLIC_SERVER_URL
+  : process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.__NEXT_PRIVATE_ORIGIN || 'http://localhost:3000'
 
 const nextConfig: NextConfig = {
   // Required by @opennextjs/cloudflare: it expects `.next/standalone` output.
@@ -21,11 +27,11 @@ const nextConfig: NextConfig = {
     cpus: 1,
   },
   images: {
-    localPatterns: [
-      {
-        pathname: '/api/media/file/**',
-      },
-    ],
+    // Local dev's origin (http://localhost:3000) resolves to a loopback address; Next 16
+    // blocks fetches to private/local IPs by default even when remotePatterns matches.
+    // getMediaUrl() always builds absolute URLs now (required for Cloudflare, see its
+    // comment), so this is needed for images to load in local dev too.
+    dangerouslyAllowLocalIP: true,
     qualities: [100],
     remotePatterns: [
       ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
