@@ -69,4 +69,53 @@
   "images": {
     "binding": "IMAGES",
   },
+
+  // Staging: entirely separate Worker, D1 database and R2 buckets so this can be
+  // deployed and tested without touching (or even having) a production environment.
+  // Deploy with: wrangler deploy --env staging
+  "env": {
+    "staging": {
+      "name": "julia-gordon-bramer-staging",
+      "vars": {
+        "NEXT_PUBLIC_SERVER_URL": "REPLACE_WITH_STAGING_WORKERS_DEV_URL",
+        "EMAIL_FROM_ADDRESS": "no-reply@juliagordonbramer.com",
+        "EMAIL_FROM_NAME": "Julia Gordon-Bramer (staging)",
+        "CONTACT_NOTIFY_TO": "REPLACE_WITH_YOUR_TEST_EMAIL",
+      },
+      "d1_databases": [
+        {
+          "binding": "D1",
+          "database_id": "REPLACE_WITH_STAGING_D1_DATABASE_ID",
+          "database_name": "julia-gordon-bramer-staging",
+          "remote": true,
+        },
+      ],
+      "r2_buckets": [
+        {
+          "binding": "R2",
+          "bucket_name": "julia-gordon-bramer-staging-media",
+        },
+        {
+          "binding": "NEXT_INC_CACHE_R2_BUCKET",
+          "bucket_name": "julia-gordon-bramer-staging-cache",
+        },
+      ],
+      "durable_objects": {
+        "bindings": [
+          { "name": "NEXT_CACHE_DO_QUEUE", "class_name": "DOQueueHandler" },
+          { "name": "NEXT_TAG_CACHE_DO_SHARDED", "class_name": "DOShardedTagCache" },
+        ],
+      },
+      "migrations": [
+        {
+          "tag": "v1",
+          "new_sqlite_classes": ["DOQueueHandler", "DOShardedTagCache"],
+        },
+      ],
+      "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "julia-gordon-bramer-staging" }],
+      "images": {
+        "binding": "IMAGES",
+      },
+    },
+  },
 }
