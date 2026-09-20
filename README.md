@@ -242,6 +242,10 @@ To run Payload in production, you need to build and start the Admin panel. To do
 1. Finally run `pnpm start` or `npm run start` to run Node in production and serve Payload from the `.build` directory.
 1. When you're ready to go live, see Deployment below for more details.
 
+### Deploying to Cloudflare
+
+This project deploys to Cloudflare Workers (D1 + R2) from Git — see [DEPLOYMENT.md](./DEPLOYMENT.md). The Postgres, Docker and Vercel sections below are leftovers from the original template and no longer apply.
+
 ### Deploying to Vercel
 
 This template can also be deployed to Vercel for free. You can get started by choosing the Vercel DB adapter during the setup of the template or by manually installing and configuring it:

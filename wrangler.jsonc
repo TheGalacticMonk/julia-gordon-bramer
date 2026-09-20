@@ -1,0 +1,125 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  "name": "julia-gordon-bramer",
+  "compatibility_date": "2025-08-15",
+  "compatibility_flags": [
+    // Node.js APIs (required by Payload and OpenNext)
+    "nodejs_compat",
+    // Only allow fetch() to public URLs
+    "global_fetch_strictly_public",
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+
+  // Non-secret runtime config. Secrets (PAYLOAD_SECRET, RESEND_API_KEY, CRON_SECRET,
+  // PREVIEW_SECRET) are set in the dashboard / with `wrangler secret put`, never here.
+  "vars": {
+    "NEXT_PUBLIC_SERVER_URL": "https://julia-gordon-bramer.thegalacticmonks.workers.dev",
+    "EMAIL_FROM_ADDRESS": "no-reply@juliagordonbramer.com",
+    "EMAIL_FROM_NAME": "Julia Gordon-Bramer",
+    "CONTACT_NOTIFY_TO": "julia@juliagordonbramer.com",
+  },
+
+  // Payload database. Create it with `pnpm wrangler d1 create julia-gordon-bramer`
+  // and paste the returned id below.
+  "d1_databases": [
+    {
+      "binding": "D1",
+      "database_id": "e378f555-c239-4663-a683-6164b3cd83f9",
+      "database_name": "julia-gordon-bramer",
+      "remote": true,
+    },
+  ],
+
+  "r2_buckets": [
+    // Payload media uploads
+    {
+      "binding": "R2",
+      "bucket_name": "julia-gordon-bramer-media",
+      "remote": true,
+    },
+    // Next.js incremental cache (see open-next.config.ts)
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "julia-gordon-bramer-cache",
+      "remote": true,
+    },
+  ],
+
+  // Next.js on-demand revalidation (revalidateTag / revalidatePath / unstable_cache)
+  "durable_objects": {
+    "bindings": [
+      { "name": "NEXT_CACHE_DO_QUEUE", "class_name": "DOQueueHandler" },
+      { "name": "NEXT_TAG_CACHE_DO_SHARDED", "class_name": "DOShardedTagCache" },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["DOQueueHandler", "DOShardedTagCache"],
+    },
+  ],
+  "services": [
+    // Must match "name" above
+    { "binding": "WORKER_SELF_REFERENCE", "service": "julia-gordon-bramer" },
+  ],
+
+  // next/image optimization (Cloudflare Images)
+  "images": {
+    "binding": "IMAGES",
+  },
+
+  // Staging: entirely separate Worker, D1 database and R2 buckets so this can be
+  // deployed and tested without touching (or even having) a production environment.
+  // Deploy with: wrangler deploy --env staging
+  "env": {
+    "staging": {
+      "name": "julia-gordon-bramer-staging",
+      "vars": {
+        "NEXT_PUBLIC_SERVER_URL": "REPLACE_WITH_STAGING_WORKERS_DEV_URL",
+        "EMAIL_FROM_ADDRESS": "no-reply@juliagordonbramer.com",
+        "EMAIL_FROM_NAME": "Julia Gordon-Bramer (staging)",
+        "CONTACT_NOTIFY_TO": "REPLACE_WITH_YOUR_TEST_EMAIL",
+      },
+      "d1_databases": [
+        {
+          "binding": "D1",
+          "database_id": "82bef166-5a41-4551-90db-8080c5f52c62",
+          "database_name": "julia-gordon-bramer-staging",
+          "remote": true,
+        },
+      ],
+      "r2_buckets": [
+        {
+          "binding": "R2",
+          "bucket_name": "julia-gordon-bramer-staging-media",
+          "remote": true,
+        },
+        {
+          "binding": "NEXT_INC_CACHE_R2_BUCKET",
+          "bucket_name": "julia-gordon-bramer-staging-cache",
+          "remote": true,
+        },
+      ],
+      "durable_objects": {
+        "bindings": [
+          { "name": "NEXT_CACHE_DO_QUEUE", "class_name": "DOQueueHandler" },
+          { "name": "NEXT_TAG_CACHE_DO_SHARDED", "class_name": "DOShardedTagCache" },
+        ],
+      },
+      "migrations": [
+        {
+          "tag": "v1",
+          "new_sqlite_classes": ["DOQueueHandler", "DOShardedTagCache"],
+        },
+      ],
+      "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "julia-gordon-bramer-staging" }],
+      "images": {
+        "binding": "IMAGES",
+      },
+    },
+  },
+}
