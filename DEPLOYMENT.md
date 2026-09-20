@@ -11,9 +11,18 @@ Payload CMS inside it. Config lives in `wrangler.jsonc` and `open-next.config.ts
 | `next/image`      | Cloudflare Images binding (`IMAGES`)                            |
 | Contact-form mail | [Resend](https://resend.com) HTTP API (`RESEND_API_KEY`)        |
 
-> The bundled Worker is ~6 MiB gzipped, so it needs the **Workers Paid** plan (free tier limit is 3 MiB).
+> **Requires Workers Paid** ($5/mo minimum). Bundle size is not the reason — as of the 2026-09-04
+> Cloudflare change, the script size limit is 64 MiB uncompressed on both Free and Paid, and this
+> Worker is ~28 MiB uncompressed, well under it. The real reason is **CPU time**: Free caps every
+> request at 10ms of CPU time, fixed, not configurable. A real Free-tier staging deployment of this
+> app measured every operation (homepage render, login, dashboard, editing, publishing) at 4x-120x
+> over that limit, and one request (loading Payload's Media "Create New" page) was killed outright
+> by Cloudflare with a real 503 (`outcome: exceededCpu`). Paid's CPU budget (30s default,
+> configurable to 5min) comfortably covers everything measured (worst case seen: ~1.2s).
 
 ## One-time setup
+
+Already done for this deployment — kept here for reference or to set up a second environment:
 
 ```bash
 pnpm wrangler login
@@ -22,8 +31,16 @@ pnpm wrangler r2 bucket create julia-gordon-bramer-media
 pnpm wrangler r2 bucket create julia-gordon-bramer-cache
 ```
 
-Then in `wrangler.jsonc` replace `REPLACE_WITH_D1_DATABASE_ID`, and review `vars`
-(`NEXT_PUBLIC_SERVER_URL` is set to the production domain).
+`wrangler.jsonc` already has the real `database_id` for production. `vars.NEXT_PUBLIC_SERVER_URL`
+is set to the production domain.
+
+### Staging environment
+
+`wrangler.jsonc` also defines an `env.staging` block (separate Worker name, D1 database, R2
+buckets — see the file) used to test changes on Workers before they hit production. Deploy it with
+`wrangler deploy --env staging`; run migrations against it with
+`CLOUDFLARE_ENV=staging NODE_ENV=production PAYLOAD_SECRET=ignore pnpm payload migrate`. It's live
+at `julia-gordon-bramer-staging.<subdomain>.workers.dev`.
 
 ## Connect the Git repo (Workers Builds)
 
@@ -69,5 +86,14 @@ Schema changes **must** ship with a committed migration — production never aut
 - OG images use the original upload (there is no 1200×630 `og` size any more).
 - Email requires `RESEND_API_KEY`; without it (local dev) Payload logs the email to the console.
 - `drizzle-kit` is aliased to a stub in production builds (`next.config.ts`); it only matters in Node.
-- Local production builds against a _local_ D1 can hit `SQLITE_BUSY` because Next builds with parallel
-  workers; real builds use the remote D1 and don't.
+- `next.config.ts` caps static-generation to 1 build worker (`experimental.cpus: 1`). Next builds
+  with several parallel workers by default, and D1 (local **or** the real remote database) throws
+  "database is locked" (`SQLITE_BUSY`) under concurrent queries from them. This is required, not
+  just a local workaround.
+- The in-editor "Create New" media upload button (inside the Posts/Pages hero-image field) is
+  currently broken — it throws `UnrecognizedActionError: Server Action ... was not found on the
+  server`, reproducible even on a fresh page load. Not yet root-caused; suspected cause is Next's
+  Server Actions encryption key being generated per-isolate rather than pinned at build time, which
+  would make action IDs minted by one Workers isolate invalid on another. **Workaround:** upload
+  media via the Media collection directly (`/admin/collections/media/create`), which uses a plain
+  REST upload, not a Server Action.

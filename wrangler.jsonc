@@ -28,7 +28,7 @@
   "d1_databases": [
     {
       "binding": "D1",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "database_id": "e378f555-c239-4663-a683-6164b3cd83f9",
       "database_name": "julia-gordon-bramer",
       "remote": true,
     },
