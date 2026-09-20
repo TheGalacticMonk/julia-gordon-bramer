@@ -82,13 +82,13 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
       )}
       {...(theme ? { 'data-theme': theme } : {})}
     >
-      <div className="container relative z-10 flex items-center justify-between gap-8 py-5">
+      <div className="container relative z-10 flex items-center justify-between gap-3 py-5 sm:gap-8">
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <TypingWordmark
             className={cn(isOverlay ? 'text-ink' : 'text-metal-ink dark:text-cream')}
           />
         </Link>
-        <nav className="flex items-center gap-6 xl:gap-8">
+        <nav className="flex items-center gap-3 sm:gap-6 xl:gap-8">
           {/* Desktop nav links — hidden below xl, replaced there by MobileNavMenu's dropdown.
               The nav content (wordmark + 5 links incl. "Decoding Sylvia Plath" + toggle + CTA)
               needs ~1000px of unbroken room. `.container` (globals.css) is capped at a FLAT
