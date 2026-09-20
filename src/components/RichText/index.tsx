@@ -1,8 +1,8 @@
 import { ImageBlock } from '@/blocks/ImageBlock/Component'
 import {
+  DefaultNodeTypes,
   SerializedBlockNode,
   SerializedLinkNode,
-  WithDefaultNodes,
 } from '@payloadcms/richtext-lexical'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 import {
@@ -21,11 +21,11 @@ import type { PullQuoteBlock as PullQuoteBlockProps } from '@/payload-types'
 import { cn } from '@/utilities/ui'
 import { getCollectionPath } from '@/utilities/collectionPath'
 
-type NodeTypes = WithDefaultNodes<
+type NodeTypes =
+  | DefaultNodeTypes
   | SerializedBlockNode<CTABlockProps>
   | SerializedBlockNode<ImageBlockProps>
   | SerializedBlockNode<PullQuoteBlockProps>
->
 
 const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
   const { value, relationTo } = linkNode.fields.doc!

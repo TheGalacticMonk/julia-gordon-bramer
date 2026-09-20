@@ -12,6 +12,8 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
   : process.env.__NEXT_PRIVATE_ORIGIN || 'http://localhost:3000'
 
 const nextConfig: NextConfig = {
+  // Self-contained server bundle (.next/standalone) — what the Docker image for Render runs.
+  output: 'standalone',
   images: {
     localPatterns: [
       {

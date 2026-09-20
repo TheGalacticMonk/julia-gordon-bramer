@@ -19,6 +19,7 @@ import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { RowLabel as RowLabel_65d38b7dcb465174cfafcdaba322f618 } from '@/globals/Site/Header/RowLabel'
 import { RowLabel as RowLabel_6d2dfd9eb47d3ac49a5eb5c36a57130a } from '@/globals/Site/Footer/RowLabel'
 import { default as default_8a7ab0eb7ab5c511aba12e68480bfe5e } from '@/components/BeforeLogin'
+import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -44,5 +45,6 @@ export const importMap = {
   "@/globals/Site/Header/RowLabel#RowLabel": RowLabel_65d38b7dcb465174cfafcdaba322f618,
   "@/globals/Site/Footer/RowLabel#RowLabel": RowLabel_6d2dfd9eb47d3ac49a5eb5c36a57130a,
   "@/components/BeforeLogin#default": default_8a7ab0eb7ab5c511aba12e68480bfe5e,
+  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

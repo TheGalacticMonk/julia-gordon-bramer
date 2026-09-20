@@ -1,5 +1,6 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+import { resendAdapter } from '@payloadcms/email-resend'
+import { s3Storage } from '@payloadcms/storage-s3'
 import sharp from 'sharp'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
@@ -68,22 +69,15 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL,
     },
   }),
-  // With no SMTP_HOST set, this falls back to an Ethereal test inbox (logs a preview
-  // URL to the console) so contact-form email works out of the box in local dev.
-  email: nodemailerAdapter({
-    defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || 'no-reply@juliagordonbramer.com',
-    defaultFromName: process.env.EMAIL_FROM_NAME || 'Julia Gordon-Bramer',
-    transportOptions: process.env.SMTP_HOST
-      ? {
-          host: process.env.SMTP_HOST,
-          port: Number(process.env.SMTP_PORT) || 587,
-          auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-          },
-        }
-      : undefined,
-  }),
+  // Sent through Resend's HTTP API (hosts like Render block outbound SMTP). With no
+  // RESEND_API_KEY set (local dev), Payload logs emails to the console instead.
+  email: process.env.RESEND_API_KEY
+    ? resendAdapter({
+        apiKey: process.env.RESEND_API_KEY,
+        defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || 'no-reply@juliagordonbramer.com',
+        defaultFromName: process.env.EMAIL_FROM_NAME || 'Julia Gordon-Bramer',
+      })
+    : undefined,
   collections: [
     Pages,
     Posts,
@@ -98,7 +92,25 @@ export default buildConfig({
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Site, Home, SEODefaults],
-  plugins,
+  plugins: [
+    ...plugins,
+    // Render's disk is wiped on every deploy, so uploads go to an S3-compatible bucket
+    // (Cloudflare R2). Without S3_BUCKET (local dev) files stay in public/media.
+    s3Storage({
+      enabled: Boolean(process.env.S3_BUCKET),
+      bucket: process.env.S3_BUCKET || '',
+      collections: { media: true },
+      config: {
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+        },
+        endpoint: process.env.S3_ENDPOINT,
+        forcePathStyle: true,
+        region: process.env.S3_REGION || 'auto',
+      },
+    }),
+  ],
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {

@@ -1,8 +1,7 @@
-import type { AccessArgs } from 'payload'
+import type { PayloadRequest } from 'payload'
 
-import type { User } from '@/payload-types'
-
-type IsAdmin = (args: AccessArgs<User>) => boolean
+// Takes just `req` so it fits both collection-level `Access` and field-level `FieldAccess`.
+type IsAdmin = (args: { req: PayloadRequest }) => boolean
 
 /** Only the admin/developer role — not the editor role Julia uses day to day. */
 export const admin: IsAdmin = ({ req: { user } }) => {
