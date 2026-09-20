@@ -85,7 +85,7 @@
       "d1_databases": [
         {
           "binding": "D1",
-          "database_id": "REPLACE_WITH_STAGING_D1_DATABASE_ID",
+          "database_id": "82bef166-5a41-4551-90db-8080c5f52c62",
           "database_name": "julia-gordon-bramer-staging",
           "remote": true,
         },

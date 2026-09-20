@@ -14,6 +14,12 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
 const nextConfig: NextConfig = {
   // Required by @opennextjs/cloudflare: it expects `.next/standalone` output.
   output: 'standalone',
+  experimental: {
+    // D1's platform-proxy session throws "database is locked" (SQLITE_BUSY) when
+    // multiple static-generation workers query it concurrently during build. D1
+    // handles one build worker's sequential queries fine, so cap it at 1.
+    cpus: 1,
+  },
   images: {
     localPatterns: [
       {
