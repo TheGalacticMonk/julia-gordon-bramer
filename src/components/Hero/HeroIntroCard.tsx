@@ -72,7 +72,13 @@ export const HeroIntroCard: React.FC<Props> = ({
       {heroImage && typeof heroImage === 'object' && (
         <div className={styles.introPhotoWrap}>
           <div className={styles.introPhoto}>
-            <Media resource={heroImage} fill imgClassName="h-full w-full object-cover" priority />
+            <Media
+              resource={heroImage}
+              fill
+              imgClassName="h-full w-full object-cover"
+              priority
+              unoptimized
+            />
           </div>
         </div>
       )}

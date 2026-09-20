@@ -20,29 +20,16 @@ const placeholderBlur =
 /**
  * ImageMedia
  *
- * This component passes a **relative** `src` (e.g. `/media/...`) to Next.js Image.
- * The `getMediaUrl` utility constructs the full URL by prepending the base URL from env vars
- * (NEXT_PUBLIC_SERVER_URL). Next.js then optimizes this using `remotePatterns` configured
- * in next.config.js — no custom `loader` needed.
+ * `getMediaUrl` builds an absolute URL (base URL from NEXT_PUBLIC_SERVER_URL + the
+ * resource's path), which Next.js then optimizes via `remotePatterns` in next.config.ts
+ * (`/_next/image?url=...&w=...&q=...`). Required on Cloudflare: OpenNext's image handler
+ * treats a relative URL as a static asset and can't reach Payload's dynamic media route —
+ * see getMediaUrl's own comment.
  *
- * Flow:
- *   1. Resource URL from Payload: `/media/image-123.jpg`
- *   2. getMediaUrl() adds base URL: `https://yourdomain.com/media/image-123.jpg`
- *   3. Next.js Image optimizes via remotePatterns: `/_next/image?url=...&w=1200&q=75`
- *
- * If your storage/plugin returns **external CDN URLs** (e.g. `https://cdn.example.com/...`),
- * choose ONE of the following:
- *   A) Allow the remote host in next.config.js:
- *      images: { remotePatterns: [{ protocol: 'https', hostname: 'cdn.example.com' }] }
- *   B) Provide a **custom loader** for CDN-specific transforms:
- *      const imageLoader: ImageLoader = ({ src, width, quality }) =>
- *        `https://cdn.example.com${src}?w=${width}&q=${quality ?? 75}`
- *      <Image loader={imageLoader} src="/media/hero.jpg" width={1200} height={600} alt="" />
- *   C) Skip optimization:
- *      <Image unoptimized src="https://cdn.example.com/hero.jpg" width={1200} height={600} alt="" />
- *
- * TL;DR: Template uses relative URLs + getMediaUrl() to construct full URLs, then relies on
- * remotePatterns for optimization. Only add `loader` if using external CDNs with custom transforms.
+ * Pass `unoptimized` for images that don't benefit from the resize step (e.g. already
+ * displayed small, like an avatar) — Payload's media route re-runs its full request
+ * pipeline plus a D1 lookup per fetch, and the optimizer adds a second one of those on
+ * top to get the original bytes, so skipping it roughly halves that image's load time.
  */
 
 export const ImageMedia: React.FC<MediaProps> = (props) => {
@@ -56,6 +43,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     size: sizeFromProps,
     src: srcFromProps,
     loading: loadingFromProps,
+    unoptimized,
   } = props
 
   let width: number | undefined
@@ -98,6 +86,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         loading={loading}
         sizes={sizes}
         src={src}
+        unoptimized={unoptimized}
         width={!fill ? width : undefined}
       />
     </picture>

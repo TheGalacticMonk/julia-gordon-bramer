@@ -41,5 +41,13 @@ export const Media: CollectionConfig = {
     // handles resizing at request time through the Cloudflare Images binding instead.
     crop: false,
     focalPoint: false,
+    // Payload's file route defaults to no caching (Next.js route handlers are dynamic by
+    // default). Every request re-runs Payload's full request pipeline plus a D1 lookup, so
+    // without this every image view pays that cost again. Filenames are unique per upload
+    // (Payload appends a suffix on collision), so long-lived immutable caching is safe.
+    modifyResponseHeaders: ({ headers }) => {
+      headers.set('Cache-Control', 'public, max-age=31536000, immutable')
+      return headers
+    },
   },
 }

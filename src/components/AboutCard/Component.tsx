@@ -49,7 +49,12 @@ export const AboutCard: React.FC<Props> = async ({
           <div className={styles.header}>
             {avatarImage && typeof avatarImage === 'object' && (
               <div className={styles.avatar}>
-                <Media resource={avatarImage} fill imgClassName="h-full w-full object-cover" />
+                <Media
+                  resource={avatarImage}
+                  fill
+                  imgClassName="h-full w-full object-cover"
+                  unoptimized
+                />
               </div>
             )}
             <div className={styles.headerText}>
