@@ -7,8 +7,12 @@ const defaultOpenGraph: Metadata['openGraph'] = {
     'Tarot reader, poet, and Sylvia Plath scholar. Books, tour dates, and writing from Julia Gordon-Bramer.',
   images: [
     {
-      // TODO: replace with a real branded share image — see agency/open-questions.md
-      url: `${getServerSideURL()}/website-template-OG.webp`,
+      // 1200x630 crop of the hero portrait (assets/julia-gordon-bramer-profile.png). Used when a
+      // page has no image of its own and SEO Defaults → "Default social share image" is empty.
+      url: `${getServerSideURL()}/og-default.jpg`,
+      width: 1200,
+      height: 630,
+      alt: 'Julia Gordon-Bramer',
     },
   ],
   siteName: 'Julia Gordon-Bramer',
