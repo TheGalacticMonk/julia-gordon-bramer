@@ -4,17 +4,16 @@ import type { Book, Event, Media, Page, Post } from '../payload-types'
 
 import { getCachedGlobal } from './getGlobals'
 import { mergeOpenGraph } from './mergeOpenGraph'
-import { getServerSideURL } from './getURL'
+import { getMediaUrl } from './getMediaUrl'
 
 const getImageURL = (image: Media | number | null | undefined, fallback?: Media | number | null) => {
-  const serverUrl = getServerSideURL()
   const resolved = image && typeof image === 'object' ? image : null
   const resolvedFallback = fallback && typeof fallback === 'object' ? fallback : null
   const target = resolved || resolvedFallback
 
   if (!target) return undefined
 
-  return serverUrl + target.url
+  return getMediaUrl(target.url) || undefined
 }
 
 export const generateMeta = async (args: {

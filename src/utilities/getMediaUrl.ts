@@ -17,8 +17,15 @@ import { getServerSideURL } from './getURL'
 export const getMediaUrl = (url: string | null | undefined, cacheTag?: string | null): string => {
   if (!url) return ''
 
-  const baseUrl = getServerSideURL()
-  const absoluteUrl = url.startsWith('http') ? url : `${baseUrl}${url}`
+  // Payload stores an absolute `url` on each media doc, built from whatever server URL was
+  // active when it was written (staging host, localhost, or — once — a stray space after the
+  // host). Trusting it means images break whenever data moves between environments, so only
+  // the `/api/...` path is kept and the host always comes from the current environment.
+  const apiIndex = url.indexOf('/api/')
+  const path = apiIndex > 0 ? url.slice(apiIndex).trim() : url.trim()
+
+  const baseUrl = getServerSideURL().trim()
+  const absoluteUrl = path.startsWith('http') ? path : `${baseUrl}${path}`
 
   if (cacheTag && cacheTag !== '') {
     cacheTag = encodeURIComponent(cacheTag)
