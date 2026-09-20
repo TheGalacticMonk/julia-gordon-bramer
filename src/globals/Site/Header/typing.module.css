@@ -17,7 +17,8 @@
  * technique regardless.
  *
  * --wordmark-width is measured (not guessed) as the actual rendered width of "Julia
- * Gordon-Bramer" at this font/weight/size/letter-spacing (307.45px, rounded up) — .cmd's own
+ * Gordon-Bramer" at this font/weight/size/letter-spacing (307.45px at 36px, i.e. ~8.54em,
+ * rounded up to 8.56em so it scales with the wrapper's fluid font-size below sm) — .cmd's own
  * width is pinned to it so the box never changes size as the animation runs (only the content
  * clipped inside .cmd::before does), which is what stops this from pushing the rest of the
  * header around the way the unreserved-width version once did. steps(19) matches the string's
@@ -28,14 +29,14 @@
   display: inline-flex;
   align-items: baseline;
   font:
-    600 2.25rem var(--font-cormorant),
+    600 clamp(1.25rem, 6vw, 2.25rem) var(--font-cormorant),
     'Cormorant',
     serif;
   letter-spacing: 0.01em;
 }
 
 .cmd {
-  --wordmark-width: 308px;
+  --wordmark-width: 8.56em;
   position: relative;
   display: flex;
   align-items: baseline;
