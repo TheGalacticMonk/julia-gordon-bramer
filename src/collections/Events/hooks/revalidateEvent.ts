@@ -21,6 +21,10 @@ export const revalidateEvent: CollectionAfterChangeHook<Event> = ({
       revalidatePath(`/events/${previousDoc.slug}`)
       revalidatePath('/events')
     }
+
+    // The homepage's Upcoming module (EventList/Component.tsx) caches its query separately
+    // from this path — it's not part of the /events route this hook otherwise revalidates.
+    revalidateTag('homepage-events', 'max')
   }
   return doc
 }
@@ -29,6 +33,7 @@ export const revalidateDelete: CollectionAfterDeleteHook<Event> = ({ doc, req: {
   if (!context.disableRevalidate) {
     revalidatePath(`/events/${doc?.slug}`)
     revalidatePath('/events')
+    revalidateTag('homepage-events', 'max')
   }
   return doc
 }

@@ -1,8 +1,26 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, CollectionConfig } from 'payload'
+
+import { revalidateTag } from 'next/cache'
 
 import { admin } from '../access/admin'
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
+
+// The homepage's "In the Press" module (PressStrip/Component.tsx) caches its featured-quotes
+// query — this is the only thing that invalidates it, no other page depends on this collection.
+const revalidatePressQuotes: CollectionAfterChangeHook = ({ doc, req: { context } }) => {
+  if (!context.disableRevalidate) {
+    revalidateTag('press-quotes', 'max')
+  }
+  return doc
+}
+
+const revalidatePressQuotesDelete: CollectionAfterDeleteHook = ({ doc, req: { context } }) => {
+  if (!context.disableRevalidate) {
+    revalidateTag('press-quotes', 'max')
+  }
+  return doc
+}
 
 export const PressQuotes: CollectionConfig = {
   slug: 'press-quotes',
@@ -15,6 +33,10 @@ export const PressQuotes: CollectionConfig = {
     delete: admin,
     read: anyone,
     update: authenticated,
+  },
+  hooks: {
+    afterChange: [revalidatePressQuotes],
+    afterDelete: [revalidatePressQuotesDelete],
   },
   admin: {
     useAsTitle: 'source',

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 import { getPayload } from 'payload'
+import { unstable_cache } from 'next/cache'
 
 import type { Event, EventListBlock as EventListBlockProps } from '@/payload-types'
 
@@ -12,6 +13,33 @@ import { formatEventDate } from '@/utilities/formatEventDate'
 import { cn } from '@/utilities/ui'
 
 import styles from './eventCard.module.css'
+
+// Cached like the site/seoDefaults/home globals instead of hitting D1 on every homepage view.
+// The "upcoming" cutoff is time-relative, not just content-relative, so a pure content-change
+// tag (invalidated by revalidateEvent.ts) isn't enough on its own — an event can silently age
+// from upcoming into past with no Payload write to trigger that. The 30-minute revalidate
+// window bounds how stale that can get; the tag still gives instant updates for real edits.
+const queryUpcomingEvents = (limit: number) =>
+  unstable_cache(
+    async () => {
+      const payload = await getPayload({ config })
+      const result = await payload.find({
+        collection: 'events',
+        depth: 1,
+        limit,
+        sort: 'startDate',
+        where: {
+          and: [
+            { _status: { equals: 'published' } },
+            { startDate: { greater_than_equal: new Date().toISOString() } },
+          ],
+        },
+      })
+      return result.docs
+    },
+    ['homepage-upcoming-events', String(limit)],
+    { tags: ['homepage-events'], revalidate: 1800 },
+  )()
 
 type Props = EventListBlockProps & {
   className?: string
@@ -46,20 +74,7 @@ export const EventListBlock: React.FC<Props> = async ({
       (event): event is Event => typeof event === 'object',
     )
   } else {
-    const payload = await getPayload({ config })
-    const result = await payload.find({
-      collection: 'events',
-      depth: 1,
-      limit: limit || 6,
-      sort: 'startDate',
-      where: {
-        and: [
-          { _status: { equals: 'published' } },
-          { startDate: { greater_than_equal: new Date().toISOString() } },
-        ],
-      },
-    })
-    events = result.docs
+    events = await queryUpcomingEvents(limit || 6)
   }
 
   return (

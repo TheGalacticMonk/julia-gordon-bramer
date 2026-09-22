@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
+import { unstable_cache } from 'next/cache'
 import React, { cache } from 'react'
 import configPromise from '@payload-config'
 
@@ -12,22 +13,41 @@ import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 
-const queryHome = cache(async () => {
-  const { isEnabled: draft } = await draftMode()
+// Draft/live-preview requests need fresh, unpublished content every time — never cached, since a
+// cached copy could otherwise leak a draft edit to public visitors or hand an editor stale data.
+// Kept in React's per-request cache() only, same as before.
+const queryDraftHome = cache(async () => {
   const payload = await getPayload({ config: configPromise })
 
   return payload.findGlobal({
     slug: 'home',
     depth: 2,
-    draft,
-    overrideAccess: draft,
+    draft: true,
+    overrideAccess: true,
   })
 })
 
+// Published requests — the overwhelming majority of traffic — are now cached the same way as
+// the site/seoDefaults globals (R2-backed, behind a tag), instead of hitting D1 on every single
+// page view. Invalidated by src/globals/Home/hooks/revalidateHome.ts on publish.
+const queryPublishedHome = unstable_cache(
+  async () => {
+    const payload = await getPayload({ config: configPromise })
+
+    return payload.findGlobal({ slug: 'home', depth: 2 })
+  },
+  ['home'],
+  { tags: ['global_home'] },
+)
+
+const queryHome = (draft: boolean) => (draft ? queryDraftHome() : queryPublishedHome())
+
 export default async function HomePage() {
   const { isEnabled: draft } = await draftMode()
-  const home = await queryHome()
-  const siteData = await getCachedGlobal('site', 1)()
+  // Independent fetches — one from D1 (queryHome), one from the R2-backed global cache
+  // (getCachedGlobal) — that were previously awaited one after another for no reason,
+  // serializing their latency instead of overlapping it.
+  const [home, siteData] = await Promise.all([queryHome(draft), getCachedGlobal('site', 1)()])
   const {
     heroHeading,
     heroSubheading,
@@ -71,6 +91,7 @@ export default async function HomePage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const home = await queryHome()
+  const { isEnabled: draft } = await draftMode()
+  const home = await queryHome(draft)
   return generateMeta({ doc: { meta: home.meta, slug: '' } })
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import { getPayload } from 'payload'
+import { unstable_cache } from 'next/cache'
 
 import type { PressQuote, PressStripBlock as PressStripBlockProps } from '@/payload-types'
 
@@ -11,12 +12,12 @@ type Props = PressStripBlockProps & {
   className?: string
 }
 
-export const PressStripBlock: React.FC<Props> = async ({ heading, quotes: selectedQuotes, className }) => {
-  let quotes = (selectedQuotes || []).filter(
-    (quote): quote is PressQuote => typeof quote === 'object',
-  )
-
-  if (quotes.length === 0) {
+// Cached like the site/seoDefaults/home globals instead of hitting D1 on every homepage view.
+// Purely content-driven (no time-relative filter like EventList's "upcoming" cutoff), so the
+// 'press-quotes' tag alone is enough — invalidated by PressQuotes' own afterChange/afterDelete
+// hooks (src/collections/PressQuotes.ts).
+const queryFeaturedQuotes = unstable_cache(
+  async () => {
     const payload = await getPayload({ config })
     const result = await payload.find({
       collection: 'press-quotes',
@@ -24,7 +25,19 @@ export const PressStripBlock: React.FC<Props> = async ({ heading, quotes: select
       limit: 6,
       where: { featured: { equals: true } },
     })
-    quotes = result.docs
+    return result.docs
+  },
+  ['homepage-featured-press-quotes'],
+  { tags: ['press-quotes'] },
+)
+
+export const PressStripBlock: React.FC<Props> = async ({ heading, quotes: selectedQuotes, className }) => {
+  let quotes = (selectedQuotes || []).filter(
+    (quote): quote is PressQuote => typeof quote === 'object',
+  )
+
+  if (quotes.length === 0) {
+    quotes = await queryFeaturedQuotes()
   }
 
   if (quotes.length === 0) return null
