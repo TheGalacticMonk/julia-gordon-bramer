@@ -69,9 +69,9 @@ export const EventListBlock: React.FC<Props> = async ({
         {/* Links to the events archive's "Past" section (src/app/(frontend)/events/page.tsx) —
             this block only ever queries upcoming events, so "history" lives on that page, not
             here. Originally a generic dark "glow card" (neon blurred blobs, rounded-lg, fixed
-            h-16 w-64) — a different design language from the rest of the site's hand-drawn gold
-            pill buttons, and bulky sitting next to a text heading. Reuses .ticketButton (the
-            small gold-pill CTA already established inside these same event cards) instead of
+            h-16 w-64) — a different design language from the compact event cards and bulky
+            sitting next to a text heading. Reuses .ticketButton (the small orchid CTA already
+            established inside these same event cards) instead of
             inventing a third button style, so "See more" matches the site's actual geometry —
             hand-drawn blob border-radius, ink border, hard offset shadow — rather than its own
             one-off shape and shadow language. */}

@@ -6,7 +6,8 @@ import React from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
 import { JsonLd } from '@/components/JsonLd'
-import { MagicSparkles } from '@/components/MagicSparkles/Component'
+// import { MagicSparkles } from '@/components/MagicSparkles/Component'
+import { OrbPattern } from '@/components/OrbPattern/Component'
 import { SocialSidebar } from '@/components/SocialSidebar/Component'
 import { AnnouncementBar } from '@/globals/Site/AnnouncementBar/Component'
 import { Footer } from '@/globals/Site/Footer/Component'
@@ -77,7 +78,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           one above, not a real mismatch. */}
       <body suppressHydrationWarning>
         <Providers>
-          <MagicSparkles />
+          {/* Star field temporarily disabled while testing the animated swirl background. */}
+          <OrbPattern />
           {/*
             Rendered in body, not head: browser extensions (crypto wallets especially) inject
             their own <script> tags into <head> before React hydrates, which collides with a

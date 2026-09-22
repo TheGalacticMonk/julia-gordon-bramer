@@ -48,16 +48,14 @@ export default async function HomePage() {
     <article className={aboutRichText ? undefined : 'pb-24'}>
       {draft && <LivePreviewListener />}
 
-      <div className="container pt-8 pb-6 md:pt-12">
-        <HeroIntroCard
-          heroHeading={heroHeading}
-          heroSubheading={heroSubheading}
-          heroRichText={heroRichText}
-          heroImage={heroImage}
-          links={links}
-          socials={siteData?.socials}
-        />
-      </div>
+      <HeroIntroCard
+        heroHeading={heroHeading}
+        heroSubheading={heroSubheading}
+        heroRichText={heroRichText}
+        heroImage={heroImage}
+        links={links}
+        socials={siteData?.socials}
+      />
 
       <RenderBlocks blocks={modules as never} />
 

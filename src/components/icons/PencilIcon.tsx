@@ -2,9 +2,8 @@ import React from 'react'
 
 interface PencilIconProps extends React.SVGProps<SVGSVGElement> {
   // Colors the pencil body/tip and the two scribble loops it's drawing independently (see
-  // Header/Component.client.tsx's two-tone pink/navy wordmark use). Both default to
-  // currentColor, matching every other usage of this icon site-wide (EventList, AboutCard,
-  // SectionHeading), which color it as one flat shape via their own text color.
+  // Both default to currentColor, matching current site-wide usages (EventList, AboutCard,
+  // SectionHeading), which color it as one flat shape.
   pencilColor?: string
   squiggleColor?: string
 }

@@ -46,26 +46,14 @@
 }
 
 .avatar {
-  /* 8rem/128px — measured off the reference's own avatar (h-32 w-32, 128x128 rendered). Was
-     4.5rem, which read small next to a name this size. Border was --color-rule (the sitewide
-     hairline-divider tone) at 2px — too close to the photo's own dark edge values to read as a
-     border at all. 3px, and in a real color, actually shows up against any photo: --color-magenta
-     (the cosmic palette's secondary accent) in light mode, where gold read as too close to the
-     card's own warm-white/violet-white tones to pop; --color-metal (gold) in dark mode, where
-     it already had plenty of contrast against the navy card and magenta would compete with
-     --color-metal already doing double duty on the eyebrow/title-adjacent accents right next
-     to it. */
+  /* Same orchid accent used by homepage actions and section labels. */
   position: relative;
   flex-shrink: 0;
   width: 8rem;
   height: 8rem;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid var(--color-magenta);
-}
-
-:global([data-theme='dark']) .avatar {
-  border-color: var(--color-metal);
+  border: 3px solid var(--color-metal);
 }
 
 .headerText {
@@ -222,62 +210,37 @@
   color: var(--color-ink-muted);
 }
 
-/* Exact copy of Hero's .introButton (src/components/Hero/styles.module.css), not a new take —
-   asked for explicitly, so the "Book a reading" CTA reads as literally the same button whether
-   it's in the hero card or here. Uses that file's --metal/--accent-ink/--ink-color/--accent-
-   coral custom properties directly rather than this site's --color-* tokens: those are declared
-   via :global(:root) / :global([data-theme='dark']) in Hero's stylesheet, i.e. real global CSS
-   variables (not CSS-module-scoped class names), so they're already available here as long as
-   Hero renders on the same page — which it always does above this component. @keyframes
-   btnWiggle is duplicated below rather than referenced across files because CSS Modules hash
-   keyframe names per-file, same as class names; a bare `animation: btnWiggle` here would not
-   resolve to Hero's copy. */
+/* Matches the current editorial hero CTA rather than the retired notepad button treatment. */
 .ctaButton {
-  font-family: var(--font-inter), sans-serif;
   display: inline-flex;
+  min-height: 2.65rem;
   align-items: center;
   justify-content: center;
-  color: var(--accent-ink);
-  background: var(--metal);
-  padding: 0.6em 1.4em;
-  border: 0.15em solid var(--accent-ink);
-  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
-  font-weight: bold;
+  padding: 0.65rem 1.2rem;
+  border: 2px solid var(--color-metal);
+  border-radius: 0.65rem;
+  background: var(--color-metal);
+  color: var(--color-metal-ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 1em;
-  box-shadow: 0.2em 0.2em 0 var(--ink-color);
-  cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease;
 }
 
 .ctaButton:hover {
-  transform: translateY(-0.3em);
-  background: var(--accent-coral);
-  animation: ctaBtnWiggle 0.6s ease-in-out infinite;
+  transform: translateY(-2px);
+  background: var(--name-pink);
 }
 
 .ctaButton:focus-visible {
-  outline: 0.2em dashed var(--accent-coral);
-  outline-offset: 0.3em;
-  transform: translateY(-0.3em);
+  outline: 2px solid var(--sparkle);
+  outline-offset: 3px;
 }
 
 .ctaButton:active {
-  transform: translate(0.1em, 0.1em);
-  box-shadow: 0.05em 0.05em 0 var(--ink-color);
-  animation: none;
-}
-
-@keyframes ctaBtnWiggle {
-  0%,
-  100% {
-    transform: translateY(-0.3em) rotate(0deg);
-  }
-  25% {
-    transform: translateY(-0.3em) rotate(-8deg);
-  }
-  75% {
-    transform: translateY(-0.3em) rotate(8deg);
-  }
+  transform: translateY(0);
 }

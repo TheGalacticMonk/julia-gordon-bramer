@@ -8,19 +8,14 @@ import { XIcon } from '@/components/icons/XIcon'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
 
-import styles from './styles.module.css'
+import styles from './editorial.module.css'
 
 type Props = Pick<Home, 'heroHeading' | 'heroSubheading' | 'heroRichText' | 'links' | 'heroImage'> & {
   socials?: Site['socials']
 }
 
-// Full-width notepad hero: same ruled-paper/hand-drawn-ink-border card language as before, but
-// laid out like nothing-wrong-with-you.thegalacticmonks.workers.dev's split hero — big
-// left-aligned Fraunces heading, italic accents, a measured lead paragraph, and a
-// button row — with the portrait as a large static photo on the right instead of a small
-// centered avatar. Dropped the scattered doodle SVGs, the spinning rainbow photo ring, and the
-// wobble/wiggle hover animations from the old centered layout — restrained ink-border-and-
-// offset-shadow treatment reads as more considered at this larger scale than the busier version.
+// Editorial split hero inspired by nothing-wrong-with-you: image-led, full-bleed, and free of
+// the former notepad frame so the typography and portrait can carry the composition.
 export const HeroIntroCard: React.FC<Props> = ({
   heroHeading,
   heroSubheading,
@@ -45,48 +40,48 @@ export const HeroIntroCard: React.FC<Props> = ({
   )
 
   return (
-    <div className={styles.introCard}>
-      <div className={styles.introContent}>
-        <h1 className={styles.introTitle}>
-          <span className={styles.introTitleFocus}>{firstName}</span>
-          {familyName && (
-            <>
-              <br />
-              <span className={styles.introTitleAccent}>{familyName}</span>
-            </>
-          )}
-        </h1>
-
-        {heroSubheading && <p className={styles.introSubheading}>{heroSubheading}</p>}
-
-        {heroRichText && (
-          <div className={styles.introBody}>
-            <RichText data={heroRichText} enableGutter={false} enableProse={false} />
-          </div>
-        )}
-
-        {links && links.length > 0 && (
-          <div className={`flex flex-wrap gap-4 ${styles.linksRow}`}>
-            {links.map(({ link }, i) => (
-              <CMSLink key={i} {...link} appearance="inline" className={styles.introButton} />
-            ))}
-          </div>
-        )}
-      </div>
-
+    <section className={styles.introCard} aria-labelledby="home-hero-title">
       {heroImage && typeof heroImage === 'object' && (
         <div className={styles.introPhotoColumn}>
-          <div className={styles.introPhotoWrap}>
-            <div className={styles.introPhoto}>
-              <Media
-                resource={heroImage}
-                fill
-                imgClassName="h-full w-full object-cover"
-                priority
-                unoptimized
-              />
-            </div>
+          <div className={styles.introPhotoFrame}>
+            <Media
+              resource={heroImage}
+              fill
+              imgClassName={styles.introPhoto}
+              priority
+              unoptimized
+            />
           </div>
+        </div>
+      )}
+
+      <div className={`container ${styles.introInner}`}>
+        <div className={styles.introContent}>
+          <h1 className={styles.introTitle} id="home-hero-title">
+            <span className={styles.introTitleFocus}>{firstName}</span>
+            {familyName && (
+              <>
+                <br />
+                <span className={styles.introTitleAccent}>{familyName}</span>
+              </>
+            )}
+          </h1>
+
+          {heroSubheading && <p className={styles.introSubheading}>{heroSubheading}</p>}
+
+          {heroRichText && (
+            <div className={styles.introBody}>
+              <RichText data={heroRichText} enableGutter={false} enableProse={false} />
+            </div>
+          )}
+
+          {links && links.length > 0 && (
+            <div className={`flex flex-wrap gap-4 ${styles.linksRow}`}>
+              {links.map(({ link }, i) => (
+                <CMSLink key={i} {...link} appearance="inline" className={styles.introButton} />
+              ))}
+            </div>
+          )}
 
           {heroSocials.length > 0 && (
             <div className={`flex flex-wrap gap-3 ${styles.introSocials}`}>
@@ -105,7 +100,7 @@ export const HeroIntroCard: React.FC<Props> = ({
             </div>
           )}
         </div>
-      )}
-    </div>
+      </div>
+    </section>
   )
 }

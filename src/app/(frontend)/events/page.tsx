@@ -51,17 +51,29 @@ export default async function EventsPage() {
 
   return (
     <div className="pb-24">
-      <div className="container pt-16 pb-12 max-w-2xl">
-        <h1 className="text-4xl">Events &amp; Tour</h1>
-        <p className="mt-4 text-pretty text-ink-muted">
-          Readings, signings, lectures, and workshops — in the US and, when the calendar allows,
-          abroad.
-        </p>
+      {/* section-base, not left implicit: same bug the homepage hero had (see
+          Hero/editorial.module.css's .introCard comment) — without an explicit background this
+          falls through to the opaque --paper instead of the translucent --section-base the
+          CurvedDivider right below actually transitions from, which is a hard seam waiting to
+          happen the moment --paper and --section-base aren't the same value (they're
+          deliberately not — see globals.css). */}
+      <div className="section-base">
+        <div className="container pt-16 pb-12 max-w-2xl">
+          <h1 className="text-4xl">Events &amp; Tour</h1>
+          <p className="mt-4 text-pretty text-ink-muted">
+            Readings, signings, lectures, and workshops — in the US and, when the calendar
+            allows, abroad.
+          </p>
+        </div>
       </div>
 
       {/* Same full-bleed alternating-tone bands + curved seam as the homepage's RenderBlocks
-          sections (see that file's comments) — "Upcoming" picks up straight after the intro,
-          same as the homepage's first module does after the hero, so no divider above it. */}
+          sections (see that file's comments) — this used to skip the divider here on the theory
+          that "Upcoming" could just pick up straight after the intro the way the homepage's
+          first module follows the hero, but the homepage was never actually divider-less there
+          either (RenderBlocks always draws one after the hero); this was just a hard flat edge
+          that had gone unnoticed. */}
+      <CurvedDivider fillClassName="fill-section-base" nextFillClassName="fill-section-raised" />
       <div className="section-raised py-16">
         <div className="container">
           <h2 className="mb-4 text-2xl">Upcoming</h2>
@@ -109,7 +121,7 @@ export default async function EventsPage() {
             fillClassName="fill-section-raised"
             nextFillClassName="fill-section-base"
           />
-          <div className="py-16">
+          <div className="section-base py-16">
             <div className="container">
               <h2 className="mb-4 text-2xl">Past</h2>
               <ol className="flex flex-col divide-y divide-rule border-y border-rule">

@@ -84,7 +84,7 @@ export const RenderBlocks: React.FC<{
               nextFillClassName={nextFill}
               flip={isRaised}
             />
-            <div className={cn(isRaised && 'section-raised')}>
+            <div className={cn(isRaised ? 'section-raised' : 'section-base')}>
               <div className="py-16">{content}</div>
             </div>
           </Fragment>

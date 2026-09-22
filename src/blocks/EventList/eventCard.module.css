@@ -1,51 +1,27 @@
-/* Same doodle-notepad language as the homepage hero card (Hero/styles.module.css) — hand-drawn
-   border, hard offset shadow, tape corner — scaled down to fit several per row instead of one
-   large centered card. Reuses the SITEWIDE palette tokens (globals.css: --cream/--navy/--ink/
-   --metal/--metal-ink), not Hero's private --bg-color/--ink-color custom properties: those only
-   exist because Hero/styles.module.css happens to be loaded on whatever page renders the hero,
-   which this block can't assume (a page could show upcoming events without a hero above it).
-   --card-bg is the one thing this file still swaps per theme, same as Hero does, since the
-   sitewide tokens don't have a single "raised card surface that's cream in light mode, navy in
-   dark mode" value of their own.
-
-   A flat "sticky note" fill, deliberately NOT the hero's ruled-paper background: that only
-   stays convincingly on-line when every text block's line-height/margin is hand-tuned as an
-   exact multiple of the paper's pitch, which is workable for the hero's fixed copy but not for
-   these — title, venue, and ticket note are entered by the client and vary in length, so the
-   lines would drift out of register the moment someone types a longer title.
-
-   Left out, on purpose, at this smaller repeated scale: the hero's sparkle/note/swirl SVG
-   doodles. One of each reads as a nice hand-drawn flourish on a single large card; three of
-   each repeated across a grid would compete with the actual event info instead of framing it.
-   The tape corner is kept — it's the single strongest "this is the same card" signal and reads
-   fine repeated. */
+/* Event cards retain their small hand-drawn/taped character, but use the shared homepage
+   surfaces and pink/indigo/orchid accents rather than a separate card palette. */
 
 .card {
-  --card-bg: var(--cream);
   position: relative;
   height: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.6em;
   font-size: 15px;
-  background: var(--card-bg);
+  background: var(--paper-raised);
   border: 0.2em solid var(--ink);
   border-radius: 80px 14px 60px 14px / 14px 60px 14px 80px;
-  box-shadow: 0.4em 0.4em 0 var(--metal-ink);
+  box-shadow: 0.4em 0.4em 0 rgba(5, 8, 23, 0.78);
   padding: 2.2em 1.4em 1.5em;
   transition:
     transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
     box-shadow 0.3s ease;
 }
 
-:global([data-theme='dark']) .card {
-  --card-bg: var(--navy);
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .card:hover {
     transform: translateY(-0.35em) rotate(-0.75deg);
-    box-shadow: 0.55em 0.6em 0 var(--metal-ink);
+    box-shadow: 0.55em 0.6em 0 rgba(5, 8, 23, 0.78);
   }
 }
 
@@ -121,7 +97,7 @@
 
 .ticketButton:hover {
   transform: translateY(-0.15em);
-  background: var(--magenta);
+  background: var(--name-pink);
 }
 
 .ticketButton:active {
@@ -166,11 +142,11 @@
 }
 
 :global([data-theme='dark']) .exploreButton {
-  box-shadow: 0.15em 0.15em 0 0 var(--magenta);
+  box-shadow: 0.15em 0.15em 0 0 var(--name-indigo);
 }
 
 :global([data-theme='dark']) .exploreButton:active {
-  box-shadow: 0.05em 0.05em 0 0 var(--magenta);
+  box-shadow: 0.05em 0.05em 0 0 var(--name-indigo);
 }
 
 .exploreButton:active,
@@ -186,19 +162,14 @@
   position: relative;
   display: block;
   background-color: var(--metal);
-  /* Was a fixed rgba(255,255,255,0.3) in the original — a glossy highlight rim that never
-     changed with theme, which is why it still read as "white" after everything else here
-     started following light/dark. var(--ink) matches .card's and .ticketButton's own borders
-     in light mode; dark mode below swaps it to --magenta, same accent as .exploreButton's own
-     shadow, so the pill's rim and its shadow read as one consistent accent rather than two
-     different colors. */
+  /* Indigo rim/shadow in dark mode echoes Gordon-Bramer and the sparkle field. */
   border: 2px solid var(--ink);
   border-radius: 9999px;
   overflow: hidden;
 }
 
 :global([data-theme='dark']) .exploreButtonFace {
-  border-color: var(--magenta);
+  border-color: var(--name-indigo);
 }
 
 .exploreButtonFace::before {

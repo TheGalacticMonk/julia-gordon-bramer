@@ -16,7 +16,6 @@ type Social = { platform: 'instagram' | 'x'; url: string }
 interface MobileNavMenuProps {
   navItems: Array<{ link: NavLink }>
   resolveHref: (link: NavLink) => string | null
-  isOverlay: boolean
   socials?: Social[]
   className?: string
 }
@@ -24,7 +23,6 @@ interface MobileNavMenuProps {
 export const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
   navItems,
   resolveHref,
-  isOverlay,
   socials = [],
   className,
 }) => {
@@ -42,10 +40,7 @@ export const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
   return (
     <label
       aria-label="Menu"
-      // text-ink, not text-metal-ink: metal-ink is themed for contrast ON a --metal fill
-      // (opposite of what plain chrome text sitting on the page background wants) — see
-      // Header/Component.client.tsx's wordmark Link className comment for the full reasoning.
-      className={cn(styles.main, isOverlay ? 'text-ink' : 'text-ink dark:text-cream', className)}
+      className={cn(styles.main, 'text-ink', className)}
     >
       {/* Visible label text — hidden below `sm` where the header row is tightest (wordmark +
           theme toggle + this control, on the narrowest phones) so the hamburger stays icon-only

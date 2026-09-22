@@ -20,26 +20,14 @@
   white-space: nowrap;
 }
 
-/* Given name: the bold focus word. Deep navy in light mode — bold and distinct against the
-   violet-white header without competing with the gold "Book a reading" CTA sitting right next
-   to it. Dark mode switches to --metal (orchid-pink, matching
-   nothing-wrong-with-you.thegalacticmonks.workers.dev's own CTA color) instead: navy would have
-   no contrast against the near-black header there, and --metal is still this site's "pay
-   attention here" accent (CTA buttons, the active nav link). */
+/* Same pink/indigo hierarchy as the homepage hero. */
 .cmdFocus {
-  color: var(--navy-deep);
+  color: var(--name-pink);
   font-weight: 600;
 }
 
-:global([data-theme='dark']) .cmdFocus {
-  color: #fff;
-}
-
-/* Surname: the italic accent — cyan, not --magenta: --metal (which "Julia" now uses) is close
-   enough in hue to --magenta that the two would blur together into one pink instead of reading
-   as focus word then accent. Cyan is the reference site's own sky-blue label/link color. */
 .cmdAccent {
-  color: var(--name-pink);
+  color: var(--name-indigo);
   font-size: 0.92em;
   font-weight: 400;
   font-style: italic;

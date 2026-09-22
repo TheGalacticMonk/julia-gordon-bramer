@@ -90,23 +90,14 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
           //
           // Light mode keeps the cream chrome; dark mode uses a near-black charcoal that stays
           // neutral against the indigo-blue page canvas.
-          : 'bg-cream/92 dark:bg-[#111318]/96 backdrop-blur-md shadow-[0_16px_28px_-12px_rgba(0,0,0,0.35),0_4px_10px_-4px_rgba(0,0,0,0.18)]',
+          : 'bg-paper-raised/92 dark:bg-[#111318]/96 backdrop-blur-md shadow-[0_16px_28px_-12px_rgba(0,0,0,0.35),0_4px_10px_-4px_rgba(0,0,0,0.18)]',
       )}
       {...(theme ? { 'data-theme': theme } : {})}
     >
       <div className="container relative z-10 flex items-center justify-between gap-4 py-4 sm:gap-6">
         <Link
           href="/"
-          className={cn(
-            'flex shrink-0 items-center gap-2',
-            // text-ink, not text-metal-ink: metal-ink is themed for contrast ON a --metal fill
-            // (light text in light mode, dark in dark mode, since --metal itself flipped from
-            // "always-light gold" to "dark-in-light/light-in-dark orchid") — this is plain
-            // chrome text sitting directly on the page background, which wants the opposite,
-            // --ink's normal behavior. Overlay mode already used text-ink for both.
-            'text-ink',
-            !isOverlay && 'dark:text-cream',
-          )}
+          className="flex shrink-0 items-center gap-2 text-ink"
         >
           <TypingWordmark />
         </Link>
@@ -145,7 +136,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
                         : 'text-ink hover:text-metal'
                       : isActive
                         ? 'text-metal'
-                        : 'text-ink hover:text-metal dark:text-cream',
+                        : 'text-ink hover:text-metal',
                   )}
                 />
               )
@@ -159,7 +150,6 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
               competing display rule sidesteps the ordering fight entirely. */}
           <div className="xl:hidden">
             <MobileNavMenu
-              isOverlay={isOverlay}
               navItems={navItems}
               resolveHref={resolveHref}
               socials={mobileSocials}

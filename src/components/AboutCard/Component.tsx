@@ -1,10 +1,10 @@
 import React from 'react'
+import Image from 'next/image'
 
 import type { Home } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
 import { CurvedDivider } from '@/components/CurvedDivider'
-import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
 import { LocationPinIcon } from '@/components/icons/LocationPinIcon'
 import { PencilIcon } from '@/components/icons/PencilIcon'
@@ -20,21 +20,17 @@ type Props = Pick<
 // Magazine-card About section, modeled on https://galacticmonk.com/about/'s layout (eyebrow +
 // avatar + display-serif name header, small-caps role/location meta row, drop-cap opening
 // paragraph, closing eyebrow + pill CTA) — same structural beats, recolored to this site's own
-// paper/ink/metal tokens instead of that site's navy/gold. Reuses the Hero tab's heading/
+// shared paper/ink/orchid tokens. Reuses the Hero tab's heading/
 // subheading for the header text instead of duplicating them as new fields; the avatar has its
-// own dedicated aboutImage field (falls back to the hero photo if unset).
+// own dedicated portrait asset from the site's public assets.
 export const AboutCard: React.FC<Props> = async ({
   heroHeading,
   heroSubheading,
-  heroImage,
-  aboutImage,
   aboutRichText,
 }) => {
   if (!aboutRichText) return null
 
   const siteData = await getCachedGlobal('site', 1)()
-  const avatarImage = aboutImage || heroImage
-
   return (
     <>
       {/* Same seam RenderBlocks draws between its own alternating bands (see that file) — this
@@ -52,16 +48,15 @@ export const AboutCard: React.FC<Props> = async ({
         <div className={`container ${styles.cardWrap}`}>
           <div className={styles.card}>
           <div className={styles.header}>
-            {avatarImage && typeof avatarImage === 'object' && (
-              <div className={styles.avatar}>
-                <Media
-                  resource={avatarImage}
-                  fill
-                  imgClassName="h-full w-full object-cover"
-                  unoptimized
-                />
-              </div>
-            )}
+            <div className={styles.avatar}>
+              <Image
+                src="/assets/julia-about.jpg"
+                alt="Julia Gordon-Bramer"
+                fill
+                sizes="8rem"
+                className="h-full w-full object-cover"
+              />
+            </div>
             <div className={styles.headerText}>
               <div className={styles.eyebrowRow}>
                 <PencilIcon className={styles.eyebrowIcon} aria-hidden="true" />
