@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 
 import { cn } from '@/utilities/ui'
-import { Cormorant, Inter } from 'next/font/google'
+import { Barlow_Condensed, Fraunces, Inter } from 'next/font/google'
 import React from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
 import { JsonLd } from '@/components/JsonLd'
+import { MagicSparkles } from '@/components/MagicSparkles/Component'
 import { SocialSidebar } from '@/components/SocialSidebar/Component'
 import { AnnouncementBar } from '@/globals/Site/AnnouncementBar/Component'
 import { Footer } from '@/globals/Site/Footer/Component'
@@ -26,23 +27,28 @@ const inter = Inter({
   display: 'swap',
 })
 
-// The "editorial" didone-style serif from the uiverse.io Cairn design system
-// (https://uiverse.io/design/systems/cairn-2) — used there for display/headline moments, and
-// now the site-wide display font (see globals.css `--font-display`), matching the homepage
-// hero. Inter carries everything else, site-wide.
+// Match the reference site: Fraunces for expressive display typography and Barlow Condensed
+// for labels and interface text. Inter remains reserved for comfortable long-form reading.
 //
 // display: 'optional' (not 'swap') specifically because the header wordmark reserves its box
 // width by MEASURING this font (TypingWordmark.tsx's hidden sizer span) — 'swap' paints in a
-// fallback font first and swaps to Cormorant once it loads, and that swap changes the measured
+// fallback font first and swaps to Fraunces once it loads, and that swap changes the measured
 // width, producing a brief one-time layout jump right at load even with the reveal-width fix
-// in place. 'optional' still tries to use Cormorant if it's already cached/ready within the
+// in place. 'optional' still tries to use Fraunces if it's already cached/ready within the
 // browser's short block window (true almost always here, since next/font self-hosts and
 // preloads it), but never swaps it in LATE — so there's nothing left to cause that jump.
-const cormorant = Cormorant({
+const fraunces = Fraunces({
   subsets: ['latin'],
-  variable: '--font-cormorant',
-  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-fraunces',
+  weight: 'variable',
   style: ['normal', 'italic'],
+  display: 'optional',
+})
+
+const barlowCondensed = Barlow_Condensed({
+  subsets: ['latin'],
+  variable: '--font-barlow-condensed',
+  weight: ['500', '600', '700'],
   display: 'optional',
 })
 
@@ -52,7 +58,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html
-      className={cn(inter.variable, cormorant.variable)}
+      className={cn(inter.variable, fraunces.variable, barlowCondensed.variable)}
       lang="en"
       suppressHydrationWarning
     >
@@ -71,6 +77,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           one above, not a real mismatch. */}
       <body suppressHydrationWarning>
         <Providers>
+          <MagicSparkles />
           {/*
             Rendered in body, not head: browser extensions (crypto wallets especially) inject
             their own <script> tags into <head> before React hydrates, which collides with a

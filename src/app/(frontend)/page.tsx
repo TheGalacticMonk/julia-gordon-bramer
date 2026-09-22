@@ -10,6 +10,7 @@ import { AboutCard } from '@/components/AboutCard/Component'
 import { HeroIntroCard } from '@/components/Hero/HeroIntroCard'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { generateMeta } from '@/utilities/generateMeta'
+import { getCachedGlobal } from '@/utilities/getGlobals'
 
 const queryHome = cache(async () => {
   const { isEnabled: draft } = await draftMode()
@@ -26,6 +27,7 @@ const queryHome = cache(async () => {
 export default async function HomePage() {
   const { isEnabled: draft } = await draftMode()
   const home = await queryHome()
+  const siteData = await getCachedGlobal('site', 1)()
   const {
     heroHeading,
     heroSubheading,
@@ -46,13 +48,14 @@ export default async function HomePage() {
     <article className={aboutRichText ? undefined : 'pb-24'}>
       {draft && <LivePreviewListener />}
 
-      <div className="container flex justify-center pt-8 pb-6 md:pt-12">
+      <div className="container pt-8 pb-6 md:pt-12">
         <HeroIntroCard
           heroHeading={heroHeading}
           heroSubheading={heroSubheading}
           heroRichText={heroRichText}
           heroImage={heroImage}
           links={links}
+          socials={siteData?.socials}
         />
       </div>
 

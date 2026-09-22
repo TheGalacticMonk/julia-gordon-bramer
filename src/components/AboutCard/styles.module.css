@@ -9,7 +9,7 @@
    also happens to hold up correctly in dark mode, where --paper is the LIGHTER navy of the two
    tokens, same direction as the light-mode white-on-cream pairing below. */
 .section {
-  background-color: var(--color-paper-raised);
+  background-color: var(--section-raised);
 }
 
 .cardWrap {
@@ -49,19 +49,19 @@
   /* 8rem/128px — measured off the reference's own avatar (h-32 w-32, 128x128 rendered). Was
      4.5rem, which read small next to a name this size. Border was --color-rule (the sitewide
      hairline-divider tone) at 2px — too close to the photo's own dark edge values to read as a
-     border at all. 3px, and in a real color, actually shows up against any photo: --color-blush
-     (the "lipstick" pink pulled from her portrait, constant across themes per globals.css) in
-     light mode, where gold read as too close to the card's own warm-white/cream tones to pop;
-     --color-metal (gold) in dark mode, where it already had plenty of contrast against the navy
-     card and blush would compete with --color-metal already doing double duty on the eyebrow/
-     title-adjacent accents right next to it. */
+     border at all. 3px, and in a real color, actually shows up against any photo: --color-magenta
+     (the cosmic palette's secondary accent) in light mode, where gold read as too close to the
+     card's own warm-white/violet-white tones to pop; --color-metal (gold) in dark mode, where
+     it already had plenty of contrast against the navy card and magenta would compete with
+     --color-metal already doing double duty on the eyebrow/title-adjacent accents right next
+     to it. */
   position: relative;
   flex-shrink: 0;
   width: 8rem;
   height: 8rem;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid var(--color-blush);
+  border: 3px solid var(--color-magenta);
 }
 
 :global([data-theme='dark']) .avatar {

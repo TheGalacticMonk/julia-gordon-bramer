@@ -69,7 +69,8 @@ export const RenderBlocks: React.FC<{
         // band boundary, not a hard edge) — or --paper-raised for every "plain" band, which
         // always follows a raised one. CurvedDivider draws this sweeping down over this band's
         // top edge — see that component for why it's drawn this way round.
-        const previousFill = isRaised ? 'fill-paper' : 'fill-paper-raised'
+        const previousFill = isRaised ? 'fill-section-base' : 'fill-section-raised'
+        const nextFill = isRaised ? 'fill-section-raised' : 'fill-section-base'
 
         return (
           // Squarespace-style section seams: full-bleed bands that alternate between the
@@ -77,10 +78,16 @@ export const RenderBlocks: React.FC<{
           // surface" tone the header, hero card, and reading-cards already use elsewhere),
           // stacked directly against each other with no gap — CurvedDivider draws the actual
           // gaia.com-style curved seam between them instead of a hard flat edge.
-          <div className={cn(isRaised && 'bg-paper-raised')} key={index}>
-            <CurvedDivider fillClassName={previousFill} flip={isRaised} />
-            <div className="py-16">{content}</div>
-          </div>
+          <Fragment key={index}>
+            <CurvedDivider
+              fillClassName={previousFill}
+              nextFillClassName={nextFill}
+              flip={isRaised}
+            />
+            <div className={cn(isRaised && 'section-raised')}>
+              <div className="py-16">{content}</div>
+            </div>
+          </Fragment>
         )
       })}
     </Fragment>

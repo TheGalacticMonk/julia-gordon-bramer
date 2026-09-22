@@ -121,7 +121,7 @@
 
 .ticketButton:hover {
   transform: translateY(-0.15em);
-  background: var(--blush);
+  background: var(--magenta);
 }
 
 .ticketButton:active {
@@ -166,11 +166,11 @@
 }
 
 :global([data-theme='dark']) .exploreButton {
-  box-shadow: 0.15em 0.15em 0 0 var(--blush);
+  box-shadow: 0.15em 0.15em 0 0 var(--magenta);
 }
 
 :global([data-theme='dark']) .exploreButton:active {
-  box-shadow: 0.05em 0.05em 0 0 var(--blush);
+  box-shadow: 0.05em 0.05em 0 0 var(--magenta);
 }
 
 .exploreButton:active,
@@ -189,7 +189,7 @@
   /* Was a fixed rgba(255,255,255,0.3) in the original — a glossy highlight rim that never
      changed with theme, which is why it still read as "white" after everything else here
      started following light/dark. var(--ink) matches .card's and .ticketButton's own borders
-     in light mode; dark mode below swaps it to --blush, same pink as .exploreButton's own
+     in light mode; dark mode below swaps it to --magenta, same accent as .exploreButton's own
      shadow, so the pill's rim and its shadow read as one consistent accent rather than two
      different colors. */
   border: 2px solid var(--ink);
@@ -198,7 +198,7 @@
 }
 
 :global([data-theme='dark']) .exploreButtonFace {
-  border-color: var(--blush);
+  border-color: var(--magenta);
 }
 
 .exploreButtonFace::before {

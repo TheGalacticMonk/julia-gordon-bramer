@@ -17,7 +17,6 @@ interface MobileNavMenuProps {
   navItems: Array<{ link: NavLink }>
   resolveHref: (link: NavLink) => string | null
   isOverlay: boolean
-  bookingUrl?: string | null
   socials?: Social[]
   className?: string
 }
@@ -26,7 +25,6 @@ export const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
   navItems,
   resolveHref,
   isOverlay,
-  bookingUrl,
   socials = [],
   className,
 }) => {
@@ -44,7 +42,10 @@ export const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
   return (
     <label
       aria-label="Menu"
-      className={cn(styles.main, isOverlay ? 'text-ink' : 'text-metal-ink dark:text-cream', className)}
+      // text-ink, not text-metal-ink: metal-ink is themed for contrast ON a --metal fill
+      // (opposite of what plain chrome text sitting on the page background wants) — see
+      // Header/Component.client.tsx's wordmark Link className comment for the full reasoning.
+      className={cn(styles.main, isOverlay ? 'text-ink' : 'text-ink dark:text-cream', className)}
     >
       {/* Visible label text — hidden below `sm` where the header row is tightest (wordmark +
           theme toggle + this control, on the narrowest phones) so the hamburger stays icon-only
@@ -83,9 +84,7 @@ export const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
         })}
         {socials.length > 0 && (
           // Also .menu-list (for the same reveal timing), composed with .menu-social so its
-          // padding/layout can differ (icon row, not a full-width text line) — same pattern
-          // .menu-cta uses below. Placed before the CTA so "Book a reading" stays the last,
-          // most prominent thing in the dropdown.
+          // padding/layout can differ (icon row, not a full-width text line).
           <div className={cn(styles['menu-list'], styles['menu-social'])}>
             {socials.map((social) => {
               const Icon = socialIcons[social.platform]
@@ -104,18 +103,6 @@ export const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
               )
             })}
           </div>
-        )}
-        {bookingUrl && (
-          // .menu-list for the staggered reveal timing; .menu-cta swaps its look for a filled
-          // pill button (see hamburger.module.css) instead of gold text — the active nav link
-          // above already uses gold text for "current page," so this needed its own affordance
-          // rather than the same color to read as a distinct action, not a highlighted link.
-          <CMSLink
-            appearance="inline"
-            className={cn(styles['menu-list'], styles['menu-cta'])}
-            label="Book a reading"
-            url={bookingUrl}
-          />
         )}
       </section>
     </label>

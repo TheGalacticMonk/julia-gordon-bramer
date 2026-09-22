@@ -278,12 +278,17 @@ async function seed() {
       context: { disableRevalidate: true },
       data: {
         navItems: [
-          { link: { type: 'custom', url: '/', label: 'Home' } },
-          { link: { type: 'custom', url: '/books', label: 'Books' } },
-          { link: { type: 'custom', url: '/scholarship', label: 'Scholarship' } },
-          { link: { type: 'custom', url: '/events', label: 'Events' } },
-          { link: { type: 'custom', url: '/blog', label: 'Blog' } },
-          { link: { type: 'custom', url: '/contact', label: 'Contact' } },
+          { link: { type: 'custom', url: '/', label: 'HOME' } },
+          { link: { type: 'custom', url: '/tarot', label: 'TAROT' } },
+          { link: { type: 'custom', url: '/books', label: 'BOOKS' } },
+          {
+            link: {
+              type: 'custom',
+              url: '/scholarship',
+              label: 'DECODING SYLVIA PLATH',
+            },
+          },
+          { link: { type: 'custom', url: '/contact', label: 'CONTACT' } },
         ],
         bookingUrl: site.bookingUrl || '/contact',
       },

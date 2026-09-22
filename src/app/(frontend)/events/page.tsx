@@ -62,7 +62,7 @@ export default async function EventsPage() {
       {/* Same full-bleed alternating-tone bands + curved seam as the homepage's RenderBlocks
           sections (see that file's comments) — "Upcoming" picks up straight after the intro,
           same as the homepage's first module does after the hero, so no divider above it. */}
-      <div className="bg-paper-raised py-16">
+      <div className="section-raised py-16">
         <div className="container">
           <h2 className="mb-4 text-2xl">Upcoming</h2>
           {upcoming.length === 0 ? (
@@ -105,7 +105,10 @@ export default async function EventsPage() {
 
       {past.length > 0 && (
         <div id="past" className="scroll-mt-24">
-          <CurvedDivider fillClassName="fill-paper-raised" />
+          <CurvedDivider
+            fillClassName="fill-section-raised"
+            nextFillClassName="fill-section-base"
+          />
           <div className="py-16">
             <div className="container">
               <h2 className="mb-4 text-2xl">Past</h2>

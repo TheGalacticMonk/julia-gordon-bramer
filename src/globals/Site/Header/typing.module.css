@@ -1,96 +1,46 @@
-/*
- * Typewriter effect for the header wordmark, ported from a reference "terminal card"
- * component's `.cmd`/`.cmd::before`/`.cmd::after` — a single box revealing
- * `content: attr(data-cmd)` by animating `width` through `steps(N)`, plus a separate
- * `::after` pseudo-element (a "_" character plus a border-right bar) as the blinking caret.
- * Kept as close to the reference's own numbers as possible — same 8s duration, same 10%/90%
- * keyframe stops, same 0.5s + 0.4s dual cursor animation, same 0.15em border width — rather
- * than retuned values. This REPLACES an earlier JS-driven version that revealed the text
- * character-by-character via a `setTimeout` chain in TypingWordmark.tsx.
- *
- * Known, accepted tradeoff: `steps(N)` only lands cleanly on character boundaries when N equals
- * the character count AND every character is the same width — true for the reference's
- * monospace terminal font, not true for Cormorant (a proportional serif: a "G" is much wider
- * than an "i"). At this font the reveal will visibly clip some wider glyphs mid-shape partway
- * through their own step instead of always stopping exactly at a character edge. This was
- * flagged before porting the effect in; kept anyway per explicit direction to use this exact
- * technique regardless.
- *
- * --wordmark-width is measured (not guessed) as the actual rendered width of "Julia
- * Gordon-Bramer" at this font/weight/size/letter-spacing (307.45px at 36px, i.e. ~8.54em,
- * rounded up to 8.56em so it scales with the wrapper's fluid font-size below sm) — .cmd's own
- * width is pinned to it so the box never changes size as the animation runs (only the content
- * clipped inside .cmd::before does), which is what stops this from pushing the rest of the
- * header around the way the unreserved-width version once did. steps(19) matches the string's
- * own character count (including the space and hyphen) — this one number has to be ours, not
- * the reference's, since it's tied to content length rather than being a timing/speed value.
- */
+/* Static two-tone wordmark. Its former typewriter reveal and blinking cursor were removed so
+   the header remains visually settled while visitors scan the navigation. */
 .wrapper {
   display: inline-flex;
   align-items: baseline;
   font:
-    600 clamp(1.25rem, 6vw, 2.25rem) var(--font-cormorant),
-    'Cormorant',
+    600 clamp(1.25rem, 6vw, 2.25rem) var(--font-fraunces),
+    'Fraunces',
     serif;
   letter-spacing: 0.01em;
 }
 
 .cmd {
-  --wordmark-width: 8.56em;
-  position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: baseline;
-  width: var(--wordmark-width);
 }
 
-.cmd::before {
-  content: attr(data-cmd);
+.cmdReveal {
   display: block;
-  flex-shrink: 0;
-  overflow: hidden;
   white-space: nowrap;
-  animation: typeReveal 8s steps(19) infinite;
 }
 
-.cmd::after {
-  content: '_';
-  display: block;
-  flex-shrink: 0;
-  align-self: stretch;
-  border-right: 0.15em solid currentColor;
-  /* The reference runs two animations here — a 0.5s border-color step and a 0.4s scaleY
-     collapse — at periods that only share a common cycle every 2s (their LCM), so the two
-     "off" phases drift in and out of sync with each other and the blink reads as an irregular
-     skip rather than a steady beat (present in the reference too, not just this port). One
-     animation toggling opacity (which hides the "_" glyph and the border bar together, evenly)
-     at a single steady rate fixes that. */
-  animation: cursorBlink 1s step-end infinite;
+/* Given name: the bold focus word. Deep navy in light mode — bold and distinct against the
+   violet-white header without competing with the gold "Book a reading" CTA sitting right next
+   to it. Dark mode switches to --metal (orchid-pink, matching
+   nothing-wrong-with-you.thegalacticmonks.workers.dev's own CTA color) instead: navy would have
+   no contrast against the near-black header there, and --metal is still this site's "pay
+   attention here" accent (CTA buttons, the active nav link). */
+.cmdFocus {
+  color: var(--navy-deep);
+  font-weight: 600;
 }
 
-@keyframes typeReveal {
-  0%,
-  100% {
-    width: 0;
-  }
-  10%,
-  90% {
-    width: var(--wordmark-width);
-  }
+:global([data-theme='dark']) .cmdFocus {
+  color: #fff;
 }
 
-@keyframes cursorBlink {
-  50% {
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cmd::before {
-    width: var(--wordmark-width);
-    animation: none;
-  }
-
-  .cmd::after {
-    animation: none;
-  }
+/* Surname: the italic accent — cyan, not --magenta: --metal (which "Julia" now uses) is close
+   enough in hue to --magenta that the two would blur together into one pink instead of reading
+   as focus word then accent. Cyan is the reference site's own sky-blue label/link color. */
+.cmdAccent {
+  color: var(--name-pink);
+  font-size: 0.92em;
+  font-weight: 400;
+  font-style: italic;
 }

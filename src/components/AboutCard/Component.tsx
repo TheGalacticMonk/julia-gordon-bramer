@@ -36,16 +36,21 @@ export const AboutCard: React.FC<Props> = async ({
   const avatarImage = aboutImage || heroImage
 
   return (
-    <section className={styles.section}>
+    <>
       {/* Same seam RenderBlocks draws between its own alternating bands (see that file) — this
           card isn't one of those bands (it's hardcoded in page.tsx, not a modules entry), but it
           sits right where the next one would fall, continuing the same raised/plain rhythm:
           PressStrip (the homepage's last actual module) ends "plain" (--paper), so this
           continues as "raised" (--paper-raised), and the curve sweeps down in --paper to match
           what's above it. */}
-      <CurvedDivider fillClassName="fill-paper" flip />
-      <div className={`container ${styles.cardWrap}`}>
-        <div className={styles.card}>
+      <CurvedDivider
+        fillClassName="fill-section-base"
+        nextFillClassName="fill-section-raised"
+        flip
+      />
+      <section className={styles.section}>
+        <div className={`container ${styles.cardWrap}`}>
+          <div className={styles.card}>
           <div className={styles.header}>
             {avatarImage && typeof avatarImage === 'object' && (
               <div className={styles.avatar}>
@@ -103,8 +108,9 @@ export const AboutCard: React.FC<Props> = async ({
               />
             </div>
           )}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   )
 }

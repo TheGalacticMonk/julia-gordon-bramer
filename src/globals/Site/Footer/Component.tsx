@@ -13,7 +13,7 @@ export async function Footer() {
   const socials = siteData?.socials || []
 
   return (
-    <footer className="mt-auto bg-paper-raised text-ink">
+    <footer className="section-raised mt-auto text-ink">
       <hr className="ink-rule" />
       <div className="container flex flex-col gap-8 py-8 md:flex-row md:justify-between">
         <Link className="flex items-center" href="/">

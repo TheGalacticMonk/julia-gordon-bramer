@@ -34,7 +34,9 @@
   height: 3px;
   border-radius: 50px;
   background-color: currentcolor;
-  transition: all 0.4s;
+  transition:
+    transform 0.25s ease,
+    opacity 0.2s ease;
   position: relative;
 }
 
@@ -69,22 +71,22 @@
   background-color: var(--color-paper-raised);
   color: var(--color-ink);
   clip-path: inset(0% 0% 0% 0% round 10px);
-  transition: all 0.4s;
+  transition: clip-path 0.3s ease;
   z-index: 30;
 }
 
 .menu-list {
-  --delay: 0.4s;
-  --trdelay: 0.15s;
+  --delay: 0.16s;
+  --trdelay: 0.055s;
   display: block;
   padding: 10px 16px;
   border-radius: inherit;
   transition: background-color 0.2s 0s;
   position: relative;
-  transform: translateY(30px);
+  transform: translateY(12px);
   opacity: 0;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -107,40 +109,7 @@
   background-color: var(--color-rule);
 }
 
-/* Booking CTA row — plain .menu-list styling made it just a gold/bold text link, same look
-   the ACTIVE nav item already uses (text-metal font-semibold) for "you are here." Sitting
-   next to each other in the same list, both read as gold text and were easy to mix up. This
-   gives the CTA its own affordance instead of relying on a color the active state also owns:
-   a filled pill button, echoing the desktop header's "Book a reading" button so the same
-   action reads the same way at both sizes. Composed with .menu-list (not replacing it) so it
-   keeps that class's stagger-reveal timing and divider-suppression-on-last-child. */
-.menu-cta {
-  margin: 4px 16px 6px;
-  padding: 10px 16px;
-  border-radius: 999px;
-  background-color: var(--color-metal);
-  color: var(--color-metal-ink);
-  font-weight: 700;
-  text-align: center;
-  width: auto;
-}
-
-.menu-cta:hover {
-  background-color: var(--color-metal);
-  opacity: 0.9;
-}
-
-.menu-cta::after {
-  content: none;
-}
-
-/* Instagram/X row, between the nav links and the CTA (not after it — "Book a reading" stays
-   the last, most prominent thing in the dropdown). Same .menu-list composition pattern as
-   .menu-cta (icon row instead of a full-width text line). Sitting mid-list rather than last
-   means it needs no special divider handling at all: the last nav link's own ::after (no longer
-   suppressed, since this row and the CTA now follow it) separates it from this row, and this
-   row's own ::after (also no longer last-child) separates it from the CTA in turn — both for
-   free from .menu-list's default rules. */
+/* Instagram/X row follows the five primary navigation links. */
 .menu-social {
   display: flex;
   align-items: center;
@@ -165,40 +134,34 @@
   opacity: 1;
 }
 
-/* Staggered reveal — one rule per item, extended to 7 (the reference only had 4 menu items; we
-   have 5 nav links, the "Book a reading" CTA, and the instagram/x row appended after them). */
+/* Compact stagger for the five links and optional social row. */
 .inp:not(:checked) ~ .menu-container .menu-list:nth-child(1) {
   transition:
-    transform 0.4s var(--delay),
-    opacity 0.4s var(--delay);
+    transform 0.26s var(--delay),
+    opacity 0.26s var(--delay);
 }
 .inp:not(:checked) ~ .menu-container .menu-list:nth-child(2) {
   transition:
-    transform 0.4s calc(var(--delay) + (var(--trdelay) * 1)),
-    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 1));
+    transform 0.26s calc(var(--delay) + (var(--trdelay) * 1)),
+    opacity 0.26s calc(var(--delay) + (var(--trdelay) * 1));
 }
 .inp:not(:checked) ~ .menu-container .menu-list:nth-child(3) {
   transition:
-    transform 0.4s calc(var(--delay) + (var(--trdelay) * 2)),
-    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 2));
+    transform 0.26s calc(var(--delay) + (var(--trdelay) * 2)),
+    opacity 0.26s calc(var(--delay) + (var(--trdelay) * 2));
 }
 .inp:not(:checked) ~ .menu-container .menu-list:nth-child(4) {
   transition:
-    transform 0.4s calc(var(--delay) + (var(--trdelay) * 3)),
-    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 3));
+    transform 0.26s calc(var(--delay) + (var(--trdelay) * 3)),
+    opacity 0.26s calc(var(--delay) + (var(--trdelay) * 3));
 }
 .inp:not(:checked) ~ .menu-container .menu-list:nth-child(5) {
   transition:
-    transform 0.4s calc(var(--delay) + (var(--trdelay) * 4)),
-    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 4));
+    transform 0.26s calc(var(--delay) + (var(--trdelay) * 4)),
+    opacity 0.26s calc(var(--delay) + (var(--trdelay) * 4));
 }
 .inp:not(:checked) ~ .menu-container .menu-list:nth-child(6) {
   transition:
-    transform 0.4s calc(var(--delay) + (var(--trdelay) * 5)),
-    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 5));
-}
-.inp:not(:checked) ~ .menu-container .menu-list:nth-child(7) {
-  transition:
-    transform 0.4s calc(var(--delay) + (var(--trdelay) * 6)),
-    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 6));
+    transform 0.26s calc(var(--delay) + (var(--trdelay) * 5)),
+    opacity 0.26s calc(var(--delay) + (var(--trdelay) * 5));
 }

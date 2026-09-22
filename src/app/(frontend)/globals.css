@@ -47,11 +47,10 @@
   --breakpoint-2xl: 86rem;
   /* UI chrome and body copy (nav, buttons, labels, metadata, long-form reading) is Inter,
      site-wide — matching the homepage hero's font pairing. */
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-barlow-condensed);
   --font-mono: ui-monospace, monospace;
-  /* Headings — Cormorant, the "editorial" didone-style serif from the uiverse.io Cairn design
-     system (https://uiverse.io/design/systems/cairn-2), matching the homepage hero. */
-  --font-display: var(--font-cormorant);
+  /* Same expressive display face used by the reference site. */
+  --font-display: var(--font-fraunces);
   --font-reading: var(--font-inter);
 }
 
@@ -103,57 +102,79 @@
 }
 
 /*
- * Site-wide palette. `[data-theme='dark']` is "what we have" — the navy/cream scheme matching
- * the homepage hero card's portrait colors. `:root` (light) is a real tan/cream palette — warm
- * paper, near-black ink — reviving the original "Literary Mystic" direction from
- * agency/design-system.md rather than reusing the dark theme's navy hues. `--metal` is gold in
- * BOTH themes (not olive in dark) — it started tied to her photographed shirt color, but that
- * read as bland/muddy for buttons, so it's a plain warm-gold UI accent now. Light theme's
- * version used to sit noticeably duller/browner (#c1801f) than dark theme's (#f2b336) on the
- * reasoning that it needed to be "deeper" to read against the light cream page — in practice
- * that just made it look muted next to how vivid the dark-theme buttons are. It's bumped to a
- * punchier, more saturated gold-orange now (#e8a10c) — still dark enough in L to hold contrast
- * against `--paper`, but with S pushed up close to dark theme's so the two don't feel like a
- * strong version and a washed-out version of the same accent. `--blush`/`--wine` (below) stay
- * constant across both themes — they read fine against either paper color and don't need a
- * variant.
+ * Site-wide palette — matches nothing-wrong-with-you.thegalacticmonks.workers.dev's actual
+ * measured colors (computed styles pulled directly from that live site), per direct request to
+ * adopt "the palette we used for this website" wholesale, including replacing gold with that
+ * site's orchid-pink for the CTA/"Julia" role. That site is dark-only; light mode below is this
+ * project's own adaptation — same hues, deepened where a pastel dark-mode value (the orchid and
+ * the sky-cyan) would lose contrast against a light background, the same way the site's own
+ * earlier gold light/dark split already handled that problem for --metal.
  *
- * Accent saturation was deliberately pushed up from the first pass at these (sampled almost
- * literally off portrait pixels, which read as dusty/washed out at full site scale — a photo's
- * actual skin/lipstick/hair tones are muted in a way that doesn't translate to bold UI accents)
- * — same hue family as the source photo, boosted S/L for actual presence instead of blending
- * into the background. Same adjustment applied to Hero/styles.module.css's accent-coral/
- * mint/lavender, which share these hues.
+ * --violet (now that site's crimson) and --magenta (unchanged hot-pink, kept distinct from the
+ * new --metal orchid specifically so metal→magenta hover transitions, e.g. .ticketButton, stay
+ * visible — see EventList/eventCard.module.css) stay constant across both themes. --cyan is now
+ * themed (see [data-theme='dark'] below) since the reference's sky-cyan is too pale to read as
+ * light-mode text without deepening.
  */
 :root {
-  /* --paper/--paper-raised swapped from the original #f6f1e7/#ffffff pairing: the page canvas
-     is now the whiter of the two, and the cream tone moved to raised surfaces (cards, header,
-     the homepage hero card) so chrome reads as a warm sheet sitting ON the page rather than a
-     hard color inversion against it. See the header-chrome comment below and
-     Hero/styles.module.css for the matching swap. */
-  --paper: #ffffff;
-  --paper-raised: #f6f1e7;
-  --ink: #1c1812;
-  --ink-muted: #5b5346;
-  --rule: #ded4bf;
-  --metal: #e8a10c;
-  --metal-ink: #5c3f16;
-  /* Two more colors from her portrait (lipstick, lightened / lipstick, true) — used for site
-     chrome that wants to stand apart from the page (header) rather than blend into it. Kept
-     constant across light/dark (see file comment above). Named independently from the
-     near-identical values in Hero/styles.module.css: that module is only loaded on the
-     homepage, so anything sitewide (like the header) needs its own copy in this always-loaded
-     stylesheet rather than depending on a page-specific one. */
-  --blush: #db7680;
-  --wine: #79202a;
+  /* --paper/--paper-raised: the page canvas is the paler of the two (soft violet-white), raised
+     surfaces (cards, header, the homepage hero card) get a slightly deeper violet-tinted sheet
+     sitting on top of it. See the header-chrome comment below and Hero/styles.module.css for
+     the matching swap. */
+  --paper: #f7f6fb;
+  --paper-raised: #ece9f7;
+  --section-base: var(--paper);
+  --section-raised: var(--paper-raised);
+  --ink: #0a0e2a;
+  --ink-muted: #5a5570;
+  --rule: #ded9ef;
+  /* Orchid-pink, the reference site's exact CTA-button/italic-accent color — deepened here for
+     light-mode contrast (its own #e086d4 is too pale to read as text/button-fill on a light
+     page); dark mode below uses that exact value. Replaces gold: same CTA/active-state/"Julia"
+     role, new hue. */
+  --metal: #a3238e;
+  /* Text/border color for anything sitting ON a --metal fill — the reference's own near-black
+     page-background color in light mode (dark text pops on the lighter dark-mode orchid), its
+     own cream headline color in dark mode (light text pops on the deeper light-mode orchid). */
+  --metal-ink: #fbf6ec;
+  /* Deep crimson — the reference site's secondary-button color, reused here as the third named
+     accent (subheading text, focus rings, hover-darken states). Replaces the old --violet (a
+     bright violet with no equivalent on the reference site). */
+  --violet: #8f2340;
+  /* Hot pink — unchanged from the previous cosmic pass. Deliberately NOT updated to the
+     reference's softer orchid: --metal above already claimed that hue for the CTA/"Julia" role,
+     and this needed to stay visibly distinct from it for metal→magenta hover transitions (see
+     file comment above) and to leave the already-approved pencil-icon pink alone. */
+  --magenta: #ec4899;
+  /* Deep bold navy — used specifically for "Julia" (the wordmark's/hero heading's focus word)
+     in LIGHT mode only; dark mode keeps --metal (now orchid-pink) there instead, since navy-on-
+     near-black would have no contrast. Distinct from --navy below, which is a much darker/
+     desaturated surface color (raised chrome backgrounds), not meant to be read as text. */
+  --navy-deep: #1e3a8a;
+  /* Bright yellow — used for the header wordmark's pencil-icon squiggle in dark mode only (see
+     --pencil-squiggle below); a true yellow rather than reusing --metal's pink, on direct
+     request. Unchanged by this palette pass. */
+  --yellow: #facc15;
+  --name-pink: #f91880;
+  --sparkle: #4f46e5;
+  /* Themed (not constant) — the wordmark's pencil-icon squiggle color: navy in light mode
+     (readable against the light header, echoes the pencil's own bold-navy sibling treatment on
+     "Julia"), yellow in dark mode (navy would vanish against the near-black header there).
+     Redeclared in [data-theme='dark'] below. */
+  --pencil-squiggle: var(--navy-deep);
   /* Fixed cream/navy, independent of --paper — used for site chrome (header) and the homepage
      hero card, which now echo whichever of the two --paper-raised already is for the current
      theme (cream in light, navy in dark) rather than inverting against the page. Only declared
-     once, here — constant across both themes the same way --blush/--wine are, so
+     once, here — constant across both themes the same way --violet/--magenta above are, so
      [data-theme='dark'] doesn't need to redeclare them; the cascade carries them through
      unchanged. */
-  --cream: #f6f1e7;
-  --navy: #0a1f2e;
+  --cream: #ece9f7;
+  --navy: #111a45;
+  /* Sky-cyan — themed, unlike --violet/--magenta above: the reference's own #8fe3f5 (used below
+     for dark mode) is too pale to read as light-mode text, so light mode gets a deepened teal
+     instead. Used for "Gordon-Bramer"/link-style accents — reassigned off --magenta so it
+     doesn't collide with --metal's new orchid-pink on "Julia" right above it. */
+  --cyan: #0e7490;
 
   --background: var(--paper);
   --foreground: var(--ink);
@@ -167,8 +188,11 @@
   --secondary-foreground: var(--ink);
   --muted: var(--rule);
   --muted-foreground: var(--ink-muted);
-  --accent: var(--metal);
-  --accent-foreground: var(--metal-ink);
+  /* --accent is violet (distinct from --primary's gold) rather than duplicating --primary —
+     gives form/UI primitives (button.tsx, select.tsx) a second cosmic accent instead of every
+     highlight defaulting to gold. */
+  --accent: var(--violet);
+  --accent-foreground: #f8f5ff;
   --destructive: oklch(57.7% 0.245 27.325deg);
   --destructive-foreground: oklch(57.7% 0.245 27.325deg);
   --border: var(--rule);
@@ -194,23 +218,28 @@
 }
 
 [data-theme='dark'] {
-  /* Mirrors :root's --paper/--paper-raised swap, but in the opposite direction: the page canvas
-     goes to a LIGHTER navy (the site's original dark-theme --paper-raised value) while the old
-     page navy (#0a1f2e) moves up to raised surfaces — header, homepage hero card — via the
-     fixed --navy token above. That also keeps the hero card's drop-shadow (drawn in
-     --accent-ink, which equals --metal-ink below) visible against the page instead of the two
-     colliding, the way a same-hex near-black choice for --paper would have. */
-  --paper: #132a3d;
-  --paper-raised: #0a1f2e;
-  --ink: #f3ece0;
-  --ink-muted: rgba(243, 236, 224, 0.65);
-  --rule: rgba(243, 236, 224, 0.16);
-  /* Bright gold, not olive — moved off her literal shirt color per direct feedback that the
-     olive read as bland/muddy for buttons. */
-  --metal: #f2b336;
-  --metal-ink: #04141f;
-  --blush: #db7680;
-  --wine: #79202a;
+  /* Deep indigo-blue canvas. Full-width bands remain translucent so the sparkle field stays
+     visible, while cards use a solid midnight-blue surface. */
+  --paper: #0d1530;
+  --paper-raised: #17234a;
+  --section-base: rgba(13, 21, 48, 0.48);
+  --section-raised: rgba(28, 40, 78, 0.72);
+  --ink: #f2eff4;
+  --ink-muted: rgba(226, 221, 229, 0.7);
+  --rule: rgba(242, 239, 244, 0.16);
+  /* Orchid-pink, the reference site's exact value — see the :root comment above for why light
+     mode deepens it and why this replaced gold. */
+  --metal: #d98fce;
+  --metal-ink: #17151a;
+  --violet: #d36f89;
+  --magenta: #d952aa;
+  --yellow: #e5c86f;
+  /* Sky-cyan, the reference site's exact value — see the :root comment above for why light mode
+     deepens it. */
+  --cyan: #9bc8d4;
+  --name-pink: #f91880;
+  --sparkle: #d2d4f0;
+  --pencil-squiggle: var(--yellow);
   --background: var(--paper);
   --foreground: var(--ink);
   --card: var(--paper-raised);
@@ -223,8 +252,8 @@
   --secondary-foreground: var(--ink);
   --muted: var(--rule);
   --muted-foreground: var(--ink-muted);
-  --accent: var(--metal);
-  --accent-foreground: var(--metal-ink);
+  --accent: var(--violet);
+  --accent-foreground: #f8f5ff;
   --destructive: oklch(39.6% 0.141 25.723deg);
   --destructive-foreground: oklch(63.7% 0.237 25.331deg);
   --border: var(--rule);
@@ -256,8 +285,9 @@
   --color-rule: var(--rule);
   --color-metal: var(--metal);
   --color-metal-ink: var(--metal-ink);
-  --color-blush: var(--blush);
-  --color-wine: var(--wine);
+  --color-violet: var(--violet);
+  --color-magenta: var(--magenta);
+  --color-cyan: var(--cyan);
   --color-cream: var(--cream);
   --color-navy: var(--navy);
   --color-background: var(--background);
@@ -307,6 +337,74 @@
   }
   body {
     @apply bg-background text-foreground min-h-[100vh] flex flex-col;
+    isolation: isolate;
+  }
+}
+
+/* Decorative sparkle field adapted from the supplied button effect. Fixed positioning keeps
+   the stars evenly distributed as the page scrolls; page content paints above this layer. */
+.magic-sparkles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--sparkle);
+}
+
+.magic-sparkle {
+  position: absolute;
+  display: block;
+  opacity: 0;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, currentcolor 75%, transparent));
+  animation-name: magic-sparkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.magic-sparkle-star {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: magic-sparkle-spin 12s linear infinite;
+}
+
+/* Full-width section tones stay translucent in dark mode so the sparkle field remains visible.
+   Cards continue to use the opaque --paper/--paper-raised surfaces. */
+.section-raised {
+  background-color: var(--section-raised);
+}
+
+.fill-section-base {
+  fill: var(--section-base);
+}
+
+.fill-section-raised {
+  fill: var(--section-raised);
+}
+
+@keyframes magic-sparkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.45);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes magic-sparkle-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .magic-sparkle {
+    opacity: 0.45;
+    transform: none;
   }
 }
 
@@ -443,6 +541,12 @@ html[data-theme='light'] {
   text-shadow:
     0 0 4px currentcolor,
     0 0 10px currentcolor;
+}
+
+.nav-link-glow {
+  transition:
+    color 180ms ease,
+    text-shadow 180ms ease;
 }
 
 @media (prefers-reduced-motion: no-preference) {
