@@ -14,6 +14,7 @@
  *   see the comments below for exactly which source backs each line.
  * - The hero portrait, uploaded from `assets/julia-gordon-bramer-profile.png` if present on
  *   disk (that folder isn't committed — this is a no-op on a machine without it).
+ * - Julia's confirmed Instagram and X profiles in the Site global when no social links exist.
  *
  * Deliberately NOT seeded: the BioSplit module (still needs a portrait sized/cropped for that
  * layout specifically — see open-questions.md "Brand"), Books/Events content (real cover
@@ -51,6 +52,11 @@ const pressQuotes: Array<{ quote: string; source: string; context?: string }> = 
   { quote: "St. Louis' Top Ten Psychics", source: 'Psychic St. Louis' },
   { quote: "St. Louis' Number One Fortune-Teller", source: 'CBS Radio' },
   { quote: "St. Louis' Best Local Poet", source: 'Riverfront Times', context: '2013' },
+]
+
+const socialLinks = [
+  { platform: 'instagram' as const, url: 'https://www.instagram.com/jgordonbramer/' },
+  { platform: 'x' as const, url: 'https://x.com/JGordonBramer' },
 ]
 
 const lexicalParagraph = (text: string) => ({
@@ -268,32 +274,44 @@ async function seed() {
   payload.logger.info('Seeding site nav…')
   const site = await payload.findGlobal({ slug: 'site' })
 
-  if (site.navItems && site.navItems.length > 0) {
-    payload.logger.info('Site global already has nav items — leaving it as-is.')
+  const siteData: Record<string, unknown> = {}
+
+  if (!site.navItems || site.navItems.length === 0) {
+    // Only routes that actually render real content today — /about, /press, /writing aren't
+    // in this list because those pages don't exist yet (see the file-level comment).
+    siteData.navItems = [
+      { link: { type: 'custom', url: '/', label: 'HOME' } },
+      { link: { type: 'custom', url: '/tarot', label: 'TAROT' } },
+      { link: { type: 'custom', url: '/books', label: 'BOOKS' } },
+      {
+        link: {
+          type: 'custom',
+          url: '/scholarship',
+          label: 'DECODING SYLVIA PLATH',
+        },
+      },
+      { link: { type: 'custom', url: '/contact', label: 'CONTACT' } },
+    ]
+    siteData.bookingUrl = site.bookingUrl || '/contact'
+    payload.logger.info('Prepared main nav.')
   } else {
-    // Only routes that actually render real content today — /about, /tarot, /press, /writing
-    // aren't in this list because those pages don't exist yet (see the file-level comment).
+    payload.logger.info('Site global already has nav items — leaving them as-is.')
+  }
+
+  if (!site.socials || site.socials.length === 0) {
+    siteData.socials = socialLinks
+    payload.logger.info('Prepared social links.')
+  } else {
+    payload.logger.info('Site global already has social links — leaving them as-is.')
+  }
+
+  if (Object.keys(siteData).length > 0) {
     await payload.updateGlobal({
       slug: 'site',
       context: { disableRevalidate: true },
-      data: {
-        navItems: [
-          { link: { type: 'custom', url: '/', label: 'HOME' } },
-          { link: { type: 'custom', url: '/tarot', label: 'TAROT' } },
-          { link: { type: 'custom', url: '/books', label: 'BOOKS' } },
-          {
-            link: {
-              type: 'custom',
-              url: '/scholarship',
-              label: 'DECODING SYLVIA PLATH',
-            },
-          },
-          { link: { type: 'custom', url: '/contact', label: 'CONTACT' } },
-        ],
-        bookingUrl: site.bookingUrl || '/contact',
-      },
+      data: siteData,
     })
-    payload.logger.info('Seeded main nav.')
+    payload.logger.info('Updated site settings.')
   }
 
   payload.logger.info('Seed complete.')

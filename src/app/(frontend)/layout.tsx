@@ -96,7 +96,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <AnnouncementBar />
           <Header />
           <SocialSidebar />
-          {children}
+          <main className="site-main">{children}</main>
           <Footer />
         </Providers>
       </body>

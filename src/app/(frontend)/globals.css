@@ -277,6 +277,14 @@
     isolation: isolate;
   }
 
+  /* Keep the decorative orb field atmospheric on every route. The homepage hero already has
+     this translucent surface of its own; applying the same veil to the shared content wrapper
+     prevents interior pages with no section background from making the orbs look overly bright. */
+  .site-main {
+    flex: 1 1 auto;
+    background-color: var(--section-base);
+  }
+
 .orb-pattern {
   position: fixed;
   inset: 0;
