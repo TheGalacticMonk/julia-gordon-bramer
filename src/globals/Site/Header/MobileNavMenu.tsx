@@ -34,6 +34,8 @@ export const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
   const pathname = usePathname()
 
   useEffect(() => {
+    // Navigation changes are an external event that should close the controlled menu.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOpen(false)
   }, [pathname])
 

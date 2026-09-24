@@ -25,6 +25,8 @@
   position: relative;
   width: clamp(15rem, 62vw, 19rem);
   aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: var(--accent);
   z-index: 1;
 }
 

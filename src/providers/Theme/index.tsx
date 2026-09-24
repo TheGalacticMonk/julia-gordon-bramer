@@ -31,7 +31,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     const themeToSet: Theme = themeIsValid(preference) ? preference : defaultTheme
 
     document.documentElement.setAttribute('data-theme', themeToSet)
-    setThemeState(themeToSet)
   }, [])
 
   return <ThemeContext value={{ setTheme, theme }}>{children}</ThemeContext>

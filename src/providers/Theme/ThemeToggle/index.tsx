@@ -19,6 +19,8 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className }) => {
 
   useEffect(() => {
     const preference = window.localStorage.getItem(themeLocalStorageKey)
+    // Read the browser-only preference after hydration to avoid a server/client mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setChecked(preference !== 'dark')
   }, [])
 

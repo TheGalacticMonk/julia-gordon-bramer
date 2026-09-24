@@ -2,6 +2,7 @@ import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
 import configPromise from '@payload-config'
+import Link from 'next/link'
 import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
@@ -34,9 +35,9 @@ export default async function Page() {
         <p className="mt-4 text-pretty text-ink-muted">
           Tour news, essays, and the occasional dispatch from the road — alongside the
           Sylvia Plath scholarship. Looking for the essay series specifically?{' '}
-          <a className="text-metal underline" href="/scholarship">
+          <Link className="text-metal underline" href="/scholarship">
             Visit the Scholarship page
-          </a>
+          </Link>
           .
         </p>
       </div>

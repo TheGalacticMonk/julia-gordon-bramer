@@ -86,7 +86,7 @@ export default async function ContactPage({ searchParams }: Props) {
         </div>
 
         <fieldset className="flex flex-col gap-2">
-          <legend className="font-medium">What's this about?</legend>
+          <legend className="font-medium">What&apos;s this about?</legend>
           {reasonOptions.map((option, i) => (
             <label key={option.value} className="flex items-center gap-3 py-1">
               <input
