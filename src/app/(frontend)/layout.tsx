@@ -17,7 +17,6 @@ import { InitTheme } from '@/providers/Theme/InitTheme'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { personSchema } from '@/utilities/schemaOrg'
-import { draftMode } from 'next/headers'
 
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -54,7 +53,6 @@ const barlowCondensed = Barlow_Condensed({
 })
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { isEnabled } = await draftMode()
   const seoDefaults = await getCachedGlobal('seoDefaults', 0)()
 
   return (
@@ -87,11 +85,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             placement for JSON-LD for that reason.
           */}
           <JsonLd data={personSchema(seoDefaults?.organizationName || 'Julia Gordon-Bramer')} />
-          <AdminBar
-            adminBarProps={{
-              preview: isEnabled,
-            }}
-          />
+          <AdminBar />
 
           <AnnouncementBar />
           <Header />

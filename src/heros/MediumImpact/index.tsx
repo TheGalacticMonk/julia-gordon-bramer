@@ -30,7 +30,8 @@ export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richTex
             <Media
               className="-mx-4 md:-mx-8 2xl:-mx-16"
               imgClassName=""
-              priority
+              size="(max-width: 767px) 100vw, 1200px"
+              preload
               resource={media}
             />
             {media?.caption && (

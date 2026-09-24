@@ -21,12 +21,14 @@ export const ImageBlock: React.FC<Props> = (props) => {
           <Media
             imgClassName="w-full rounded-[0.4rem] border border-border"
             resource={image}
+            size={layout === 'pair' ? '(max-width: 639px) 100vw, 50vw' : '100vw'}
           />
         )}
         {layout === 'pair' && imageTwo && typeof imageTwo === 'object' && (
           <Media
             imgClassName="w-full rounded-[0.4rem] border border-border"
             resource={imageTwo}
+            size="(max-width: 639px) 100vw, 50vw"
           />
         )}
       </div>

@@ -42,7 +42,11 @@ export const BookShelfBlock: React.FC<Props> = async ({ heading, books: selected
               reference={{ relationTo: 'books', value: book }}
             >
               {book.coverImage && typeof book.coverImage === 'object' && (
-                <Media resource={book.coverImage} imgClassName="w-full" />
+                <Media
+                  resource={book.coverImage}
+                  size="(max-width: 639px) 50vw, (max-width: 767px) 33vw, 25vw"
+                  imgClassName="w-full"
+                />
               )}
               <span className="font-sans text-sm font-medium text-ink">{book.title}</span>
               {book.publisher && (

@@ -32,7 +32,9 @@ const nextConfig: NextConfig = {
     // getMediaUrl() always builds absolute URLs now (required for Cloudflare, see its
     // comment), so this is needed for images to load in local dev too.
     dangerouslyAllowLocalIP: true,
-    qualities: [100],
+    // Keep image optimization on the efficient default used by Next.js. A single
+    // allowlisted value also prevents arbitrary quality requests on the optimizer.
+    qualities: [75],
     remotePatterns: [
       ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
         const url = new URL(item)

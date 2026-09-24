@@ -46,7 +46,11 @@ export default async function BooksPage() {
                   reference={{ relationTo: 'books', value: book }}
                 >
                   {book.coverImage && typeof book.coverImage === 'object' && (
-                    <Media resource={book.coverImage} imgClassName="w-full" />
+                    <Media
+                      resource={book.coverImage}
+                      size="(max-width: 639px) 100vw, (max-width: 767px) 50vw, 33vw"
+                      imgClassName="w-full"
+                    />
                   )}
                   <div>
                     <p className="font-display text-lg text-ink">{book.title}</p>

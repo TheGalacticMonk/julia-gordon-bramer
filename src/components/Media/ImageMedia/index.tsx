@@ -8,10 +8,7 @@ import React from 'react'
 
 import type { Props as MediaProps } from '../types'
 
-import { cssVariables } from '@/cssVariables'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
-
-const { breakpoints } = cssVariables
 
 // A base64 encoded image to use as a placeholder while the image is loading
 const placeholderBlur =
@@ -38,7 +35,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     fill,
     pictureClassName,
     imgClassName,
-    priority,
+    preload,
     resource,
     size: sizeFromProps,
     src: srcFromProps,
@@ -63,14 +60,13 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     src = getMediaUrl(url, cacheTag)
   }
 
-  const loading = loadingFromProps || (!priority ? 'lazy' : undefined)
+  const loading = loadingFromProps || (!preload ? 'lazy' : undefined)
 
-  // NOTE: this is used by the browser to determine which image to download at different screen sizes
-  const sizes = sizeFromProps
-    ? sizeFromProps
-    : Object.entries(breakpoints)
-        .map(([, value]) => `(max-width: ${value}px) ${value * 2}w`)
-        .join(', ')
+  // `sizes` describes the image's rendered CSS width, not the width of an image
+  // candidate. The previous fallback emitted values such as `3840w` for a 1920px
+  // viewport, which made the browser request unnecessarily large variants. Call
+  // sites with a more specific layout should continue to pass their own value.
+  const sizes = sizeFromProps || '100vw'
 
   return (
     <picture className={cn(fill && 'relative block h-full w-full', pictureClassName)}>
@@ -81,8 +77,8 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         height={!fill ? height : undefined}
         placeholder="blur"
         blurDataURL={placeholderBlur}
-        priority={priority}
-        quality={100}
+        preload={preload}
+        quality={75}
         loading={loading}
         sizes={sizes}
         src={src}

@@ -37,13 +37,28 @@ export const AdminBar: React.FC<{
   const { adminBarProps } = props || {}
   const segments = useSelectedLayoutSegments()
   const [show, setShow] = useState(false)
+  const [preview, setPreview] = useState(false)
   const collection = (
     collectionLabels[segments?.[1] as keyof typeof collectionLabels] ? segments[1] : 'pages'
   ) as keyof typeof collectionLabels
   const router = useRouter()
 
   const onAuthChange = React.useCallback((user: PayloadMeUser) => {
-    setShow(Boolean(user?.id))
+    const authenticated = Boolean(user?.id)
+    setShow(authenticated)
+
+    if (!authenticated) {
+      setPreview(false)
+      return
+    }
+
+    fetch('/next/preview-status', { cache: 'no-store' })
+      .then((response) => (response.ok ? response.json() : { isEnabled: false }))
+      .then((data) => {
+        const status = data as { isEnabled?: boolean }
+        setPreview(Boolean(status.isEnabled))
+      })
+      .catch(() => setPreview(false))
   }, [])
 
   return (
@@ -56,6 +71,7 @@ export const AdminBar: React.FC<{
       <div className="container">
         <PayloadAdminBar
           {...adminBarProps}
+          preview={preview}
           className="py-2 text-white"
           classNames={{
             controls: 'font-medium text-white',

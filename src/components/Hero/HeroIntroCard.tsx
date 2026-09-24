@@ -47,9 +47,9 @@ export const HeroIntroCard: React.FC<Props> = ({
             <Media
               resource={heroImage}
               fill
+              size="(max-width: 1023px) 100vw, 54vw"
               imgClassName={styles.introPhoto}
-              priority
-              unoptimized
+              preload
             />
           </div>
         </div>
