@@ -103,6 +103,8 @@
 
 .titleFocus {
   font-weight: 700;
+  position: relative;
+  left: 0.11em;
 }
 
 .titleAccent {
