@@ -165,8 +165,8 @@
      visible, while cards use a solid midnight-blue surface. */
   --paper: #0d1530;
   --paper-raised: #17234a;
-  --section-base: rgba(13, 21, 48, 0.48);
-  --section-raised: rgba(28, 40, 78, 0.72);
+  --section-base: rgba(13, 21, 48, 0.4);
+  --section-raised: rgba(28, 40, 78, 0.64);
   --ink: #f2eff4;
   --ink-muted: rgba(226, 221, 229, 0.7);
   --rule: rgba(242, 239, 244, 0.16);
