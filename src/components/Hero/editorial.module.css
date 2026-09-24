@@ -26,12 +26,12 @@
   width: clamp(15rem, 62vw, 19rem);
   aspect-ratio: 1;
   border-radius: 50%;
-  background-color: var(--paper);
+  background-color: #fff;
   z-index: 1;
 }
 
 :global([data-theme='dark']) .introPhotoFrame {
-  background-color: #fff;
+  background-color: var(--paper);
 }
 
 .introPhoto {
