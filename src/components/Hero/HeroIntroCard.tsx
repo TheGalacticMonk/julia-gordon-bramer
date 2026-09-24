@@ -49,7 +49,6 @@ export const HeroIntroCard: React.FC<Props> = ({
               fill
               size="(max-width: 1023px) 100vw, 54vw"
               imgClassName={styles.introPhoto}
-              placeholder="empty"
               preload
             />
           </div>
