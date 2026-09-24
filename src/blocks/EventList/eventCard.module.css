@@ -97,7 +97,7 @@
 
 .ticketButton:hover {
   transform: translateY(-0.15em);
-  background: var(--name-pink);
+  background: var(--accent);
 }
 
 .ticketButton:active {
@@ -142,11 +142,11 @@
 }
 
 :global([data-theme='dark']) .exploreButton {
-  box-shadow: 0.15em 0.15em 0 0 var(--name-indigo);
+  box-shadow: 0.15em 0.15em 0 0 var(--sparkle);
 }
 
 :global([data-theme='dark']) .exploreButton:active {
-  box-shadow: 0.05em 0.05em 0 0 var(--name-indigo);
+  box-shadow: 0.05em 0.05em 0 0 var(--sparkle);
 }
 
 .exploreButton:active,
@@ -162,14 +162,14 @@
   position: relative;
   display: block;
   background-color: var(--metal);
-  /* Indigo rim/shadow in dark mode echoes Gordon-Bramer and the sparkle field. */
+  /* Indigo rim/shadow in dark mode echoes Julia (the brighter first-name color) and the sparkle field. */
   border: 2px solid var(--ink);
   border-radius: 9999px;
   overflow: hidden;
 }
 
 :global([data-theme='dark']) .exploreButtonFace {
-  border-color: var(--name-indigo);
+  border-color: var(--sparkle);
 }
 
 .exploreButtonFace::before {

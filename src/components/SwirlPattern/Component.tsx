@@ -1,22 +1,22 @@
 import React from 'react'
 
 const SWIRLS = [
-  { top: '2%', left: '4%', size: 86, delay: '-1s', duration: '11s', color: 'var(--name-pink)' },
-  { top: '2%', left: '30%', size: 72, delay: '-4s', duration: '13s', color: 'var(--name-indigo)' },
+  { top: '2%', left: '4%', size: 86, delay: '-1s', duration: '11s', color: 'var(--accent)' },
+  { top: '2%', left: '30%', size: 72, delay: '-4s', duration: '13s', color: 'var(--sparkle)' },
   { top: '2%', left: '56%', size: 98, delay: '-7s', duration: '12s', color: 'var(--metal)' },
   { top: '2%', left: '82%', size: 78, delay: '-10s', duration: '14s', color: 'var(--accent)' },
   { top: '28%', left: '4%', size: 72, delay: '-5s', duration: '13s', color: 'var(--sparkle)' },
-  { top: '28%', left: '30%', size: 104, delay: '-8s', duration: '11s', color: 'var(--name-pink)' },
-  { top: '28%', left: '56%', size: 78, delay: '-11s', duration: '14s', color: 'var(--name-indigo)' },
+  { top: '28%', left: '30%', size: 104, delay: '-8s', duration: '11s', color: 'var(--accent)' },
+  { top: '28%', left: '56%', size: 78, delay: '-11s', duration: '14s', color: 'var(--sparkle)' },
   { top: '28%', left: '82%', size: 94, delay: '-2s', duration: '12s', color: 'var(--metal)' },
   { top: '54%', left: '4%', size: 96, delay: '-9s', duration: '12s', color: 'var(--accent)' },
   { top: '54%', left: '30%', size: 76, delay: '-12s', duration: '14s', color: 'var(--sparkle)' },
-  { top: '54%', left: '56%', size: 102, delay: '-3s', duration: '11s', color: 'var(--name-pink)' },
-  { top: '54%', left: '82%', size: 72, delay: '-6s', duration: '13s', color: 'var(--name-indigo)' },
+  { top: '54%', left: '56%', size: 102, delay: '-3s', duration: '11s', color: 'var(--accent)' },
+  { top: '54%', left: '82%', size: 72, delay: '-6s', duration: '13s', color: 'var(--sparkle)' },
   { top: '80%', left: '4%', size: 78, delay: '-13s', duration: '14s', color: 'var(--metal)' },
   { top: '80%', left: '30%', size: 98, delay: '-2s', duration: '12s', color: 'var(--accent)' },
   { top: '80%', left: '56%', size: 74, delay: '-10s', duration: '13s', color: 'var(--sparkle)' },
-  { top: '80%', left: '82%', size: 104, delay: '-5s', duration: '11s', color: 'var(--name-pink)' },
+  { top: '80%', left: '82%', size: 104, delay: '-5s', duration: '11s', color: 'var(--accent)' },
 ] as const
 
 const SWIRL_PATH =

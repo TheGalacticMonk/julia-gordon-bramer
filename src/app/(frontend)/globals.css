@@ -102,25 +102,24 @@
 }
 
 /* Shared homepage palette: violet-paper neutrals in light mode; indigo cosmic surfaces in dark
-   mode; pink + indigo for the name; orchid for actions; periwinkle for sparkle/focus details. */
+   mode. --sparkle, --accent, and --orb-bright/--orb-deep are now all tones of one purple/indigo
+   family instead of separate hues: --sparkle is the brighter tone (the name's focus word, first
+   name), --accent is the deeper tone (the name's second word, and actions/the portrait border),
+   and the orbs sit between the two. Kept to one hue family so nothing reads as an extra
+   "rainbow" color. */
 :root {
   --paper: #f7f6fb;
   --paper-raised: #ece9f7;
-  --section-base: rgba(247, 246, 251, 0.72);
+  --section-base: rgba(247, 246, 251, 0.48);
   --section-raised: rgba(236, 233, 247, 0.8);
   --ink: #0a0e2a;
   --ink-muted: #5a5570;
   --rule: #ded9ef;
   --metal: #a3238e;
   --metal-ink: #fbf6ec;
-  --name-pink: #f91880;
-  --name-indigo: #3730a3;
-  --sparkle: #4f46e5;
-  --orb-pink: #ff1493;
-  --orb-indigo: #4338ca;
-  --orb-orchid: #e11dff;
-  --orb-cyan: #00eaff;
-  --orb-purple: #7c3aed;
+  --sparkle: #743bed;
+  --orb-bright: #692bee;
+  --orb-deep: #360f8a;
   --orb-core: #f7f6fb;
 
   --background: var(--paper);
@@ -135,7 +134,7 @@
   --secondary-foreground: var(--ink);
   --muted: var(--rule);
   --muted-foreground: var(--ink-muted);
-  --accent: #8f2340;
+  --accent: #381386;
   --accent-foreground: #f8f5ff;
   --destructive: oklch(57.7% 0.245 27.325deg);
   --destructive-foreground: oklch(57.7% 0.245 27.325deg);
@@ -173,14 +172,9 @@
   --rule: rgba(242, 239, 244, 0.16);
   --metal: #d98fce;
   --metal-ink: #17151a;
-  --name-pink: #f91880;
-  --name-indigo: #818cf8;
-  --sparkle: #d2d4f0;
-  --orb-pink: #f91880;
-  --orb-indigo: #818cf8;
-  --orb-orchid: #d98fce;
-  --orb-cyan: #00e1ff;
-  --orb-purple: #ba42ff;
+  --sparkle: #b697f7;
+  --orb-bright: #a077f8;
+  --orb-deep: #5512e2;
   --orb-core: #242424;
   --background: var(--paper);
   --foreground: var(--ink);
@@ -194,7 +188,7 @@
   --secondary-foreground: var(--ink);
   --muted: var(--rule);
   --muted-foreground: var(--ink-muted);
-  --accent: #d36f89;
+  --accent: #6d36e2;
   --accent-foreground: #f8f5ff;
   --destructive: oklch(39.6% 0.141 25.723deg);
   --destructive-foreground: oklch(63.7% 0.237 25.331deg);

@@ -20,14 +20,14 @@
   white-space: nowrap;
 }
 
-/* Same pink/indigo hierarchy as the homepage hero. */
+/* Same brighter-first-name hierarchy as the homepage hero. */
 .cmdFocus {
-  color: var(--name-pink);
+  color: var(--sparkle);
   font-weight: 600;
 }
 
 .cmdAccent {
-  color: var(--name-indigo);
+  color: var(--accent);
   font-size: 0.92em;
   font-weight: 400;
   font-style: italic;
