@@ -94,11 +94,20 @@
 
 .title {
   /* 3rem/48px at sm+ matches the reference h1's measured computed font-size exactly. */
-  font-family: var(--font-display);
+  font-family: var(--font-cormorant-garamond), 'Cormorant Garamond', serif;
   font-size: 2rem;
   line-height: 1.1;
   color: var(--color-ink);
   text-wrap: balance;
+}
+
+.titleFocus {
+  font-weight: 700;
+}
+
+.titleAccent {
+  font-style: italic;
+  font-weight: 400;
 }
 
 @media (min-width: 640px) {

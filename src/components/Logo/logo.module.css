@@ -1,0 +1,12 @@
+.logo {
+  font-family: var(--font-cormorant-garamond), 'Cormorant Garamond', serif;
+}
+
+.firstName {
+  font-weight: 700;
+}
+
+.familyName {
+  font-style: italic;
+  font-weight: 400;
+}

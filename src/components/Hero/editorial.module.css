@@ -58,7 +58,7 @@
 
 .introTitle {
   margin: 0;
-  font-family: var(--font-fraunces), 'Fraunces', serif;
+  font-family: var(--font-cormorant-garamond), 'Cormorant Garamond', serif;
   font-size: clamp(3.1rem, 11vw, 5.2rem);
   line-height: 0.92;
   letter-spacing: -0.035em;
@@ -83,7 +83,7 @@
 .introSubheading {
   margin: 0.9rem 0 0;
   color: var(--metal);
-  font-family: var(--font-fraunces), 'Fraunces', serif;
+  font-family: var(--font-cormorant-garamond), 'Cormorant Garamond', serif;
   font-size: clamp(1.2rem, 3.8vw, 1.75rem);
   font-style: italic;
   font-weight: 300;

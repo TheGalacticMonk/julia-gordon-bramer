@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 import { cn } from '@/utilities/ui'
-import { Barlow_Condensed, Fraunces, Inter } from 'next/font/google'
+import { Barlow_Condensed, Cormorant_Garamond, Fraunces, Inter } from 'next/font/google'
 import React from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
@@ -45,6 +45,14 @@ const fraunces = Fraunces({
   display: 'optional',
 })
 
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ['latin'],
+  variable: '--font-cormorant-garamond',
+  weight: 'variable',
+  style: ['normal', 'italic'],
+  display: 'optional',
+})
+
 const barlowCondensed = Barlow_Condensed({
   subsets: ['latin'],
   variable: '--font-barlow-condensed',
@@ -57,7 +65,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html
-      className={cn(inter.variable, fraunces.variable, barlowCondensed.variable)}
+      className={cn(
+        inter.variable,
+        fraunces.variable,
+        cormorantGaramond.variable,
+        barlowCondensed.variable,
+      )}
       lang="en"
       suppressHydrationWarning
     >

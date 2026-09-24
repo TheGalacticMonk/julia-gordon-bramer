@@ -1,6 +1,8 @@
 import clsx from 'clsx'
 import React from 'react'
 
+import styles from './logo.module.css'
+
 interface Props {
   className?: string
 }
@@ -19,8 +21,9 @@ export const Logo = (props: Props) => {
   const { className } = props
 
   return (
-    <span className={clsx('font-display text-xl leading-none', className)}>
-      Julia Gordon-Bramer
+    <span className={clsx(styles.logo, 'text-xl leading-none', className)}>
+      <span className={styles.firstName}>Julia</span>{' '}
+      <span className={styles.familyName}>Gordon-Bramer</span>
     </span>
   )
 }

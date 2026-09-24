@@ -30,6 +30,8 @@ export const AboutCard: React.FC<Props> = async ({
 }) => {
   if (!aboutRichText) return null
 
+  const [firstName, ...rest] = (heroHeading ?? '').split(' ')
+  const familyName = rest.join(' ')
   const siteData = await getCachedGlobal('site', 1)()
   return (
     <>
@@ -63,7 +65,17 @@ export const AboutCard: React.FC<Props> = async ({
                 <span className={styles.eyebrow}>About</span>
                 <span className={styles.eyebrowRule} />
               </div>
-              {heroHeading && <h2 className={styles.title}>{heroHeading}</h2>}
+              {heroHeading && (
+                <h2 className={styles.title}>
+                  <span className={styles.titleFocus}>{firstName}</span>
+                  {familyName && (
+                    <>
+                      {' '}
+                      <span className={styles.titleAccent}>{familyName}</span>
+                    </>
+                  )}
+                </h2>
+              )}
             </div>
           </div>
 

@@ -4,7 +4,7 @@ import { resendAdapter } from '@payloadcms/email-resend'
 import { r2Storage } from '@payloadcms/storage-r2'
 import fs from 'fs'
 import path from 'path'
-import { buildConfig, PayloadRequest } from 'payload'
+import { buildConfig, PayloadLogger, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 import type { GetPlatformProxyOptions } from 'wrangler'
 
@@ -48,6 +48,7 @@ const createLog =
 
 const cloudflareLogger = {
   level: process.env.PAYLOAD_LOG_LEVEL || 'info',
+  msgPrefix: '',
   trace: createLog('trace', console.debug),
   debug: createLog('debug', console.debug),
   info: createLog('info', console.log),
@@ -55,7 +56,7 @@ const cloudflareLogger = {
   error: createLog('error', console.error),
   fatal: createLog('fatal', console.error),
   silent: () => {},
-} as any // Use PayloadLogger type when it's exported
+} as unknown as PayloadLogger
 
 const cloudflare =
   isCLI || !isProduction
