@@ -8,8 +8,8 @@ import { notifyOnFormSubmission } from './hooks/notifyOnFormSubmission'
 export const FormSubmissions: CollectionConfig = {
   slug: 'form-submissions',
   labels: {
-    singular: 'Contact submission',
-    plural: 'Contact submissions',
+    singular: 'Contact message',
+    plural: 'Contact messages',
   },
   access: {
     create: () => false,
@@ -20,30 +20,36 @@ export const FormSubmissions: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'email', 'phone', 'reason', 'handled', 'createdAt'],
-    group: 'Inbox',
-    description: 'Messages from the contact form. Mark a message handled once you’ve replied.',
+    // Messages are stored (and emailed) but not shown in the CMS.
+    hidden: true,
+    description:
+      'Messages people send you from the Contact page (you also get each one by email). Open a message to read it, and tick “Handled” once you’ve replied.',
   },
   fields: [
     {
       name: 'name',
       type: 'text',
       required: true,
+      admin: { readOnly: true },
     },
     {
       name: 'email',
       type: 'email',
       required: true,
+      admin: { readOnly: true },
     },
     {
       name: 'phone',
       type: 'text',
-      label: 'Phone (optional)',
+      label: 'Phone',
+      admin: { readOnly: true },
     },
     {
       name: 'reason',
       type: 'select',
       required: true,
       defaultValue: 'general',
+      admin: { readOnly: true },
       options: [
         { label: 'Book a reading', value: 'reading' },
         { label: 'Invite Julia to speak / teach', value: 'invite' },
@@ -55,6 +61,7 @@ export const FormSubmissions: CollectionConfig = {
       name: 'message',
       type: 'textarea',
       required: true,
+      admin: { readOnly: true },
     },
     {
       name: 'handled',

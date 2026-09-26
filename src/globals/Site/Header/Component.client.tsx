@@ -1,58 +1,24 @@
 'use client'
-import { useHeaderTheme } from '@/providers/HeaderTheme'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import type { Site } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
 import { ThemeToggle } from '@/providers/Theme/ThemeToggle'
-import { getCollectionPath } from '@/utilities/collectionPath'
 import { cn } from '@/utilities/ui'
 import { MobileNavMenu } from './MobileNavMenu'
+import { headerNavItems as navItems, resolveHref } from './navItems'
 import { TypingWordmark } from './TypingWordmark'
-
-type NavLink = NonNullable<Site['navItems']>[number]['link']
-
-const headerNavItems: Array<{ link: NavLink }> = [
-  { link: { type: 'custom', url: '/', label: 'HOME' } },
-  { link: { type: 'custom', url: '/tarot', label: 'TAROT' } },
-  { link: { type: 'custom', url: '/books', label: 'BOOKS' } },
-  {
-    link: {
-      type: 'custom',
-      url: '/decoding-sylvia-plath',
-      label: 'DECODING SYLVIA PLATH',
-    },
-  },
-  { link: { type: 'custom', url: '/contact', label: 'CONTACT' } },
-]
-
-// Same resolution CMSLink does internally, exposed here so the active-page check below can
-// compare against the URL a given nav item actually points to.
-const resolveHref = (link: NavLink): string | null => {
-  if (link.type === 'reference' && typeof link.reference?.value === 'object' && link.reference.value?.slug) {
-    return getCollectionPath(link.reference.relationTo, link.reference.value.slug, link.reference.value)
-  }
-  return link.url || null
-}
 
 interface HeaderClientProps {
   data: Site
 }
 
 export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
-  const { headerTheme, setHeaderTheme } = useHeaderTheme()
   const pathname = usePathname()
-  const theme = headerTheme ?? null
 
-  useEffect(() => {
-    setHeaderTheme(null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
-
-  const navItems = headerNavItems
   // Only instagram/x — the sticky sidebar (SocialSidebar) covers sm and up; below that it hides
   // entirely and these live in the hamburger dropdown instead (see MobileNavMenu).
   const mobileSocials = (data?.socials || []).filter(
@@ -60,39 +26,25 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
       s.platform === 'instagram' || s.platform === 'x',
   )
 
-  // 'dark' is the specific value hero components (HighImpact, PostHero) pass when a hero image
-  // sits directly behind the header and needs forced light-on-image contrast; 'light' is what
-  // plain pages reset to (effectively "no overlay, use the real header design"). Checking
-  // specifically for 'dark' — not just any truthy value — matters: null/undefined AND 'light'
-  // both mean "no overlay" here.
-  const isOverlay = theme === 'dark'
-
   return (
     <header
       className={cn(
         'sticky top-0 z-20',
-        isOverlay
-          ? 'bg-transparent'
-          // Squarespace-style glass divider: no hard 1-2px border line. Tried fading a
-          // translucent cream layer's own opacity out over an extended tail below the header —
-          // that reliably produced a visible muddy gray band wherever the fade passed through
-          // ~40-60% alpha, because backdrop-blur SAMPLES what's behind it (dark navy in dark
-          // mode), and alpha-blending a light color partway into a dark one always passes
-          // through a gray midpoint, no matter how the fade is tuned. A soft, LARGE, low-opacity
-          // shadow avoids that: shadows are dark, so they blend smoothly on both light and dark
-          // pages without ever mixing hues, giving the soft "roll-off" without an artifact.
-          //
-          // Light mode keeps the cream chrome; dark mode uses a near-black charcoal that stays
-          // neutral against the indigo-blue page canvas.
-          : 'bg-paper-raised/92 dark:bg-[#111318]/96 backdrop-blur-md shadow-[0_16px_28px_-12px_rgba(0,0,0,0.35),0_4px_10px_-4px_rgba(0,0,0,0.18)]',
+        // Squarespace-style glass divider: no hard 1-2px border line. Tried fading a
+        // translucent cream layer's own opacity out over an extended tail below the header —
+        // that reliably produced a visible muddy gray band wherever the fade passed through
+        // ~40-60% alpha, because backdrop-blur SAMPLES what's behind it (dark navy in dark
+        // mode), and alpha-blending a light color partway into a dark one always passes
+        // through a gray midpoint, no matter how the fade is tuned. A soft, LARGE, low-opacity
+        // shadow avoids that: shadows are dark, so they blend smoothly on both light and dark
+        // pages without ever mixing hues, giving the soft "roll-off" without an artifact.
+        // Light mode keeps the cream chrome; dark mode uses a near-black charcoal that stays
+        // neutral against the indigo-blue page canvas.
+        'bg-paper-raised/92 dark:bg-[#111318]/96 backdrop-blur-md shadow-[0_16px_28px_-12px_rgba(0,0,0,0.35),0_4px_10px_-4px_rgba(0,0,0,0.18)]',
       )}
-      {...(theme ? { 'data-theme': theme } : {})}
     >
       <div className="container relative z-10 flex items-center justify-between gap-4 py-4 sm:gap-6">
-        <Link
-          href="/"
-          className="flex shrink-0 items-center gap-2 text-ink"
-        >
+        <Link href="/" className="flex shrink-0 items-center gap-2 text-ink">
           <TypingWordmark />
         </Link>
         <nav className="flex items-center gap-3 sm:gap-5 xl:gap-6">
@@ -107,7 +59,11 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
           <div className="hidden items-center gap-6 xl:flex">
             {navItems.map(({ link }, i) => {
               const href = resolveHref(link)
-              const isActive = href ? (href === '/' ? pathname === '/' : pathname.startsWith(href)) : false
+              const isActive = href
+                ? href === '/'
+                  ? pathname === '/'
+                  : pathname.startsWith(href)
+                : false
 
               return (
                 <CMSLink
@@ -124,13 +80,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
                     // now land on the same --metal orchid in both themes, so "current page" and
                     // "hovering" read identically regardless of theme. text-ink, not
                     // text-metal-ink: see the wordmark Link's className comment above for why.
-                    isOverlay
-                      ? isActive
-                        ? 'text-metal'
-                        : 'text-ink hover:text-metal'
-                      : isActive
-                        ? 'text-metal'
-                        : 'text-ink hover:text-metal',
+                    isActive ? 'text-metal' : 'text-ink hover:text-metal',
                   )}
                 />
               )
@@ -143,11 +93,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
               stylesheet wins, which isn't guaranteed to be Tailwind's. A wrapper with no
               competing display rule sidesteps the ordering fight entirely. */}
           <div className="xl:hidden">
-            <MobileNavMenu
-              navItems={navItems}
-              resolveHref={resolveHref}
-              socials={mobileSocials}
-            />
+            <MobileNavMenu navItems={navItems} resolveHref={resolveHref} socials={mobileSocials} />
           </div>
         </nav>
       </div>

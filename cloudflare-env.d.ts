@@ -7,11 +7,8 @@ interface __BaseEnv_CloudflareEnv {
 	D1: D1Database;
 	IMAGES: ImagesBinding;
 	ASSETS: Fetcher;
-	DATABASE_URL: string;
 	PAYLOAD_SECRET: string;
 	NEXT_PUBLIC_SERVER_URL: string;
-	CRON_SECRET: string;
-	PREVIEW_SECRET: string;
 	EMAIL_FROM_ADDRESS: string;
 	EMAIL_FROM_NAME: string;
 	CONTACT_NOTIFY_TO: string;
@@ -27,7 +24,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "DATABASE_URL" | "PAYLOAD_SECRET" | "NEXT_PUBLIC_SERVER_URL" | "CRON_SECRET" | "PREVIEW_SECRET" | "EMAIL_FROM_ADDRESS" | "EMAIL_FROM_NAME" | "CONTACT_NOTIFY_TO">> {}
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "PAYLOAD_SECRET" | "NEXT_PUBLIC_SERVER_URL" | "EMAIL_FROM_ADDRESS" | "EMAIL_FROM_NAME" | "CONTACT_NOTIFY_TO">> {}
 }
 
 // Begin runtime types

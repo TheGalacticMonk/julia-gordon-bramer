@@ -12,7 +12,7 @@ interface Props {
 // in Header/Footer won't need to change.
 //
 // No default text color here on purpose: Header sits on a background that can flip
-// independently of the page (see HeaderTheme), and Footer's background is the inverse of the
+// independently of the page, and Footer's background is the inverse of the
 // page's ink/paper pairing — each caller passes the color that's actually correct for its own
 // background via `className`. Tailwind utility classes don't reliably override by JSX source
 // order (same specificity, resolved by declaration order in the compiled stylesheet instead),

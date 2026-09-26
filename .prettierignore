@@ -12,3 +12,4 @@
 **/docs/**
 tsconfig.json
 
+cloudflare-env.d.ts

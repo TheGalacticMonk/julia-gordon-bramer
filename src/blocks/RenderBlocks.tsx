@@ -1,15 +1,11 @@
 import React, { Fragment } from 'react'
 
-import type { Page } from '@/payload-types'
+import type { Home } from '@/payload-types'
 
 import { BioSplitBlock } from '@/blocks/BioSplit/Component'
 import { BookShelfBlock } from '@/blocks/BookShelf/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
-import { ContentBlock } from '@/blocks/Content/Component'
-import { EmbedBlock } from '@/blocks/Embed/Component'
 import { EventListBlock } from '@/blocks/EventList/Component'
-import { FAQBlock } from '@/blocks/FAQ/Component'
-import { ImageBlock } from '@/blocks/ImageBlock/Component'
 import { PressStripBlock } from '@/blocks/PressStrip/Component'
 import { PullQuote } from '@/blocks/PullQuote/Component'
 import { CurvedDivider } from '@/components/CurvedDivider'
@@ -18,18 +14,14 @@ import { cn } from '@/utilities/ui'
 const blockComponents = {
   bioSplit: BioSplitBlock,
   bookShelf: BookShelfBlock,
-  content: ContentBlock,
   cta: CallToActionBlock,
-  embed: EmbedBlock,
   eventList: EventListBlock,
-  faq: FAQBlock,
-  imageBlock: ImageBlock,
   pressStrip: PressStripBlock,
   pullQuote: PullQuote,
 }
 
 export const RenderBlocks: React.FC<{
-  blocks: Page['layout'][0][]
+  blocks: NonNullable<Home['modules']>
 }> = async (props) => {
   const { blocks } = props
 

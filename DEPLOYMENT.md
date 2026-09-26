@@ -58,8 +58,6 @@ where noted, because pages are pre-rendered at build time against the remote D1:
 | ------------------------ | --------------- | ------------------------------------------------------ |
 | `PAYLOAD_SECRET`         | build + runtime | `openssl rand -hex 32`                                 |
 | `NEXT_PUBLIC_SERVER_URL` | build           | Inlined into client code; also set in `wrangler.jsonc` |
-| `PREVIEW_SECRET`         | build + runtime | Live-preview validation                                |
-| `CRON_SECRET`            | runtime         |                                                        |
 | `RESEND_API_KEY`         | runtime         | Verify the sending domain in Resend first              |
 
 Every push to the connected branch now migrates D1, builds and deploys. Then add the custom domain
@@ -90,9 +88,9 @@ Schema changes **must** ship with a committed migration — production never aut
   with several parallel workers by default, and D1 (local **or** the real remote database) throws
   "database is locked" (`SQLITE_BUSY`) under concurrent queries from them. This is required, not
   just a local workaround.
-- The in-editor "Create New" media upload button (inside the Posts/Pages hero-image field) is
+- The in-editor "Create New" media upload button (inside the Essays / Books picture field) is
   currently broken — it throws `UnrecognizedActionError: Server Action ... was not found on the
-  server`, reproducible even on a fresh page load. Not yet root-caused; suspected cause is Next's
+server`, reproducible even on a fresh page load. Not yet root-caused; suspected cause is Next's
   Server Actions encryption key being generated per-isolate rather than pinned at build time, which
   would make action IDs minted by one Workers isolate invalid on another. **Workaround:** upload
   media via the Media collection directly (`/admin/collections/media/create`), which uses a plain

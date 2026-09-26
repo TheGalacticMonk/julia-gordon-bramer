@@ -6,32 +6,26 @@ import type { Book } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
+import { getBooksText } from '@/globals/PageText/getPageText'
+import { BooksLive } from './BooksLive'
+import { BooksView } from './BooksView'
 import { generateMeta } from '@/utilities/generateMeta'
 
 export const revalidate = 600
 
 export default async function BooksPage() {
   const payload = await getPayload({ config: configPromise })
+  const { text, draft, raw } = await getBooksText()
 
   const { docs: books } = await payload.find({
     collection: 'books',
     depth: 1,
     limit: 100,
     overrideAccess: false,
-    sort: '-publishYear',
+    sort: '_order',
   })
-
-  return (
-    <div className="pt-16 pb-24">
-      <div className="container mb-12 max-w-2xl">
-        <h1 className="text-4xl">Books</h1>
-        <p className="mt-4 text-pretty text-ink-muted">
-          Five books across three publishers — a trade-press tarot guide and Plath biography,
-          two chapbook-scale Plath essay collections, and the foundational academic study that
-          started it all.
-        </p>
-      </div>
-
+  const list = (
+    <>
       <div className="container">
         {books.length === 0 ? (
           <p className="text-ink-muted">Books are on the way — check back soon.</p>
@@ -70,7 +64,13 @@ export default async function BooksPage() {
           </ul>
         )}
       </div>
-    </div>
+    </>
+  )
+
+  return draft ? (
+    <BooksLive initial={raw}>{list}</BooksLive>
+  ) : (
+    <BooksView t={text}>{list}</BooksView>
   )
 }
 

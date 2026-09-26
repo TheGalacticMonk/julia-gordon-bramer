@@ -1,5 +1,5 @@
 /* Entrance timing matches the site-wide hero convention (fade + slight rise, staggered) —
-   see tarot.module.css / scholarship.module.css's copy-enter for the same pattern. */
+   see tarot.module.css / decoding.module.css's copy-enter for the same pattern. */
 @keyframes fade-up {
   from {
     opacity: 0;

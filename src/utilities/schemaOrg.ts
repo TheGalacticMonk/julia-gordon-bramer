@@ -35,21 +35,7 @@ export const bookSchema = (book: Book, authorName: string) => {
 
 export const eventSchema = (event: Event) => {
   const url = `${getServerSideURL()}/events/${event.slug}`
-  const venue = event.venue && typeof event.venue === 'object' ? event.venue : null
-
-  const location = venue
-    ? {
-        '@type': 'Place',
-        name: venue.name,
-        address: {
-          '@type': 'PostalAddress',
-          addressLocality: venue.city,
-          ...(venue.region ? { addressRegion: venue.region } : {}),
-        },
-      }
-    : event.cityOverride
-      ? { '@type': 'Place', name: event.cityOverride }
-      : undefined
+  const location = event.cityOverride ? { '@type': 'Place', name: event.cityOverride } : undefined
 
   return {
     '@context': 'https://schema.org',
@@ -65,7 +51,7 @@ export const eventSchema = (event: Event) => {
 }
 
 export const blogPostingSchema = (post: Post, authorName: string) => {
-  const url = `${getServerSideURL()}/blog/${post.slug}`
+  const url = `${getServerSideURL()}/decoding-sylvia-plath/${post.slug}`
   const image = imageUrl(post.heroImage) || imageUrl(post.meta?.image)
 
   return {

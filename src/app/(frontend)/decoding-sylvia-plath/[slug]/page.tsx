@@ -1,49 +1,26 @@
 import type { Metadata } from 'next'
 
-import { RelatedPosts } from '@/blocks/RelatedPosts/Component'
-import { JsonLd } from '@/components/JsonLd'
-import { Media } from '@/components/Media'
-import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
-import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import React, { cache } from 'react'
-import RichText from '@/components/RichText'
+import { EssayContent, EssayPreview } from './EssayPreview'
 
 import type { Post } from '@/payload-types'
 import type { Media as MediaType } from '@/payload-types'
 
-import { formatDateTime } from '@/utilities/formatDateTime'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getCachedGlobal } from '@/utilities/getGlobals'
-import { blogPostingSchema } from '@/utilities/schemaOrg'
-import { LivePreviewListener } from '@/components/LivePreviewListener'
-import { PencilIcon } from '@/components/icons/PencilIcon'
-import styles from './essay.module.css'
-import { scholarshipEssays } from '../essays'
+import { decodingEssays } from '../essays'
 
-// Essays are Posts filtered to the "Scholarship" category, living at their own URL namespace
-// (see src/utilities/collectionPath.ts). This is deliberately NOT the /blog/[slug] template:
-// each essay's source image is a different, often small or odd, aspect ratio (a newspaper
-// clipping, a magazine cover, a political cartoon...), so a full-bleed cropped banner (what
-// PostHero does, and what /blog/[slug] still uses for general posts) mangles most of them. Here
-// the image renders at its own natural size — capped, not cropped — inside the normal page
-// shell, so the header and background stay consistent with every other page on the site.
-const queryScholarshipCategoryId = cache(async () => {
-  const payload = await getPayload({ config: configPromise })
-  const { docs } = await payload.find({
-    collection: 'categories',
-    limit: 1,
-    where: { slug: { equals: 'scholarship' } },
-  })
-  return docs[0]?.id
-})
-
+// Every post is a Decoding Sylvia Plath essay (the site has no blog), living at
+// /decoding-sylvia-plath/<slug> (see src/utilities/collectionPath.ts). Each essay's source image
+// is a different, often small or odd, aspect ratio (a newspaper clipping, a magazine cover, a
+// political cartoon...), so the image renders at its own natural size — capped, not cropped —
+// inside the normal page shell rather than as a full-bleed banner.
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
-  const categoryId = await queryScholarshipCategoryId()
-  if (!categoryId) return []
 
   const posts = await payload.find({
     collection: 'posts',
@@ -52,7 +29,6 @@ export async function generateStaticParams() {
     overrideAccess: false,
     pagination: false,
     select: { slug: true },
-    where: { categories: { in: [categoryId] } },
   })
 
   return posts.docs.map(({ slug }) => ({ slug }))
@@ -65,7 +41,7 @@ type Args = {
 }
 
 const getStaticEssayFallback = (slug: string): Post | null => {
-  const essay = scholarshipEssays.find(
+  const essay = decodingEssays.find(
     (candidate) => candidate.slug === slug && (candidate.migrated || Boolean(candidate.paragraphs)),
   )
   if (!essay) return null
@@ -132,64 +108,11 @@ export default async function EssayPage({ params: paramsPromise }: Args) {
   const post =
     (await queryEssayBySlug({ slug: decodedSlug })) || getStaticEssayFallback(decodedSlug)
 
-  if (!post) return <PayloadRedirects url={url} />
-
-  const seoDefaults = await getCachedGlobal('seoDefaults', 0)()
-  const heroImage = post.heroImage && typeof post.heroImage === 'object' ? post.heroImage : null
+  if (!post) notFound()
 
   return (
     <article className="section-base">
-      {/* Allows redirects for valid pages too */}
-      <PayloadRedirects disableNotFound url={url} />
-
-      {draft && <LivePreviewListener />}
-      <JsonLd
-        data={blogPostingSchema(post, seoDefaults?.organizationName || 'Julia Gordon-Bramer')}
-      />
-
-      <div className="container py-16 md:py-24">
-        <div className={styles.card}>
-          <Link href="/decoding-sylvia-plath" className={styles.backLink}>
-            ← Decoding Sylvia Plath
-          </Link>
-
-          <div className={styles.eyebrowRow}>
-            <PencilIcon className={styles.eyebrowIcon} aria-hidden="true" />
-            <span className={styles.eyebrow}>Decoding Sylvia Plath</span>
-            <span className={styles.eyebrowRule} />
-          </div>
-
-          <h1 className={styles.title}>{post.title}</h1>
-
-          {post.publishedAt && (
-            <div className={styles.metaRow}>
-              <time dateTime={post.publishedAt}>{formatDateTime(post.publishedAt)}</time>
-            </div>
-          )}
-
-          {heroImage && (
-            <figure className={styles.imageFigure}>
-              <div className={styles.imageFrame}>
-                <Media resource={heroImage} size="(max-width: 640px) calc(100vw - 5rem), 48rem" />
-              </div>
-              {heroImage.alt && (
-                <figcaption className={styles.imageCaption}>{heroImage.alt}</figcaption>
-              )}
-            </figure>
-          )}
-
-          <div className={`${styles.body} payload-richtext`}>
-            <RichText data={post.content} enableGutter={false} enableProse={false} />
-          </div>
-
-          {post.relatedPosts && post.relatedPosts.length > 0 && (
-            <RelatedPosts
-              className="mt-12"
-              docs={post.relatedPosts.filter((related) => typeof related === 'object')}
-            />
-          )}
-        </div>
-      </div>
+      {draft ? <EssayPreview initialData={post} /> : <EssayContent post={post} />}
     </article>
   )
 }
@@ -200,7 +123,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const post =
     (await queryEssayBySlug({ slug: decodedSlug })) || getStaticEssayFallback(decodedSlug)
 
-  const archiveEssay = scholarshipEssays.find((essay) => essay.slug === decodedSlug)
+  const archiveEssay = decodingEssays.find((essay) => essay.slug === decodedSlug)
   const postWithDescription = post
     ? {
         ...post,
@@ -218,8 +141,6 @@ const queryEssayBySlug = cache(async ({ slug }: { slug: string }) => {
   const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayload({ config: configPromise })
-  const categoryId = await queryScholarshipCategoryId()
-  if (!categoryId) return null
 
   const result = await payload.find({
     collection: 'posts',
@@ -228,9 +149,7 @@ const queryEssayBySlug = cache(async ({ slug }: { slug: string }) => {
     limit: 1,
     overrideAccess: draft,
     pagination: false,
-    where: {
-      and: [{ slug: { equals: slug } }, { categories: { in: [categoryId] } }],
-    },
+    where: { slug: { equals: slug } },
   })
 
   return (result.docs?.[0] as Post) || null

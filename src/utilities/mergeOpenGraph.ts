@@ -8,7 +8,7 @@ const defaultOpenGraph: Metadata['openGraph'] = {
   images: [
     {
       // 1200x630 crop of the hero portrait (assets/julia-gordon-bramer-profile.png). Used when a
-      // page has no image of its own and SEO Defaults → "Default social share image" is empty.
+      // page has no image of its own.
       url: `${getServerSideURL()}/og-default.jpg`,
       width: 1200,
       height: 630,

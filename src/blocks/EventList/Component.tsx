@@ -14,7 +14,7 @@ import { cn } from '@/utilities/ui'
 
 import styles from './eventCard.module.css'
 
-// Cached like the site/seoDefaults/home globals instead of hitting D1 on every homepage view.
+// Cached like the site/home globals instead of hitting D1 on every homepage view.
 // The "upcoming" cutoff is time-relative, not just content-relative, so a pure content-change
 // tag (invalidated by revalidateEvent.ts) isn't enough on its own — an event can silently age
 // from upcoming into past with no Payload write to trigger that. The 30-minute revalidate
@@ -46,9 +46,6 @@ type Props = EventListBlockProps & {
 }
 
 const eventLocation = (event: Event): string | null => {
-  if (event.venue && typeof event.venue === 'object') {
-    return [event.venue.name, event.venue.city].filter(Boolean).join(' · ')
-  }
   return event.cityOverride || null
 }
 
@@ -70,9 +67,7 @@ export const EventListBlock: React.FC<Props> = async ({
   let events: Event[] = []
 
   if (mode === 'selected') {
-    events = (selectedEvents || []).filter(
-      (event): event is Event => typeof event === 'object',
-    )
+    events = (selectedEvents || []).filter((event): event is Event => typeof event === 'object')
   } else {
     events = await queryUpcomingEvents(limit || 6)
   }
@@ -107,7 +102,10 @@ export const EventListBlock: React.FC<Props> = async ({
                   <span className="tour-ribbon-day">{day}</span>
                 </div>
                 <p className={styles.title}>
-                  <PencilIcon className={cn('size-4 text-metal', styles.titleIcon)} aria-hidden="true" />
+                  <PencilIcon
+                    className={cn('size-4 text-metal', styles.titleIcon)}
+                    aria-hidden="true"
+                  />
                   {event.title}
                 </p>
                 {eventLocation(event) && <p className={styles.meta}>{eventLocation(event)}</p>}

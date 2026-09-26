@@ -4,7 +4,6 @@ declare global {
       PAYLOAD_SECRET: string
       RESEND_API_KEY?: string
       NEXT_PUBLIC_SERVER_URL: string
-      VERCEL_PROJECT_PRODUCTION_URL: string
     }
   }
 }

@@ -1,9 +1,15 @@
-import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, CollectionConfig } from 'payload'
+import type {
+  CollectionAfterChangeHook,
+  CollectionAfterDeleteHook,
+  CollectionConfig,
+} from 'payload'
 
 import { revalidateTag } from 'next/cache'
 
-import { admin } from '../access/admin'
+import { adminOnlyField } from '../access/editorVisibility'
+import { livePreviewFor } from '../utilities/livePreview'
 import { anyone } from '../access/anyone'
+import { admin } from '../access/admin'
 import { authenticated } from '../access/authenticated'
 
 // The homepage's "In the Press" module (PressStrip/Component.tsx) caches its featured-quotes
@@ -25,11 +31,12 @@ const revalidatePressQuotesDelete: CollectionAfterDeleteHook = ({ doc, req: { co
 export const PressQuotes: CollectionConfig = {
   slug: 'press-quotes',
   labels: {
-    singular: 'Press Quote',
-    plural: 'Press Quotes',
+    singular: 'Press quote',
+    plural: 'In the Press',
   },
   access: {
-    create: authenticated,
+    // Julia edits the quotes that are there; adding or removing one is a developer job.
+    create: admin,
     delete: admin,
     read: anyone,
     update: authenticated,
@@ -40,15 +47,20 @@ export const PressQuotes: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'source',
-    defaultColumns: ['source', 'quote', 'relatedBook'],
-    group: 'Content',
-    description: 'A quote about Julia or her books, reusable across the Press page, a book’s buy box, and the homepage.',
+    defaultColumns: ['source', 'quote', 'context'],
+    group: 'Add & edit',
+    livePreview: livePreviewFor('/?preview=quotes#press'),
+    description:
+      'The quotes shown in “In the Press” on your homepage. Open a quote to change its wording or who said it, then click Save — the preview beside it shows the homepage.',
   },
   fields: [
     {
       name: 'quote',
       type: 'textarea',
       required: true,
+      admin: {
+        description: 'Just the words, without quotation marks — the website adds them.',
+      },
     },
     {
       name: 'source',
@@ -62,6 +74,7 @@ export const PressQuotes: CollectionConfig = {
       name: 'sourceUrl',
       type: 'text',
       label: 'Link to the original (optional)',
+      admin: { condition: adminOnlyField },
     },
     {
       name: 'context',
@@ -72,16 +85,13 @@ export const PressQuotes: CollectionConfig = {
       },
     },
     {
-      name: 'relatedBook',
-      type: 'relationship',
-      relationTo: 'books',
-      label: 'About this book (optional)',
-    },
-    {
       name: 'featured',
       type: 'checkbox',
       label: 'Feature on homepage / Press page',
-      defaultValue: false,
+      // Julia's quotes all belong in the homepage strip, so new ones start featured and the
+      // checkbox itself is developer-only.
+      defaultValue: true,
+      admin: { condition: adminOnlyField },
     },
   ],
 }

@@ -7,27 +7,49 @@ import {
 } from '@payloadcms/richtext-lexical'
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
+import { adminOnlyField, hiddenFromEditors } from '../access/editorVisibility'
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  labels: {
+    singular: 'Media Asset',
+    plural: 'Media Library',
+  },
   access: {
     create: authenticated,
     delete: authenticated,
     read: anyone,
     update: authenticated,
   },
+  admin: {
+    useAsTitle: 'alt',
+    defaultColumns: ['alt', 'filename', 'mimeType', 'createdAt'],
+    // Hidden from Julia's menu: she never browses the library, she just uploads a cover or
+    // essay picture from inside the Book/Essay form (that upload box still works).
+    hidden: hiddenFromEditors,
+    description:
+      'Images used across books, essays, pages, and the site. Use descriptive alt text so assets are easy to identify and accessible.',
+    group: 'Developer',
+    pagination: {
+      defaultLimit: 50,
+      limits: [25, 50, 100],
+    },
+  },
   fields: [
     {
       name: 'alt',
       type: 'text',
+      label: 'Caption',
       required: true,
       admin: {
-        description: 'Describe the image for screen readers and search. Required before upload.',
+        description:
+          'Shown under the picture on the website (and read aloud for people using screen readers). For a book cover, type the book title. For an essay picture, describe it, e.g. “Emmett Till in the 1956 newspaper headlines”.',
       },
     },
     {
       name: 'caption',
       type: 'richText',
+      admin: { condition: adminOnlyField },
       editor: lexicalEditor({
         features: ({ rootFeatures }) => {
           return [...rootFeatures, FixedToolbarFeature(), InlineToolbarFeature()]

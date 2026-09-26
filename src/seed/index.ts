@@ -1,14 +1,6 @@
 /**
  * Seeds the data we can populate without inventing facts or fabricating assets:
  *
- * - The "Scholarship" category, so `/decoding-sylvia-plath` has something to filter posts by
- *   once essays are migrated (see agency/open-questions.md, "Content migration").
- * - Redirects for the 5 confirmed top-level `.html` URLs from the live site (agency/audit.md,
- *   agency/ia.md "URL migration"). These are the only redirects backed by a fully confirmed
- *   source URL and destination — the 46 essay slugs and 33 blog post slugs are NOT seeded
- *   here because the full list was never captured (see agency/audit.md's note on the
- *   interrupted raw-content-dump), and seeding partial/guessed slugs would risk silently
- *   wrong redirects.
  * - The 3 confirmed press credentials (verbatim from agency/audit.md) as featured Press Quotes.
  * - Homepage hero + modules copy, grounded only in agency/brief.md / agency/audit.md facts —
  *   see the comments below for exactly which source backs each line.
@@ -43,7 +35,10 @@ import path from 'path'
 import { getPayload } from 'payload'
 
 import config from '@payload-config'
-import { remainingScholarshipEssays } from '@/app/(frontend)/decoding-sylvia-plath/remaining-essay-data'
+import { remainingDecodingEssays } from '@/app/(frontend)/decoding-sylvia-plath/remaining-essay-data'
+import { decodingEssays } from '@/app/(frontend)/decoding-sylvia-plath/essays'
+
+const orderKey = (index: number) => `a${index.toString(36).padStart(6, '0')}`
 
 // Dropped in at the repo root by the user — a real studio portrait, not a placeholder.
 const heroPortraitPath = path.resolve(process.cwd(), 'assets/julia-gordon-bramer-profile.png')
@@ -155,7 +150,7 @@ const books: Array<{
 // Decoding Sylvia Plath essays, migrated one at a time from the live archive at
 // juliagordonbramer.com/decoding-sylvia-plath — full text (paragraphs + closing attribution
 // note, where present) and the tag list, both verbatim. `imageFile` names a file already sitting
-// in `public/assets/scholarship/` (downloaded when the essay index on /decoding-sylvia-plath was
+// in `public/assets/decoding-sylvia-plath/` (downloaded when the essay index on /decoding-sylvia-plath was
 // built) — read from disk here rather than re-fetched, since it's the same asset. `slug` matches
 // the corresponding entry in `src/app/(frontend)/decoding-sylvia-plath/essays.ts` exactly, so the
 // essay index can detect once a given essay is migrated and link its card to the real post.
@@ -450,15 +445,6 @@ const essays: Array<{
   },
 ]
 
-const topLevelRedirects: Array<{ from: string; to: string }> = [
-  { from: '/tarot.html', to: '/tarot' },
-  { from: '/books.html', to: '/books' },
-  { from: '/blog.html', to: '/blog' },
-  { from: '/decoding-sylvia-plath.html', to: '/decoding-sylvia-plath' },
-  // The route lived at /scholarship during development before settling on this URL.
-  { from: '/scholarship', to: '/decoding-sylvia-plath' },
-]
-
 // agency/audit.md, "Homepage (`/`)" — press credentials, quoted verbatim from the live site.
 const pressQuotes: Array<{ quote: string; source: string; context?: string }> = [
   { quote: "St. Louis' Top Ten Psychics", source: 'Psychic St. Louis' },
@@ -518,47 +504,6 @@ const lexicalState = (
 async function seed() {
   const payload = await getPayload({ config })
 
-  payload.logger.info('Seeding "Scholarship" category…')
-  const existingCategory = await payload.find({
-    collection: 'categories',
-    limit: 1,
-    where: { slug: { equals: 'scholarship' } },
-  })
-
-  if (existingCategory.docs.length === 0) {
-    await payload.create({
-      collection: 'categories',
-      data: { title: 'Scholarship', slug: 'scholarship' },
-    })
-    payload.logger.info('Created "Scholarship" category.')
-  } else {
-    payload.logger.info('"Scholarship" category already exists, skipping.')
-  }
-
-  payload.logger.info('Seeding top-level redirects…')
-  for (const redirect of topLevelRedirects) {
-    const existing = await payload.find({
-      collection: 'redirects',
-      limit: 1,
-      where: { from: { equals: redirect.from } },
-    })
-
-    if (existing.docs.length > 0) {
-      payload.logger.info(`Redirect ${redirect.from} already exists, skipping.`)
-      continue
-    }
-
-    await payload.create({
-      collection: 'redirects',
-      context: { disableRevalidate: true },
-      data: {
-        from: redirect.from,
-        to: { type: 'custom', url: redirect.to },
-      },
-    })
-    payload.logger.info(`Created redirect ${redirect.from} -> ${redirect.to}`)
-  }
-
   payload.logger.info('Seeding press quotes…')
   for (const pq of pressQuotes) {
     const existing = await payload.find({
@@ -586,7 +531,7 @@ async function seed() {
 
   payload.logger.info('Seeding books…')
   const booksDir = path.resolve(process.cwd(), 'assets/books')
-  for (const book of books) {
+  for (const [bookIndex, book] of books.entries()) {
     const existing = await payload.find({
       collection: 'books',
       limit: 1,
@@ -594,7 +539,13 @@ async function seed() {
     })
 
     if (existing.docs.length > 0) {
-      payload.logger.info(`Book "${book.title}" already exists, skipping.`)
+      await payload.update({
+        collection: 'books',
+        id: existing.docs[0].id,
+        context: { disableRevalidate: true },
+        data: { _order: orderKey(bookIndex) },
+      })
+      payload.logger.info(`Book "${book.title}" already exists; order verified.`)
       continue
     }
 
@@ -633,26 +584,20 @@ async function seed() {
         retailers: book.retailers,
         featured: book.featured || false,
         publishedAt: new Date().toISOString(),
+        _order: orderKey(bookIndex),
       },
     })
     payload.logger.info(`Created book "${book.title}".`)
   }
 
   payload.logger.info('Seeding Decoding Sylvia Plath essays…')
-  const scholarshipCategoryForEssays = await payload.find({
-    collection: 'categories',
-    limit: 1,
-    where: { slug: { equals: 'scholarship' } },
-  })
-  const scholarshipCategoryId = scholarshipCategoryForEssays.docs[0]?.id
-  const essayImagesDir = path.resolve(process.cwd(), 'public/assets/scholarship')
+  const essayImagesDir = path.resolve(process.cwd(), 'public/assets/decoding-sylvia-plath')
 
-  if (!scholarshipCategoryId) {
-    payload.logger.info('No "Scholarship" category found — skipping essay seed.')
-  } else {
+  {
+    const essayOrder = new Map(decodingEssays.map((essay, index) => [essay.slug, index]))
     const allEssays = [
       ...essays,
-      ...remainingScholarshipEssays.map(({ imageFile, imageAlt, publishedAt, ...essay }) => ({
+      ...remainingDecodingEssays.map(({ imageFile, imageAlt, publishedAt, ...essay }) => ({
         ...essay,
         imageFile,
         imageAlt,
@@ -660,9 +605,9 @@ async function seed() {
         paragraphs: essay.paragraphs || [],
         tags: essay.tags || [],
       })),
-    ]
+    ].sort((a, b) => (essayOrder.get(a.slug) ?? 999) - (essayOrder.get(b.slug) ?? 999))
 
-    for (const essay of allEssays) {
+    for (const [essayIndex, essay] of allEssays.entries()) {
       const existingEssay = await payload.find({
         collection: 'posts',
         limit: 1,
@@ -670,7 +615,13 @@ async function seed() {
       })
 
       if (existingEssay.docs.length > 0) {
-        payload.logger.info(`Essay "${essay.title}" already exists, skipping.`)
+        await payload.update({
+          collection: 'posts',
+          id: existingEssay.docs[0].id,
+          context: { disableRevalidate: true },
+          data: { _order: orderKey(essayIndex) },
+        })
+        payload.logger.info(`Essay "${essay.title}" already exists; order verified.`)
         continue
       }
 
@@ -705,13 +656,13 @@ async function seed() {
           title: essay.title,
           slug: essay.slug,
           heroImage: image.id,
-          categories: [scholarshipCategoryId],
           content: lexicalState([
             ...essay.paragraphs.map((p) => lexicalParagraph(p.text, { italic: p.italic })),
             tagsParagraph,
           ]),
           meta: { image: image.id },
           publishedAt: new Date(essay.publishedAt).toISOString(),
+          _order: orderKey(essayIndex),
         },
       })
       payload.logger.info(`Created essay "${essay.title}".`)
@@ -841,33 +792,13 @@ async function seed() {
     payload.logger.info('Uploaded hero portrait and set it on the homepage.')
   }
 
-  payload.logger.info('Seeding site nav…')
+  payload.logger.info('Seeding site settings…')
   const site = await payload.findGlobal({ slug: 'site' })
 
   const siteData: Record<string, unknown> = {}
 
-  if (!site.navItems || site.navItems.length === 0) {
-    // Not currently read by the header — HeaderClient renders its own hardcoded
-    // `headerNavItems` array (see src/globals/Site/Header/Component.client.tsx) rather than
-    // this field. Kept in sync anyway so it's not misleading if the header is ever wired back
-    // up to read from here.
-    siteData.navItems = [
-      { link: { type: 'custom', url: '/', label: 'HOME' } },
-      { link: { type: 'custom', url: '/tarot', label: 'TAROT' } },
-      { link: { type: 'custom', url: '/books', label: 'BOOKS' } },
-      {
-        link: {
-          type: 'custom',
-          url: '/decoding-sylvia-plath',
-          label: 'DECODING SYLVIA PLATH',
-        },
-      },
-      { link: { type: 'custom', url: '/contact', label: 'CONTACT' } },
-    ]
-    siteData.bookingUrl = site.bookingUrl || '/contact'
-    payload.logger.info('Prepared main nav.')
-  } else {
-    payload.logger.info('Site global already has nav items — leaving them as-is.')
+  if (!site.bookingUrl) {
+    siteData.bookingUrl = '/contact'
   }
 
   if (!site.socials || site.socials.length === 0) {

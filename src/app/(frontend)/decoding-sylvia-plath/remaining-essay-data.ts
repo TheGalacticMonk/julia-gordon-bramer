@@ -1,18 +1,18 @@
-import type { ScholarshipEssay } from './essays'
+import type { DecodingEssay } from './essays'
 
-export type SeededScholarshipEssay = ScholarshipEssay & {
+export type SeededDecodingEssay = DecodingEssay & {
   imageFile: string
   imageAlt: string
   publishedAt: string
 }
 
-export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
+export const remainingDecodingEssays: SeededDecodingEssay[] = [
   {
     title: '“Two Sisters of Persephone”: Poetry Goddesses',
     slug: 'two-sisters-of-persephone-poetry-goddesses',
     excerpt:
       'Plath read a lot of Plato at Cambridge in 1956, and the country of Greece went through a great deal of political upheaval that year. The island of Cyprus had been under British rule but was seeking to reunite with Greece. King Paul of Greec…',
-    image: '/assets/scholarship/two-sisters-of-persephone-poetry-goddesses.png',
+    image: '/assets/decoding-sylvia-plath/two-sisters-of-persephone-poetry-goddesses.png',
     imageFile: 'two-sisters-of-persephone-poetry-goddesses.png',
     imageAlt: 'Pictured: Poet Emily Dickinson',
     publishedAt: '2022-01-20',
@@ -67,7 +67,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'ella-mason-and-her-eleven-cats-cat-houses-in-the-news',
     excerpt:
       'Plath wrote “Ella Mason and Her Eleven Cats“ on June 2, 1956, per her pocket calendar. Plath spoke a bit of French, and the very near-homophone la maison translates to “the house.“ This is less a poem about an animal hoarder, and more expli…',
-    image: '/assets/scholarship/ella-mason-and-her-eleven-cats-cat-houses-in-the-news.png',
+    image: '/assets/decoding-sylvia-plath/ella-mason-and-her-eleven-cats-cat-houses-in-the-news.png',
     imageFile: 'ella-mason-and-her-eleven-cats-cat-houses-in-the-news.png',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -115,7 +115,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'crystal-gazer-a-different-kind-of-globe',
     excerpt:
       'Revisions to Plath’s poem “Crystal Gazer“ were discussed in Hughes’ October 1956 letters, but Plath’s calendar notes reveal that she wrote 24 lines (probably the first four stanzas) on June 3, 1956 and worked on it through the next few days…',
-    image: '/assets/scholarship/crystal-gazer-a-different-kind-of-globe.png',
+    image: '/assets/decoding-sylvia-plath/crystal-gazer-a-different-kind-of-globe.png',
     imageFile: 'crystal-gazer-a-different-kind-of-globe.png',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -174,7 +174,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     excerpt:
       '[An earlier version of this essay was first published in  />–Letter to Sylvia Plath from Ted Hughes, October 6 and 8, 1956[1]…',
     image:
-      '/assets/scholarship/history-and-a-case-for-prescience-introduction-on-short-studies-of-sylvia-plaths.png',
+      '/assets/decoding-sylvia-plath/history-and-a-case-for-prescience-introduction-on-short-studies-of-sylvia-plaths.png',
     imageFile:
       'history-and-a-case-for-prescience-introduction-on-short-studies-of-sylvia-plaths.png',
     imageAlt:
@@ -305,7 +305,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'the-beggars-neighboring-countries-on-hard-times',
     excerpt:
       '“The Beggars“ is one of Plath’s poems seemingly set in Benidorm, Spain. If Plath had been reading the newspapers from home, which Aurelia might have sent, she would have seen that a new version of Faust opened at the Theatre on the Green in…',
-    image: '/assets/scholarship/the-beggars-neighboring-countries-on-hard-times.png',
+    image: '/assets/decoding-sylvia-plath/the-beggars-neighboring-countries-on-hard-times.png',
     imageFile: 'the-beggars-neighboring-countries-on-hard-times.png',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -349,7 +349,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'dream-with-clam-diggers-a-sinking-feeling',
     excerpt:
       'Over those first six months of marriage with Hughes, Plath told her mother that she was writing new “happy“ poems glorifying her love with Ted. The poems she listed were “Two Sisters of Persephone,“ “Metamorphosis,“ “Wreath for a Bridal,“ “…',
-    image: '/assets/scholarship/dream-with-clam-diggers-a-sinking-feeling.png',
+    image: '/assets/decoding-sylvia-plath/dream-with-clam-diggers-a-sinking-feeling.png',
     imageFile: 'dream-with-clam-diggers-a-sinking-feeling.png',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -429,7 +429,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'recantation-an-incantation-of-political-disgust',
     excerpt:
       '“Recantation“ is an undated poem, but considering Britain’s stance regarding 1956’s crisis in the Suez, the French in Algeria, and the Hungarian Revolution, Sylvia Plath was angry at the United Kingdom too. In “Recantation,“ she recants her…',
-    image: '/assets/scholarship/recantation-an-incantation-of-political-disgust.png',
+    image: '/assets/decoding-sylvia-plath/recantation-an-incantation-of-political-disgust.png',
     imageFile: 'recantation-an-incantation-of-political-disgust.png',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -466,7 +466,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'wreath-for-a-bridal-the-dysfunctional-marriage-of-nations',
     excerpt:
       'Plath’s poem “Wreath for a Bridal“ was written on May 17, 1956 and is often read strictly discussing marriage and physical union. That is of course a small part of Plath’s meaning, but as with so many of her poems, it is more substantial th…',
-    image: '/assets/scholarship/wreath-for-a-bridal-the-dysfunctional-marriage-of-nations.png',
+    image: '/assets/decoding-sylvia-plath/wreath-for-a-bridal-the-dysfunctional-marriage-of-nations.png',
     imageFile: 'wreath-for-a-bridal-the-dysfunctional-marriage-of-nations.png',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -518,7 +518,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'maudlin-the-monthly-curse',
     excerpt:
       'Of all the work in the 1956 section of The Collected Poems, “Maudlin“ may be the one closest to Plath’s autobiography. However, this poem was probably written in 1959. After all, Plath wrote in her journals on May 25, 1959, “My Maudlin poem…',
-    image: '/assets/scholarship/maudlin-the-monthly-curse.png',
+    image: '/assets/decoding-sylvia-plath/maudlin-the-monthly-curse.png',
     imageFile: 'maudlin-the-monthly-curse.png',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -562,7 +562,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'the-goring-nazi-gore-and-goering',
     excerpt:
       '​ />Plath’s journals and calendars reveal that she attended a bullfight in Spain where she witnessed the picador gored by the bull. This of course was the first inspiration for the poem. But Plath had by now become adept in her multiple mea…',
-    image: '/assets/scholarship/the-goring-nazi-gore-and-goering.jpg',
+    image: '/assets/decoding-sylvia-plath/the-goring-nazi-gore-and-goering.jpg',
     imageFile: 'the-goring-nazi-gore-and-goering.jpg',
     imageAlt: 'Pictured: Nazi leader, Hermann Goering',
     publishedAt: '2022-01-20',
@@ -592,7 +592,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     excerpt:
       'The shallowness of plastic surgery, in Hollywood and otherwise, seems to have also bothered Plath, as we see in poems such as “Tinker Jack and the Tidy Wives,“ written June 7, 1956, with the assumption that one “hag“ can be either restored …',
     image:
-      '/assets/scholarship/tinker-jack-and-the-tidy-wives-turkeyneck-travellers-and-miss-latrobe.png',
+      '/assets/decoding-sylvia-plath/tinker-jack-and-the-tidy-wives-turkeyneck-travellers-and-miss-latrobe.png',
     imageFile: 'tinker-jack-and-the-tidy-wives-turkeyneck-travellers-and-miss-latrobe.png',
     imageAlt: 'Pictured: Marilyn Monroe, before and after plastic surgery, mid-1950s',
     publishedAt: '2022-01-20',
@@ -656,7 +656,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'spinster-unlovable-imperialism',
     excerpt:
       'The image of the spinster was a popular one in the movies during the 1940s and ’50s, and the character was often pictured pining over a dead soldier boyfriend whose picture was on the mantel. In 1942, Bette Davis had starred as spinster Cha…',
-    image: '/assets/scholarship/spinster-unlovable-imperialism.png',
+    image: '/assets/decoding-sylvia-plath/spinster-unlovable-imperialism.png',
     imageFile: 'spinster-unlovable-imperialism.png',
     imageAlt: 'Pictured: French police attack Algerian protesters in Paris, 1956',
     publishedAt: '2022-01-20',
@@ -716,7 +716,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'black-rook-in-rainy-weather-crowing-over-hubris',
     excerpt:
       'In 1956, British Prime Minister Anthony Eden’s career had taken a dive over the Suez Crisis and his underestimation of opposition to attack by the United States. Eden was one of the least liked and least successful leaders in British politi…',
-    image: '/assets/scholarship/black-rook-in-rainy-weather-crowing-over-hubris.png',
+    image: '/assets/decoding-sylvia-plath/black-rook-in-rainy-weather-crowing-over-hubris.png',
     imageFile: 'black-rook-in-rainy-weather-crowing-over-hubris.png',
     imageAlt: 'Life Magazine photo of Britain’s Prime Minister, Anthony Eden',
     publishedAt: '2022-01-20',
@@ -767,7 +767,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'alicante-lullaby-holiday-at-holiday',
     excerpt:
       'Over her infamous Mademoiselle summer, in her single years, and later with Hughes, Plath made occasional trips to New York City night clubs, and certainly knew of, if not attended, the famous Copacabana night club. While Hughes and Plath we…',
-    image: '/assets/scholarship/alicante-lullaby-holiday-at-holiday.png',
+    image: '/assets/decoding-sylvia-plath/alicante-lullaby-holiday-at-holiday.png',
     imageFile: 'alicante-lullaby-holiday-at-holiday.png',
     imageAlt:
       'CP, 43). Originally located at 10 East 60th Street, the Copa’s Upper East Side Manhattan neighborhood at this time was full of Italian “yellow-paella eateries“ and “back alley balconies,“ just as they were experiencing in Alicante, Spain. The “cocks and hens / In the roofgardens“ is the audience, which were sometimes royalty and other celebrities (“repose with crowns“) seated in their balconies and laughing (“cackles“).\nThe serving trolleys of the Copacabana are described as they “trundle“ up and down the aisles under the dark theater’s “indigo fizzle“ and the swanky “neon-lit palm“ trees. Music at the Copacabana was predominantly orchestra, jazz, Latin and Caribbean. The club was known for performers such as Carmen Miranda, Harry Belafonte, Ella Fitzgerald, Tony Bennet, Xavier Cugat, Sam Cooke, Nat King Cole, and Billie Holiday, “goddess of jazz and of quarrels, / Crack-throated mistress“ for whom it seems the last stanza of “Alicante Lullaby“ was written. While Plath and Hughes were on their holiday, Billie Holiday was at the pinnacle of her career. Billie Holiday notably covered the old Al Jolson song, “Back in Your Own Backyard,“ and includes the repeating line, You’ll see your castles in Spain. Plath’s first line in “Alicante Lullaby“ suggests not only the famous World War II song, “Beer Barrel Polka,“ undoubtedly sung there many times, and famously recorded by Holiday. Plath liked jazz music enough to note in her pocket calendar that she enjoyed it on March 2, 1956.\nThat year of 1956 was also when Holiday’s popular autobiography, Lady Sings the Blues, was released, along with a record of the same title. Like Billie Holiday’s voice, Plath’s final stanza of “Alicante Lullaby“ wrestles with vigorous, fast-connoting words (“con brios,“ “prestos,“ “prestissimos“), words that are free and impulsive (“capricciosos,“ “cadenzas“) and the quiet murmuring sounds of the infamous Lady Day herself, as Holiday was called (“pianissimo,“ “susurrous“).',
@@ -810,7 +810,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'letter-to-a-purist-shaking-up-virginal-vernacular',
     excerpt:
       'Plath’s “Letter to a Purist“ has been dated November 19, 1956 by scholar Nancy D. Hargrove. In the poem, Plath references the giant statue, Colossus of Rhodes, one of the seven wonders of the ancient world (CP, 36). The “Cloud-cuckoo“ is a …',
-    image: '/assets/scholarship/letter-to-a-purist-shaking-up-virginal-vernacular.png',
+    image: '/assets/decoding-sylvia-plath/letter-to-a-purist-shaking-up-virginal-vernacular.png',
     imageFile: 'letter-to-a-purist-shaking-up-virginal-vernacular.png',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -864,7 +864,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'resolve-battling-the-invisible',
     excerpt:
       'Scholar Nancy D. Hargrove dates Plath’s “Resolve“ to be written in November or December of 1956. On December 19, 1956, a thick fog was the BBC News headline, causing death on the roads, railway, ship, air and postal delays (“unserviceable“)…',
-    image: '/assets/scholarship/resolve-battling-the-invisible.png',
+    image: '/assets/decoding-sylvia-plath/resolve-battling-the-invisible.png',
     imageFile: 'resolve-battling-the-invisible.png',
     imageAlt: 'Pictured: A double-decker bus in downtown London, December 1956',
     publishedAt: '2022-01-20',
@@ -898,7 +898,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'southern-sunrise-a-political-potboiler',
     excerpt:
       'Plath’s “Southern Sunrise,“ is widely believed to be about Benidorm’s Bay in Spain.[1]  However, the Benidorm region has no bay associated with an angel name. The poem “Southern Sunrise“ is a better fit to “Angels’ Bay,“ the “Baie des Anges…',
-    image: '/assets/scholarship/southern-sunrise-a-political-potboiler.jpg',
+    image: '/assets/decoding-sylvia-plath/southern-sunrise-a-political-potboiler.jpg',
     imageFile: 'southern-sunrise-a-political-potboiler.jpg',
     imageAlt: 'Pictured: Israel’s Coat of Arms',
     publishedAt: '2022-01-20',
@@ -972,7 +972,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'soliloquy-of-the-solipsist-tyranny-talking-to-itself',
     excerpt:
       'Given her interest in world events, Plath’s “Soliloquy of the Solipsist“ appears to be her jab at Communism. This time, the military action was in Poland. In June of 1956, the Poznań Revolt had taken place in Plath’s father’s hometown.…',
-    image: '/assets/scholarship/soliloquy-of-the-solipsist-tyranny-talking-to-itself.png',
+    image: '/assets/decoding-sylvia-plath/soliloquy-of-the-solipsist-tyranny-talking-to-itself.png',
     imageFile: 'soliloquy-of-the-solipsist-tyranny-talking-to-itself.png',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -1024,7 +1024,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'miss-drake-proceeds-to-supper-discovery-in-the-insect-world',
     excerpt:
       'According to her pocket calendar, Sylvia Plath wrote “Miss Drake Proceeds to Supper“ on June 19, 1956, in the sun by the River Seine in Paris, France. This was three days after she and Ted Hughes were married.…',
-    image: '/assets/scholarship/miss-drake-proceeds-to-supper-discovery-in-the-insect-world.png',
+    image: '/assets/decoding-sylvia-plath/miss-drake-proceeds-to-supper-discovery-in-the-insect-world.png',
     imageFile: 'miss-drake-proceeds-to-supper-discovery-in-the-insect-world.png',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -1065,7 +1065,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'vanity-fair-waging-war-against-the-idiot-box',
     excerpt:
       '“Vanity Fair“ appears to have been written on October 28, 1956, judging from Plath’s pocket diary. “Vanity Fair“ is Plath’s poke at the television sitcoms and soap operas such as The Grove Family in the UK, and As the World Turns in the Uni…',
-    image: '/assets/scholarship/vanity-fair-waging-war-against-the-idiot-box.png',
+    image: '/assets/decoding-sylvia-plath/vanity-fair-waging-war-against-the-idiot-box.png',
     imageFile: 'vanity-fair-waging-war-against-the-idiot-box.png',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -1111,7 +1111,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'prospect-dr-death',
     excerpt:
       '“Prospect“ is an interesting short poem that seems to address the fraudster and suspected serial killer, Doctor John Bodkin Adams.  Adams lived in Eastbourne, Sussex, a town of “orange-tile rooftops / and chimney pots“ on the coastal area k…',
-    image: '/assets/scholarship/prospect-dr-death.png',
+    image: '/assets/decoding-sylvia-plath/prospect-dr-death.png',
     imageFile: 'prospect-dr-death.png',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -1144,7 +1144,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'landowners-and-departure-there-goes-the-neighborhood',
     excerpt:
       'Hughes placed Plath’s poem, “Landowners,“ in the year 1956 in the Collected Poems. Plath referenced in her journals writing a poem on the subject of landowners two years later, on July 4, 1958, (UJ, 399). It is of course possible that she h…',
-    image: '/assets/scholarship/landowners-and-departure-there-goes-the-neighborhood.png',
+    image: '/assets/decoding-sylvia-plath/landowners-and-departure-there-goes-the-neighborhood.png',
     imageFile: 'landowners-and-departure-there-goes-the-neighborhood.png',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -1216,7 +1216,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'strumpet-song-and-god-created-female-competition',
     excerpt:
       'Plath wrote in her journals that “Strumpet Song“ was written shortly after meeting Hughes (UJ, 410). It is a literary treatment of time in the metaphor of a whore (CP, 33). Plath’s first encounter with Hughes, when he kissed her “bang smash…',
-    image: '/assets/scholarship/strumpet-song-and-god-created-female-competition.png',
+    image: '/assets/decoding-sylvia-plath/strumpet-song-and-god-created-female-competition.png',
     imageFile: 'strumpet-song-and-god-created-female-competition.png',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -1253,7 +1253,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'rhyme-breaking-the-golden-rule',
     excerpt:
       'Plath’s poem “Rhyme“ may be one of her least-analyzed works, and most readers interpret it as simply a commentary on the creative process. There is a good chance that Plath wrote her poem “Rhyme“ around mid-May, when the BBC had announced t…',
-    image: '/assets/scholarship/rhyme-breaking-the-golden-rule.png',
+    image: '/assets/decoding-sylvia-plath/rhyme-breaking-the-golden-rule.png',
     imageFile: 'rhyme-breaking-the-golden-rule.png',
     imageAlt: 'Pictured: Gold Coast’s Independence from Britain to become Ghana',
     publishedAt: '2022-01-20',
@@ -1287,7 +1287,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'bucolics-the-pains-of-the-pastoral',
     excerpt:
       'On the first of May 1956, “Mayday,“ Plath’s beloved Grammy died, leaving her husband, “Grampy“ Frank Schober, a widower. That day, BBC News announced that Japan was in the throes of an unknown epidemic creating ataxia, convulsions, paralysi…',
-    image: '/assets/scholarship/bucolics-the-pains-of-the-pastoral.jpg',
+    image: '/assets/decoding-sylvia-plath/bucolics-the-pains-of-the-pastoral.jpg',
     imageFile: 'bucolics-the-pains-of-the-pastoral.jpg',
     imageAlt: 'A victim of Minamata Disease. Origin of photo unknown.',
     publishedAt: '2022-01-20',
@@ -1323,7 +1323,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'song-for-a-summers-day-sassoon-and-sawdust',
     excerpt:
       'Plath finished “Song for a Summer’s Day“ on April 20, 1956 per her pocket calendar, where it is referred to as “Through Fern & Farm and Walking.“ It was first titled “Song“ in an early, darker version published in Letters Home, which she ma…',
-    image: '/assets/scholarship/song-for-a-summers-day-sassoon-and-sawdust.jpg',
+    image: '/assets/decoding-sylvia-plath/song-for-a-summers-day-sassoon-and-sawdust.jpg',
     imageFile: 'song-for-a-summers-day-sassoon-and-sawdust.jpg',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -1364,7 +1364,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'the-eye-mote-thats-racing',
     excerpt:
       'Written in Paris on March 26, 1956, according to Plath’s pocket calendar, and not in 1959 where it is placed in The Collected Poems, “The Eye-mote“ was written “through tears“ over Richard Sassoon. Readers of Plath’s letters and journals ma…',
-    image: '/assets/scholarship/the-eye-mote-thats-racing.jpg',
+    image: '/assets/decoding-sylvia-plath/the-eye-mote-thats-racing.jpg',
     imageFile: 'the-eye-mote-thats-racing.jpg',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',
@@ -1393,7 +1393,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     excerpt:
       'Plath’s “Conversation Among the Ruins,“ positioned first in the Collected Poems for the year of 1956, is widely read to be a piece she wrote about the famous Georgio de Chirico painting of the same name (CP, 21). The notes to the poem expla…',
     image:
-      '/assets/scholarship/conversation-among-the-ruins-the-furious-wreck-of-love-affairs-and-tunisia.jpg',
+      '/assets/decoding-sylvia-plath/conversation-among-the-ruins-the-furious-wreck-of-love-affairs-and-tunisia.jpg',
     imageFile: 'conversation-among-the-ruins-the-furious-wreck-of-love-affairs-and-tunisia.jpg',
     imageAlt: 'Pictured: the Dougga ruins of Tunis, Tunisia',
     publishedAt: '2022-01-20',
@@ -1449,7 +1449,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     excerpt:
       'On February 20, 1956, Plath wrote “Tale of a Tub,“ while in her own bathtub (CP, 24). “[T]ake care it doesn’t get too general,“ she noted to herself.  The poem does not get too general, but rather it becomes a parody of Jonathan Swift’s wor…',
     image:
-      '/assets/scholarship/tale-of-a-tub-and-on-the-difficulty-of-conjuring-up-a-dryad-the-suez-in-hot-wate.jpg',
+      '/assets/decoding-sylvia-plath/tale-of-a-tub-and-on-the-difficulty-of-conjuring-up-a-dryad-the-suez-in-hot-wate.jpg',
     imageFile:
       'tale-of-a-tub-and-on-the-difficulty-of-conjuring-up-a-dryad-the-suez-in-hot-wate.jpg',
     imageAlt:
@@ -1517,7 +1517,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     excerpt:
       '“Winter Landscape, with Rooks,“ was written on February 20, 1956, per Plath’s pocket calendar. She had written it just after reading Eugene O’Neill’s plays, all full of despairing characters on the fringes of society.  Plath found herself l…',
     image:
-      '/assets/scholarship/winter-landscape-with-rooks-and-firesong-tales-of-british-diver-lionel-buster-cr.jpg',
+      '/assets/decoding-sylvia-plath/winter-landscape-with-rooks-and-firesong-tales-of-british-diver-lionel-buster-cr.jpg',
     imageFile:
       'winter-landscape-with-rooks-and-firesong-tales-of-british-diver-lionel-buster-cr.jpg',
     imageAlt: 'Picture',
@@ -1576,7 +1576,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'faun-hoo-are-you',
     excerpt:
       'Plath’s poem “Faun“ was first called “Metamorphosis,“ and is found under this title in Letters Home (LH, 234). Her pocket calendar entry dated April 18, 1956 reads, “wrote poem re: Ted = Pan.“  In her journals, Plath also referenced this sa…',
-    image: '/assets/scholarship/faun-hoo-are-you.jpg',
+    image: '/assets/decoding-sylvia-plath/faun-hoo-are-you.jpg',
     imageFile: 'faun-hoo-are-you.jpg',
     imageAlt: 'Pictured: The flag of the People’s Republic of China, adopted 1949',
     publishedAt: '2022-01-20',
@@ -1626,7 +1626,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'pursuit-the-black-marauder-of-imperialist-france',
     excerpt:
       'Most assume that Plath wrote the predatory poem “Pursuit“ for Ted Hughes. In her journals, Plath privately acknowledged that this poem is about “the dark forces of lust.“ She hardly consoled her mother in a letter too, writing that it repre…',
-    image: '/assets/scholarship/pursuit-the-black-marauder-of-imperialist-france.jpg',
+    image: '/assets/decoding-sylvia-plath/pursuit-the-black-marauder-of-imperialist-france.jpg',
     imageFile: 'pursuit-the-black-marauder-of-imperialist-france.jpg',
     imageAlt: 'Political cartoon illustrating France’s imperial lust',
     publishedAt: '2022-01-20',
@@ -1693,7 +1693,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'ode-for-ted-a-devilish-disguise',
     excerpt:
       'The poem “Ode for Ted“ was originally entitled “Poem for Pan,“ for the Ancient Greek god of nature and the wild mountains. According to her pocket calendar, Plath began this poem on April 20 and finished it on April 21, 1956. Pan, of course…',
-    image: '/assets/scholarship/ode-for-ted-a-devilish-disguise.jpg',
+    image: '/assets/decoding-sylvia-plath/ode-for-ted-a-devilish-disguise.jpg',
     imageFile: 'ode-for-ted-a-devilish-disguise.jpg',
     imageAlt: 'Pan statue at the Musée du Louvre, Paris, France',
     publishedAt: '2022-01-20',
@@ -1765,7 +1765,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'the-queens-complaint-check-mate',
     excerpt:
       'Begun on April 18, 1956, and finished the next day per her pocket calendar, Plath’s poem, “Complaint of the Crazed Queen,“ was enclosed in a letter to her mother on April 29, 1956. It was later retitled, “Mad Queen’s Song,“ and finally titl…',
-    image: '/assets/scholarship/the-queens-complaint-check-mate.png',
+    image: '/assets/decoding-sylvia-plath/the-queens-complaint-check-mate.png',
     imageFile: 'the-queens-complaint-check-mate.png',
     imageAlt:
       'A political cartoon mocking the British Empire. The caption read: “New Crowns for Old Ones!“ By Benjamin Disraeli for Punch Magazine.',
@@ -1847,7 +1847,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     excerpt:
       '“Channel Crossing“ was one of Plath’s first poems to turn away from the “small, coy love lyric“ toward the “larger, social world of other people“ (LH, 222). At first glance, “Channel Crossing“ seems to be about her miserable trip, post-hone…',
     image:
-      '/assets/scholarship/channel-crossing-crossed-wires-or-the-first-documented-premonition.jpg',
+      '/assets/decoding-sylvia-plath/channel-crossing-crossed-wires-or-the-first-documented-premonition.jpg',
     imageFile: 'channel-crossing-crossed-wires-or-the-first-documented-premonition.jpg',
     imageAlt:
       'The January 7, 1957, Time Magazine’s Man of the Year was the Hungarian Freedom Fighter, a dead-ringer for Plath’s husband, Ted Hughes',
@@ -1934,7 +1934,7 @@ export const remainingScholarshipEssays: SeededScholarshipEssay[] = [
     slug: 'fiesta-melons-pin-up-pumpkins-and-hollywood-honeydew',
     excerpt:
       'Plath loved Hollywood. Hollywood in 1956 was full of pin-up girls: Liz Taylor was the star of the moment with her movie, Giant. Marilyn Monroe starred in Bus Stop. Deborah Kerr was back with The King and I, and Jayne Mansfield became famous with The Girl Can’t Help It.…',
-    image: '/assets/scholarship/fiesta-melons-pin-up-pumpkins-and-hollywood-honeydew.jpg',
+    image: '/assets/decoding-sylvia-plath/fiesta-melons-pin-up-pumpkins-and-hollywood-honeydew.jpg',
     imageFile: 'fiesta-melons-pin-up-pumpkins-and-hollywood-honeydew.jpg',
     imageAlt: 'Picture',
     publishedAt: '2022-01-20',

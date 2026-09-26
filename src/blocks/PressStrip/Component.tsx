@@ -12,7 +12,7 @@ type Props = PressStripBlockProps & {
   className?: string
 }
 
-// Cached like the site/seoDefaults/home globals instead of hitting D1 on every homepage view.
+// Cached like the site/home globals instead of hitting D1 on every homepage view.
 // Purely content-driven (no time-relative filter like EventList's "upcoming" cutoff), so the
 // 'press-quotes' tag alone is enough — invalidated by PressQuotes' own afterChange/afterDelete
 // hooks (src/collections/PressQuotes.ts).
@@ -31,7 +31,11 @@ const queryFeaturedQuotes = unstable_cache(
   { tags: ['press-quotes'] },
 )
 
-export const PressStripBlock: React.FC<Props> = async ({ heading, quotes: selectedQuotes, className }) => {
+export const PressStripBlock: React.FC<Props> = async ({
+  heading,
+  quotes: selectedQuotes,
+  className,
+}) => {
   let quotes = (selectedQuotes || []).filter(
     (quote): quote is PressQuote => typeof quote === 'object',
   )
@@ -43,7 +47,7 @@ export const PressStripBlock: React.FC<Props> = async ({ heading, quotes: select
   if (quotes.length === 0) return null
 
   return (
-    <div className={cn('container', className)}>
+    <div id="press" className={cn('container scroll-mt-24', className)}>
       {heading && <SectionHeading>{heading}</SectionHeading>}
       <ul className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
         {quotes.map((quote) => (

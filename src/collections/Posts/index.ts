@@ -1,24 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
 import {
-  BlocksFeature,
-  FixedToolbarFeature,
-  HeadingFeature,
-  HorizontalRuleFeature,
-  InlineToolbarFeature,
-  lexicalEditor,
-} from '@payloadcms/richtext-lexical'
-
-import { authenticated } from '../../access/authenticated'
-import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { ImageBlock } from '../../blocks/ImageBlock/config'
-import { PullQuote } from '../../blocks/PullQuote/config'
-import { generatePreviewPath } from '../../utilities/generatePreviewPath'
-import { slugField } from '@/fields/slug'
-import { populateAuthors } from './hooks/populateAuthors'
-import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
-
-import {
   MetaDescriptionField,
   MetaImageField,
   MetaTitleField,
@@ -26,8 +8,24 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 
+import { adminOnlyField } from '../../access/editorVisibility'
+import { authenticated } from '../../access/authenticated'
+import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
+import { simpleRichText } from '../../fields/simpleRichText'
+import { docPreview } from '@/utilities/livePreview'
+import { slugField } from '@/fields/slug'
+import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
+
+// The site has no blog: every "post" is a Decoding Sylvia Plath essay, so this collection is
+// presented to Julia as "Essays" and everything she doesn't need (SEO, the URL) is developer-only.
 export const Posts: CollectionConfig = {
   slug: 'posts',
+  orderable: true,
+  defaultSort: '_order',
+  labels: {
+    singular: 'Essay',
+    plural: 'Essays',
+  },
   access: {
     create: authenticated,
     delete: authenticated,
@@ -43,134 +41,67 @@ export const Posts: CollectionConfig = {
   defaultPopulate: {
     title: true,
     slug: true,
-    categories: true,
     meta: {
       image: true,
       description: true,
     },
   },
   admin: {
-    defaultColumns: ['title', 'slug', 'updatedAt'],
-    livePreview: {
-      url: ({ data, req }) =>
-        generatePreviewPath({
-          slug: data?.slug,
-          collection: 'posts',
-          req,
-        }),
+    defaultColumns: ['title', 'publishedAt', '_status'],
+    description:
+      'Your Decoding Sylvia Plath essays. To add one: click “Create New”, add the title, a picture and the text, then click Publish. Drag the ⋮⋮ handle in the list to change the order they appear in.',
+    group: 'Add & edit',
+    pagination: {
+      defaultLimit: 50,
+      limits: [25, 50, 100],
     },
-    preview: (data, { req }) =>
-      generatePreviewPath({
-        slug: data?.slug as string,
-        collection: 'posts',
-        req,
-      }),
+    components: {
+      beforeList: ['@/components/EnsureOrderableSort'],
+    },
+    livePreview: docPreview('posts'),
     useAsTitle: 'title',
   },
   fields: [
     {
       name: 'title',
       type: 'text',
+      label: 'Essay title',
       required: true,
+      admin: {
+        description: 'The big heading at the top of the essay, e.g. “Street Song”: Double Jeopardy',
+      },
     },
     {
-      type: 'tabs',
-      tabs: [
-        {
-          fields: [
-            {
-              name: 'heroImage',
-              type: 'upload',
-              relationTo: 'media',
-            },
-            {
-              name: 'content',
-              type: 'richText',
-              editor: lexicalEditor({
-                features: ({ rootFeatures }) => {
-                  return [
-                    ...rootFeatures,
-                    HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    BlocksFeature({ blocks: [PullQuote, ImageBlock] }),
-                    FixedToolbarFeature(),
-                    InlineToolbarFeature(),
-                    HorizontalRuleFeature(),
-                  ]
-                },
-              }),
-              label: false,
-              required: true,
-            },
-          ],
-          label: 'Content',
-        },
-        {
-          fields: [
-            {
-              name: 'relatedPosts',
-              type: 'relationship',
-              admin: {
-                position: 'sidebar',
-              },
-              filterOptions: ({ id }) => {
-                return {
-                  id: {
-                    not_in: [id],
-                  },
-                }
-              },
-              hasMany: true,
-              relationTo: 'posts',
-            },
-            {
-              name: 'categories',
-              type: 'relationship',
-              admin: {
-                position: 'sidebar',
-              },
-              hasMany: true,
-              relationTo: 'categories',
-            },
-          ],
-          label: 'Meta',
-        },
-        {
-          name: 'meta',
-          label: 'SEO',
-          fields: [
-            OverviewField({
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
-              imagePath: 'meta.image',
-            }),
-            MetaTitleField({
-              hasGenerateFn: true,
-            }),
-            MetaImageField({
-              relationTo: 'media',
-            }),
-
-            MetaDescriptionField({}),
-            PreviewField({
-              // if the `generateUrl` function is configured
-              hasGenerateFn: true,
-
-              // field paths to match the target field for data
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
-            }),
-          ],
-        },
-      ],
+      name: 'heroImage',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Picture',
+      admin: {
+        description:
+          'One picture for the essay (a photo, newspaper clipping, cartoon…). It is always shown in full — nothing gets cropped. When you upload it, the “Caption” you type appears under the picture.',
+      },
+    },
+    {
+      name: 'content',
+      type: 'richText',
+      editor: simpleRichText,
+      label: 'Essay text',
+      required: true,
+      admin: {
+        description:
+          'Type or paste the essay here. Press Enter for a new paragraph. Use the buttons above for bold, italic or links.',
+      },
     },
     {
       name: 'publishedAt',
       type: 'date',
+      label: 'Date shown on the essay',
       admin: {
         date: {
-          pickerAppearance: 'dayAndTime',
+          pickerAppearance: 'dayOnly',
         },
         position: 'sidebar',
+        description: 'Optional. Leave blank to use the day you publish.',
       },
       hooks: {
         beforeChange: [
@@ -183,50 +114,47 @@ export const Posts: CollectionConfig = {
         ],
       },
     },
+
+    // ── Developer-only from here down ─────────────────────────────────────────────────────
     {
-      name: 'authors',
-      type: 'relationship',
-      admin: {
-        position: 'sidebar',
-      },
-      hasMany: true,
-      relationTo: 'users',
-    },
-    // This field is only used to populate the user data via the `populateAuthors` hook
-    // This is because the `user` collection has access control locked to protect user privacy
-    // GraphQL will also not return mutated user data that differs from the underlying schema
-    {
-      name: 'populatedAuthors',
-      type: 'array',
-      access: {
-        update: () => false,
-      },
-      admin: {
-        disabled: true,
-        readOnly: true,
-      },
+      name: 'meta',
+      label: 'SEO',
+      type: 'group',
+      admin: { condition: adminOnlyField },
       fields: [
-        {
-          name: 'id',
-          type: 'text',
-        },
-        {
-          name: 'name',
-          type: 'text',
-        },
+        OverviewField({
+          titlePath: 'meta.title',
+          descriptionPath: 'meta.description',
+          imagePath: 'meta.image',
+        }),
+        MetaTitleField({
+          hasGenerateFn: true,
+        }),
+        MetaImageField({
+          relationTo: 'media',
+        }),
+
+        MetaDescriptionField({}),
+        PreviewField({
+          // if the `generateUrl` function is configured
+          hasGenerateFn: true,
+
+          // field paths to match the target field for data
+          titlePath: 'meta.title',
+          descriptionPath: 'meta.description',
+        }),
       ],
     },
-    ...slugField(),
+    ...slugField('title', { slugOverrides: { admin: { condition: adminOnlyField } } }),
   ],
   hooks: {
     afterChange: [revalidatePost],
-    afterRead: [populateAuthors],
     afterDelete: [revalidateDelete],
   },
   versions: {
     drafts: {
       autosave: {
-        interval: 100, // We set this interval for optimal live preview
+        interval: 800, // The live preview updates from the form itself; autosave only keeps the draft
       },
       schedulePublish: true,
     },

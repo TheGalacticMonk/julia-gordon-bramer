@@ -6,15 +6,15 @@ import type { Event } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
 import { CurvedDivider } from '@/components/CurvedDivider'
+import { getEventsText } from '@/globals/PageText/getPageText'
+import { EventsLive } from './EventsLive'
+import { EventsView } from './EventsView'
 import { formatEventDate } from '@/utilities/formatEventDate'
 import { generateMeta } from '@/utilities/generateMeta'
 
 export const revalidate = 600
 
 const eventLocation = (event: Event): string | null => {
-  if (event.venue && typeof event.venue === 'object') {
-    return [event.venue.name, event.venue.city].filter(Boolean).join(' · ')
-  }
   return event.cityOverride || null
 }
 
@@ -28,6 +28,7 @@ const eventDateParts = (startDate: string): { month: string; day: string } => {
 
 export default async function EventsPage() {
   const payload = await getPayload({ config: configPromise })
+  const { text, draft, raw } = await getEventsText()
   const now = new Date().toISOString()
 
   const [{ docs: upcoming }, { docs: past }] = await Promise.all([
@@ -49,24 +50,8 @@ export default async function EventsPage() {
     }),
   ])
 
-  return (
-    <div className="pb-24">
-      {/* section-base, not left implicit: same bug the homepage hero had (see
-          Hero/editorial.module.css's .introCard comment) — without an explicit background this
-          falls through to the opaque --paper instead of the translucent --section-base the
-          CurvedDivider right below actually transitions from, which is a hard seam waiting to
-          happen the moment --paper and --section-base aren't the same value (they're
-          deliberately not — see globals.css). */}
-      <div className="section-base">
-        <div className="container pt-16 pb-12 max-w-2xl">
-          <h1 className="text-4xl">Events &amp; Tour</h1>
-          <p className="mt-4 text-pretty text-ink-muted">
-            Readings, signings, lectures, and workshops — in the US and, when the calendar
-            allows, abroad.
-          </p>
-        </div>
-      </div>
-
+  const sections = (
+    <>
       {/* Same full-bleed alternating-tone bands + curved seam as the homepage's RenderBlocks
           sections (see that file's comments) — this used to skip the divider here on the theory
           that "Upcoming" could just pick up straight after the intro the way the homepage's
@@ -84,7 +69,10 @@ export default async function EventsPage() {
               {upcoming.map((event: Event) => {
                 const { month, day } = eventDateParts(event.startDate)
                 return (
-                  <li key={event.id} className="reading-card flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-5">
+                  <li
+                    key={event.id}
+                    className="reading-card flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-5"
+                  >
                     <div className="tour-ribbon shrink-0">
                       <span className="tour-ribbon-month">{month}</span>
                       <span className="tour-ribbon-day">{day}</span>
@@ -126,7 +114,10 @@ export default async function EventsPage() {
               <h2 className="mb-4 text-2xl">Past</h2>
               <ol className="flex flex-col divide-y divide-rule border-y border-rule">
                 {past.map((event: Event) => (
-                  <li key={event.id} className="flex flex-col gap-1 py-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+                  <li
+                    key={event.id}
+                    className="flex flex-col gap-1 py-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4"
+                  >
                     <CMSLink
                       appearance="inline"
                       className="font-sans text-ink-muted hover:text-ink"
@@ -145,7 +136,13 @@ export default async function EventsPage() {
           </div>
         </div>
       )}
-    </div>
+    </>
+  )
+
+  return draft ? (
+    <EventsLive initial={raw}>{sections}</EventsLive>
+  ) : (
+    <EventsView t={text}>{sections}</EventsView>
   )
 }
 
@@ -154,7 +151,8 @@ export async function generateMetadata() {
     doc: {
       meta: {
         title: 'Events & Tour',
-        description: 'Upcoming readings, signings, lectures, and workshops with Julia Gordon-Bramer.',
+        description:
+          'Upcoming readings, signings, lectures, and workshops with Julia Gordon-Bramer.',
       },
     },
     path: '/events',

@@ -14,8 +14,8 @@
     "binding": "ASSETS",
   },
 
-  // Non-secret runtime config. Secrets (PAYLOAD_SECRET, RESEND_API_KEY, CRON_SECRET,
-  // PREVIEW_SECRET) are set in the dashboard / with `wrangler secret put`, never here.
+  // Non-secret runtime config. Secrets (PAYLOAD_SECRET, RESEND_API_KEY)
+  // are set in the dashboard / with `wrangler secret put`, never here.
   "vars": {
     "NEXT_PUBLIC_SERVER_URL": "https://julia-gordon-bramer.thegalacticmonks.workers.dev",
     "EMAIL_FROM_ADDRESS": "no-reply@juliagordonbramer.com",

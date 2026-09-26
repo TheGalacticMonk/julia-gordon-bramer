@@ -27,7 +27,7 @@ export const notifyOnFormSubmission: CollectionAfterChangeHook<FormSubmission> =
       to: notifyTo,
       replyTo: doc.email,
       subject: `New contact form message: ${reasonLabels[doc.reason] || doc.reason}`,
-      text: `From: ${doc.name} <${doc.email}>\nReason: ${reasonLabels[doc.reason] || doc.reason}\n\n${doc.message}`,
+      text: `From: ${doc.name} <${doc.email}>${doc.phone ? `\nPhone: ${doc.phone}` : ''}\nReason: ${reasonLabels[doc.reason] || doc.reason}\n\n${doc.message}`,
     })
   } catch (error) {
     payload.logger.error({ err: error, message: 'Failed to send contact-form notification email' })

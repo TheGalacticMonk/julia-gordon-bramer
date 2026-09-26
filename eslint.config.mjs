@@ -23,7 +23,7 @@ const eslintConfig = [
     },
   },
   {
-    ignores: ['.next/', 'src/payload-types.ts', 'src/payload-generated-schema.ts'],
+    ignores: ['.next/', 'becca-berry-payload/', 'src/payload-types.ts', 'src/payload-generated-schema.ts'],
   },
 ]
 

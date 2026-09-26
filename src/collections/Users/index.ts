@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { admin } from '../../access/admin'
+import { hiddenFromEditors } from '../../access/editorVisibility'
 import { authenticated } from '../../access/authenticated'
 
 export const Users: CollectionConfig = {
@@ -16,7 +17,8 @@ export const Users: CollectionConfig = {
   admin: {
     defaultColumns: ['name', 'email', 'role'],
     useAsTitle: 'name',
-    group: 'Settings',
+    group: 'Developer',
+    hidden: hiddenFromEditors,
   },
   auth: true,
   fields: [

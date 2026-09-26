@@ -1,36 +1,29 @@
 import type { Metadata } from 'next'
 
-import type { Book, Event, Media, Page, Post } from '../payload-types'
+import type { Book, Event, Media, Post } from '../payload-types'
 
-import { getCachedGlobal } from './getGlobals'
 import { mergeOpenGraph } from './mergeOpenGraph'
 import { getMediaUrl } from './getMediaUrl'
+import { siteSeo } from './siteSeo'
 
-const getImageURL = (image: Media | number | null | undefined, fallback?: Media | number | null) => {
-  const resolved = image && typeof image === 'object' ? image : null
-  const resolvedFallback = fallback && typeof fallback === 'object' ? fallback : null
-  const target = resolved || resolvedFallback
-
-  if (!target) return undefined
-
-  return getMediaUrl(target.url) || undefined
+const getImageURL = (image: Media | number | null | undefined) => {
+  if (!image || typeof image !== 'object') return undefined
+  return getMediaUrl(image.url) || undefined
 }
 
 export const generateMeta = async (args: {
-  doc: Partial<Book> | Partial<Event> | Partial<Page> | Partial<Post> | null
-  /** Full site-relative path (e.g. `/blog/my-post`). Defaults to `/${doc.slug}` for pages-style routes. */
+  doc: Partial<Book> | Partial<Event> | Partial<Post> | null
+  /** Full site-relative path (e.g. `/books/my-book`). Defaults to `/${doc.slug}` for pages-style routes. */
   path?: string
 }): Promise<Metadata> => {
   const { doc, path } = args
-  const seoDefaults = await getCachedGlobal('seoDefaults', 1)()
-
-  const ogImage = getImageURL(doc?.meta?.image, seoDefaults?.defaultOgImage)
+  const ogImage = getImageURL(doc?.meta?.image)
 
   const title = doc?.meta?.title
-    ? `${doc.meta.title}${seoDefaults?.titleSuffix ? ` | ${seoDefaults.titleSuffix}` : ''}`
-    : seoDefaults?.titleSuffix || 'Julia Gordon-Bramer'
+    ? `${doc.meta.title} | ${siteSeo.titleSuffix}`
+    : siteSeo.titleSuffix
 
-  const description = doc?.meta?.description || seoDefaults?.defaultDescription || undefined
+  const description = doc?.meta?.description || undefined
 
   return {
     description,

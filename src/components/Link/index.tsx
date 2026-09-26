@@ -4,7 +4,7 @@ import { getCollectionPath } from '@/utilities/collectionPath'
 import Link from 'next/link'
 import React from 'react'
 
-import type { Book, Event, Page, Post } from '@/payload-types'
+import type { Book, Event, Post } from '@/payload-types'
 
 type CMSLinkType = {
   appearance?: 'inline' | ButtonProps['variant']
@@ -13,8 +13,8 @@ type CMSLinkType = {
   label?: string | null
   newTab?: boolean | null
   reference?: {
-    relationTo: 'books' | 'events' | 'pages' | 'posts'
-    value: Book | Event | Page | Post | string | number
+    relationTo: 'books' | 'events' | 'posts'
+    value: Book | Event | Post | string | number
   } | null
   size?: ButtonProps['size'] | null
   type?: 'custom' | 'reference' | null
@@ -36,7 +36,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
 
   const href =
     type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
-      ? getCollectionPath(reference.relationTo, reference.value.slug, reference.value)
+      ? getCollectionPath(reference.relationTo, reference.value.slug)
       : url
 
   if (!href) return null

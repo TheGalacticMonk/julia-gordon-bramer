@@ -6,7 +6,6 @@ import React from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
 import { JsonLd } from '@/components/JsonLd'
-// import { MagicSparkles } from '@/components/MagicSparkles/Component'
 import { OrbPattern } from '@/components/OrbPattern/Component'
 import { SocialSidebar } from '@/components/SocialSidebar/Component'
 import { AnnouncementBar } from '@/globals/Site/AnnouncementBar/Component'
@@ -14,7 +13,7 @@ import { Footer } from '@/globals/Site/Footer/Component'
 import { Header } from '@/globals/Site/Header/Component'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
-import { getCachedGlobal } from '@/utilities/getGlobals'
+import { siteSeo } from '@/utilities/siteSeo'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { personSchema } from '@/utilities/schemaOrg'
 
@@ -61,8 +60,6 @@ const barlowCondensed = Barlow_Condensed({
 })
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const seoDefaults = await getCachedGlobal('seoDefaults', 0)()
-
   return (
     <html
       className={cn(
@@ -97,7 +94,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             script tag here and produces a hydration mismatch. This is Next.js's own recommended
             placement for JSON-LD for that reason.
           */}
-          <JsonLd data={personSchema(seoDefaults?.organizationName || 'Julia Gordon-Bramer')} />
+          <JsonLd data={personSchema(siteSeo.organizationName)} />
           <AdminBar />
 
           <AnnouncementBar />

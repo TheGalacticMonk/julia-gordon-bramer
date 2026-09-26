@@ -1,11 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
 import {
-  FixedToolbarFeature,
-  InlineToolbarFeature,
-  lexicalEditor,
-} from '@payloadcms/richtext-lexical'
-import {
   MetaDescriptionField,
   MetaImageField,
   MetaTitleField,
@@ -13,22 +8,23 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 
-import { admin } from '../../access/admin'
+import { adminOnlyField } from '../../access/editorVisibility'
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
+import { simpleRichText } from '../../fields/simpleRichText'
 import { slugField } from '../../fields/slug'
-import { generatePreviewPath } from '../../utilities/generatePreviewPath'
+import { docPreview } from '@/utilities/livePreview'
 import { revalidateDelete, revalidateEvent } from './hooks/revalidateEvent'
 
 export const Events: CollectionConfig = {
   slug: 'events',
   labels: {
-    singular: 'Tour date',
-    plural: 'Tour dates',
+    singular: 'Upcoming event',
+    plural: 'Upcoming events',
   },
   access: {
     create: authenticated,
-    delete: admin,
+    delete: authenticated,
     read: authenticatedOrPublished,
     update: authenticated,
   },
@@ -40,15 +36,11 @@ export const Events: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'kind', 'startDate', 'venue', '_status'],
-    group: 'Tour',
-    description: 'Readings, signings, lectures, workshops, and fairs — anything on the calendar.',
-    livePreview: {
-      url: ({ data, req }) =>
-        generatePreviewPath({ slug: data?.slug, collection: 'events', req }),
-    },
-    preview: (data, { req }) =>
-      generatePreviewPath({ slug: data?.slug as string, collection: 'events', req }),
+    defaultColumns: ['title', 'kind', 'startDate', 'cityOverride', '_status'],
+    group: 'Add & edit',
+    description:
+      'Events shown in “Upcoming Events” on your homepage. To add one: click “Create New”, fill in the details, then click Publish. An event drops off the website by itself after its date passes.',
+    livePreview: docPreview('events'),
   },
   fields: [
     {
@@ -62,7 +54,7 @@ export const Events: CollectionConfig = {
     {
       name: 'kind',
       type: 'select',
-      label: 'Event kind',
+      label: 'What kind of event is it?',
       required: true,
       defaultValue: 'reading',
       options: [
@@ -100,28 +92,18 @@ export const Events: CollectionConfig = {
       ],
     },
     {
-      name: 'venue',
-      type: 'relationship',
-      relationTo: 'venues',
-      admin: {
-        description: 'Pick an existing venue, or leave blank and fill in the city below.',
-      },
-    },
-    {
       name: 'cityOverride',
       type: 'text',
-      label: 'City (if no venue selected)',
+      label: 'Where is it?',
+      admin: {
+        description: 'Shown on the event card, e.g. “Left Bank Books, St. Louis, MO”.',
+      },
     },
     {
       name: 'description',
       type: 'richText',
-      editor: lexicalEditor({
-        features: ({ rootFeatures }) => [
-          ...rootFeatures,
-          FixedToolbarFeature(),
-          InlineToolbarFeature(),
-        ],
-      }),
+      editor: simpleRichText,
+      label: 'Details (optional)',
     },
     {
       type: 'row',
@@ -143,10 +125,12 @@ export const Events: CollectionConfig = {
         },
       ],
     },
+    // ── Developer-only from here down ─────────────────────────────────────────────────────
     {
       name: 'meta',
       label: 'SEO',
       type: 'group',
+      admin: { condition: adminOnlyField },
       fields: [
         OverviewField({
           titlePath: 'meta.title',
@@ -168,14 +152,14 @@ export const Events: CollectionConfig = {
       type: 'checkbox',
       label: 'Feature on homepage',
       defaultValue: false,
-      admin: { position: 'sidebar' },
+      admin: { position: 'sidebar', condition: adminOnlyField },
     },
     {
       name: 'publishedAt',
       type: 'date',
-      admin: { position: 'sidebar' },
+      admin: { position: 'sidebar', condition: adminOnlyField },
     },
-    ...slugField('title'),
+    ...slugField('title', { slugOverrides: { admin: { condition: adminOnlyField } } }),
   ],
   hooks: {
     afterChange: [revalidateEvent],
@@ -183,7 +167,7 @@ export const Events: CollectionConfig = {
   },
   versions: {
     drafts: {
-      autosave: { interval: 100 },
+      autosave: { interval: 800 },
       schedulePublish: true,
     },
     maxPerDoc: 20,

@@ -1,60 +1,25 @@
-import type { PayloadRequest } from 'payload'
-import { getPayload } from 'payload'
-
-import { draftMode } from 'next/headers'
-import { redirect } from 'next/navigation'
-import { NextRequest } from 'next/server'
+import type { NextRequest } from 'next/server'
 
 import configPromise from '@payload-config'
+import { draftMode } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { getPayload } from 'payload'
 
-export type PreviewSearchParams = {
-  path: string
-  previewSecret: string
-}
-
+// Entry point for the CMS preview: checks the editor is signed in, switches on draft mode, then
+// opens the requested page of the site.
 export async function GET(req: NextRequest): Promise<Response> {
+  const path = req.nextUrl.searchParams.get('path')
+
+  // Same-site paths only ("//evil.com" and "/\evil.com" would be treated as other hosts).
+  if (!path || !path.startsWith('/') || path.startsWith('//') || path.includes('\\')) {
+    return new Response('Invalid path', { status: 400 })
+  }
+
   const payload = await getPayload({ config: configPromise })
-
-  const { searchParams } = new URL(req.url)
-
-  const path = searchParams.get('path')
-  const previewSecret = searchParams.get('previewSecret')
-
-  if (previewSecret !== process.env.PREVIEW_SECRET) {
-    return new Response('You are not allowed to preview this page', { status: 403 })
-  }
-
-  if (!path) {
-    return new Response('Insufficient search params', { status: 404 })
-  }
-
-  if (!path.startsWith('/')) {
-    return new Response('This endpoint can only be used for relative previews', { status: 500 })
-  }
-
-  let user
-
-  try {
-    const authResult = await payload.auth({
-      req: req as unknown as PayloadRequest,
-      headers: req.headers,
-    })
-    user = authResult.user
-  } catch (error) {
-    payload.logger.error({ err: error }, 'Error verifying token for live preview')
-    return new Response('You are not allowed to preview this page', { status: 403 })
-  }
+  const { user } = await payload.auth({ headers: req.headers })
+  if (!user) return new Response('You need to be signed in to preview.', { status: 401 })
 
   const draft = await draftMode()
-
-  if (!user) {
-    draft.disable()
-    return new Response('You are not allowed to preview this page', { status: 403 })
-  }
-
-  // You can add additional checks here to see if the user is allowed to preview this page
-
   draft.enable()
-
   redirect(path)
 }

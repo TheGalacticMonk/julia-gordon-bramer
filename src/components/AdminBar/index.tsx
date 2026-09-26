@@ -15,18 +15,25 @@ import { getClientSideURL } from '@/utilities/getURL'
 const baseClass = 'admin-bar'
 
 const collectionLabels = {
-  pages: {
-    plural: 'Pages',
-    singular: 'Page',
-  },
   posts: {
-    plural: 'Posts',
-    singular: 'Post',
+    plural: 'Essays',
+    singular: 'Essay',
   },
-  projects: {
-    plural: 'Projects',
-    singular: 'Project',
+  books: {
+    plural: 'Books',
+    singular: 'Book',
   },
+  events: {
+    plural: 'Events',
+    singular: 'Event',
+  },
+}
+
+// The first path segment of each public section, and the CMS collection behind it.
+const sectionCollections: Record<string, keyof typeof collectionLabels> = {
+  'decoding-sylvia-plath': 'posts',
+  books: 'books',
+  events: 'events',
 }
 
 const Title: React.FC = () => <span>Dashboard</span>
@@ -38,9 +45,7 @@ export const AdminBar: React.FC<{
   const segments = useSelectedLayoutSegments()
   const [show, setShow] = useState(false)
   const [preview, setPreview] = useState(false)
-  const collection = (
-    collectionLabels[segments?.[1] as keyof typeof collectionLabels] ? segments[1] : 'pages'
-  ) as keyof typeof collectionLabels
+  const collection = sectionCollections[segments?.[1] ?? ''] ?? 'posts'
   const router = useRouter()
 
   const onAuthChange = React.useCallback((user: PayloadMeUser) => {
@@ -81,8 +86,8 @@ export const AdminBar: React.FC<{
           cmsURL={getClientSideURL()}
           collectionSlug={collection}
           collectionLabels={{
-            plural: collectionLabels[collection]?.plural || 'Pages',
-            singular: collectionLabels[collection]?.singular || 'Page',
+            plural: collectionLabels[collection].plural,
+            singular: collectionLabels[collection].singular,
           }}
           logo={<Title />}
           onAuthChange={onAuthChange}

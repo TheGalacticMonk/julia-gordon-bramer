@@ -67,17 +67,13 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    pages: Page;
     posts: Post;
     books: Book;
     events: Event;
-    venues: Venue;
     'press-quotes': PressQuote;
-    categories: Category;
     media: Media;
     'form-submissions': FormSubmission;
     users: User;
-    redirects: Redirect;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -86,17 +82,13 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     books: BooksSelect<false> | BooksSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
-    venues: VenuesSelect<false> | VenuesSelect<true>;
     'press-quotes': PressQuotesSelect<false> | PressQuotesSelect<true>;
-    categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
-    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -108,14 +100,22 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
-    site: Site;
     home: Home;
-    seoDefaults: SeoDefault;
+    tarotPage: TarotPage;
+    decodingPage: DecodingPage;
+    booksPage: BooksPage;
+    eventsPage: EventsPage;
+    contactPage: ContactPage;
+    site: Site;
   };
   globalsSelect: {
-    site: SiteSelect<false> | SiteSelect<true>;
     home: HomeSelect<false> | HomeSelect<true>;
-    seoDefaults: SeoDefaultsSelect<false> | SeoDefaultsSelect<true>;
+    tarotPage: TarotPageSelect<false> | TarotPageSelect<true>;
+    decodingPage: DecodingPageSelect<false> | DecodingPageSelect<true>;
+    booksPage: BooksPageSelect<false> | BooksPageSelect<true>;
+    eventsPage: EventsPageSelect<false> | EventsPageSelect<true>;
+    contactPage: ContactPageSelect<false> | ContactPageSelect<true>;
+    site: SiteSelect<false> | SiteSelect<true>;
   };
   locale: null;
   widgets: {
@@ -152,101 +152,25 @@ export interface UserAuthOperations {
   };
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
- */
-export interface Page {
-  id: number;
-  title: string;
-  hero: {
-    type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
-    richText?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    links?:
-      | {
-          link: {
-            type?: ('reference' | 'custom') | null;
-            newTab?: boolean | null;
-            reference?:
-              | ({
-                  relationTo: 'pages';
-                  value: number | Page;
-                } | null)
-              | ({
-                  relationTo: 'posts';
-                  value: number | Post;
-                } | null)
-              | ({
-                  relationTo: 'books';
-                  value: number | Book;
-                } | null)
-              | ({
-                  relationTo: 'events';
-                  value: number | Event;
-                } | null);
-            url?: string | null;
-            label: string;
-            /**
-             * Choose how the link should be rendered.
-             */
-            appearance?: ('default' | 'outline') | null;
-          };
-          id?: string | null;
-        }[]
-      | null;
-    media?: (number | null) | Media;
-  };
-  layout: (
-    | ContentBlock
-    | PullQuoteBlock
-    | ImageBlock
-    | BookShelfBlock
-    | EventListBlock
-    | CallToActionBlock
-    | BioSplitBlock
-    | PressStripBlock
-    | FAQBlock
-    | EmbedBlock
-  )[];
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  publishedAt?: string | null;
-  /**
-   * Auto-filled from the title. Edit it to set a custom URL.
-   */
-  slug: string;
-  slugLock?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
+ * Your Decoding Sylvia Plath essays. To add one: click “Create New”, add the title, a picture and the text, then click Publish. Drag the ⋮⋮ handle in the list to change the order they appear in.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
 export interface Post {
   id: number;
+  _order?: string | null;
+  /**
+   * The big heading at the top of the essay, e.g. “Street Song”: Double Jeopardy
+   */
   title: string;
+  /**
+   * One picture for the essay (a photo, newspaper clipping, cartoon…). It is always shown in full — nothing gets cropped. When you upload it, the “Caption” you type appears under the picture.
+   */
   heroImage?: (number | null) | Media;
+  /**
+   * Type or paste the essay here. Press Enter for a new paragraph. Use the buttons above for bold, italic or links.
+   */
   content: {
     root: {
       type: string;
@@ -262,8 +186,10 @@ export interface Post {
     };
     [k: string]: unknown;
   };
-  relatedPosts?: (number | Post)[] | null;
-  categories?: (number | Category)[] | null;
+  /**
+   * Optional. Leave blank to use the day you publish.
+   */
+  publishedAt?: string | null;
   meta?: {
     title?: string | null;
     /**
@@ -272,31 +198,25 @@ export interface Post {
     image?: (number | null) | Media;
     description?: string | null;
   };
-  publishedAt?: string | null;
-  authors?: (number | User)[] | null;
-  populatedAuthors?:
-    | {
-        id?: string | null;
-        name?: string | null;
-      }[]
-    | null;
   /**
    * Auto-filled from the title. Edit it to set a custom URL.
    */
-  slug: string;
+  slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Images used across books, essays, pages, and the site. Use descriptive alt text so assets are easy to identify and accessible.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: number;
   /**
-   * Describe the image for screen readers and search. Required before upload.
+   * Shown under the picture on the website (and read aloud for people using screen readers). For a book cover, type the book title. For an essay picture, describe it, e.g. “Emmett Till in the 1956 newspaper headlines”.
    */
   alt: string;
   caption?: {
@@ -325,62 +245,29 @@ export interface Media {
   height?: number | null;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories".
- */
-export interface Category {
-  id: number;
-  title: string;
-  /**
-   * Auto-filled from the title. Edit it to set a custom URL.
-   */
-  slug: string;
-  slugLock?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  name: string;
-  /**
-   * Editors can publish everything but cannot manage other users or redirects.
-   */
-  role: 'editor' | 'admin';
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
-  collection: 'users';
-}
-/**
+ * The books shown on your Books page. To add one: click “Create New”, fill in the details, then click Publish. Drag the ⋮⋮ handle in the list to change the order they appear in.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "books".
  */
 export interface Book {
   id: number;
+  _order?: string | null;
   title: string;
+  /**
+   * Optional — the line under the title, if the book has one.
+   */
   subtitle?: string | null;
+  /**
+   * The front cover only (not the back or spine). When you upload it, type the book title in “Caption”.
+   */
   coverImage: number | Media;
   publisher?: string | null;
   publishYear?: number | null;
   isbn?: string | null;
+  /**
+   * A short description. Press Enter for a new paragraph.
+   */
   description: {
     root: {
       type: string;
@@ -397,7 +284,7 @@ export interface Book {
     [k: string]: unknown;
   };
   /**
-   * Add where readers can buy this book. Pick a preset store or choose "Other" to label it yourself.
+   * Each store becomes a “Buy from…” button on the book’s page. Click “Add Store”, pick the store, and paste the link to the book there.
    */
   retailers?:
     | {
@@ -421,20 +308,23 @@ export interface Book {
   /**
    * Auto-filled from the title. Edit it to set a custom URL.
    */
-  slug: string;
+  slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
 /**
- * A quote about Julia or her books, reusable across the Press page, a book’s buy box, and the homepage.
+ * The quotes shown in “In the Press” on your homepage. Open a quote to change its wording or who said it, then click Save — the preview beside it shows the homepage.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "press-quotes".
  */
 export interface PressQuote {
   id: number;
+  /**
+   * Just the words, without quotation marks — the website adds them.
+   */
   quote: string;
   /**
    * Who said it — e.g. "Riverfront Times" or "CBS Radio"
@@ -445,13 +335,12 @@ export interface PressQuote {
    * e.g. "on Tarot Life Lessons" — shown in small type under the source
    */
   context?: string | null;
-  relatedBook?: (number | null) | Book;
   featured?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
- * Readings, signings, lectures, workshops, and fairs — anything on the calendar.
+ * Events shown in “Upcoming Events” on your homepage. To add one: click “Create New”, fill in the details, then click Publish. An event drops off the website by itself after its date passes.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
@@ -469,9 +358,8 @@ export interface Event {
    */
   endDate?: string | null;
   /**
-   * Pick an existing venue, or leave blank and fill in the city below.
+   * Shown on the event card, e.g. “Left Bank Books, St. Louis, MO”.
    */
-  venue?: (number | null) | Venue;
   cityOverride?: string | null;
   description?: {
     root: {
@@ -506,336 +394,14 @@ export interface Event {
   /**
    * Auto-filled from the title. Edit it to set a custom URL.
    */
-  slug: string;
+  slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Bookstores, fairs, conference centers — reusable so you pick one instead of retyping the address every time.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "venues".
- */
-export interface Venue {
-  id: number;
-  name: string;
-  city: string;
-  region?: string | null;
-  address?: string | null;
-  website?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ContentBlock".
- */
-export interface ContentBlock {
-  columns?:
-    | {
-        size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
-        richText?: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        enableLink?: boolean | null;
-        link?: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: number | Post;
-              } | null)
-            | ({
-                relationTo: 'books';
-                value: number | Book;
-              } | null)
-            | ({
-                relationTo: 'events';
-                value: number | Event;
-              } | null);
-          url?: string | null;
-          label: string;
-          /**
-           * Choose how the link should be rendered.
-           */
-          appearance?: ('default' | 'outline') | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'content';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PullQuoteBlock".
- */
-export interface PullQuoteBlock {
-  quote: string;
-  /**
-   * e.g. "Riverfront Times" or "Julia Gordon-Bramer"
-   */
-  attribution?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'pullQuote';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ImageBlock".
- */
-export interface ImageBlock {
-  layout?: ('single' | 'pair') | null;
-  image: number | Media;
-  imageTwo?: (number | null) | Media;
-  caption?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'imageBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BookShelfBlock".
- */
-export interface BookShelfBlock {
-  heading?: string | null;
-  /**
-   * Choose specific books, or leave empty to automatically show books marked "Feature on homepage book shelf".
-   */
-  books?: (number | Book)[] | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'bookShelf';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "EventListBlock".
- */
-export interface EventListBlock {
-  heading?: string | null;
-  mode?: ('upcoming' | 'selected') | null;
-  /**
-   * How many upcoming events to show.
-   */
-  limit?: number | null;
-  events?: (number | Event)[] | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'eventList';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CallToActionBlock".
- */
-export interface CallToActionBlock {
-  richText?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  links?:
-    | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: number | Post;
-              } | null)
-            | ({
-                relationTo: 'books';
-                value: number | Book;
-              } | null)
-            | ({
-                relationTo: 'events';
-                value: number | Event;
-              } | null);
-          url?: string | null;
-          label: string;
-          /**
-           * Choose how the link should be rendered.
-           */
-          appearance?: ('default' | 'outline') | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'cta';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BioSplitBlock".
- */
-export interface BioSplitBlock {
-  image: number | Media;
-  imagePosition?: ('left' | 'right') | null;
-  richText?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  links?:
-    | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: number | Post;
-              } | null)
-            | ({
-                relationTo: 'books';
-                value: number | Book;
-              } | null)
-            | ({
-                relationTo: 'events';
-                value: number | Event;
-              } | null);
-          url?: string | null;
-          label: string;
-          /**
-           * Choose how the link should be rendered.
-           */
-          appearance?: ('default' | 'outline') | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'bioSplit';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PressStripBlock".
- */
-export interface PressStripBlock {
-  heading?: string | null;
-  /**
-   * Choose specific quotes, or leave empty to automatically show quotes marked "Feature on homepage / Press page".
-   */
-  quotes?: (number | PressQuote)[] | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'pressStrip';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FAQBlock".
- */
-export interface FAQBlock {
-  heading?: string | null;
-  items?:
-    | {
-        question: string;
-        answer: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'faq';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "EmbedBlock".
- */
-export interface EmbedBlock {
-  /**
-   * Only these providers are allowed to embed on the site.
-   */
-  provider: 'youtube' | 'vimeo' | 'spotify';
-  /**
-   * Paste the normal share link from the provider you selected above.
-   */
-  url: string;
-  caption?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'embed';
-}
-/**
- * Messages from the contact form. Mark a message handled once you’ve replied.
+ * Messages people send you from the Contact page (you also get each one by email). Open a message to read it, and tick “Handled” once you’ve replied.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "form-submissions".
@@ -856,37 +422,33 @@ export interface FormSubmission {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "redirects".
+ * via the `definition` "users".
  */
-export interface Redirect {
+export interface User {
   id: number;
+  name: string;
   /**
-   * You will need to rebuild the website when changing this field.
+   * Editors can publish everything but cannot manage other users or redirects.
    */
-  from: string;
-  to?: {
-    type?: ('reference' | 'custom') | null;
-    reference?:
-      | ({
-          relationTo: 'pages';
-          value: number | Page;
-        } | null)
-      | ({
-          relationTo: 'posts';
-          value: number | Post;
-        } | null)
-      | ({
-          relationTo: 'books';
-          value: number | Book;
-        } | null)
-      | ({
-          relationTo: 'events';
-          value: number | Event;
-        } | null);
-    url?: string | null;
-  };
+  role: 'editor' | 'admin';
   updatedAt: string;
   createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1005,10 +567,6 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'pages';
-        value: number | Page;
-      } | null)
-    | ({
         relationTo: 'posts';
         value: number | Post;
       } | null)
@@ -1021,16 +579,8 @@ export interface PayloadLockedDocument {
         value: number | Event;
       } | null)
     | ({
-        relationTo: 'venues';
-        value: number | Venue;
-      } | null)
-    | ({
         relationTo: 'press-quotes';
         value: number | PressQuote;
-      } | null)
-    | ({
-        relationTo: 'categories';
-        value: number | Category;
       } | null)
     | ({
         relationTo: 'media';
@@ -1043,10 +593,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
-      } | null)
-    | ({
-        relationTo: 'redirects';
-        value: number | Redirect;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1092,241 +638,20 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages_select".
- */
-export interface PagesSelect<T extends boolean = true> {
-  title?: T;
-  hero?:
-    | T
-    | {
-        type?: T;
-        richText?: T;
-        links?:
-          | T
-          | {
-              link?:
-                | T
-                | {
-                    type?: T;
-                    newTab?: T;
-                    reference?: T;
-                    url?: T;
-                    label?: T;
-                    appearance?: T;
-                  };
-              id?: T;
-            };
-        media?: T;
-      };
-  layout?:
-    | T
-    | {
-        content?: T | ContentBlockSelect<T>;
-        pullQuote?: T | PullQuoteBlockSelect<T>;
-        imageBlock?: T | ImageBlockSelect<T>;
-        bookShelf?: T | BookShelfBlockSelect<T>;
-        eventList?: T | EventListBlockSelect<T>;
-        cta?: T | CallToActionBlockSelect<T>;
-        bioSplit?: T | BioSplitBlockSelect<T>;
-        pressStrip?: T | PressStripBlockSelect<T>;
-        faq?: T | FAQBlockSelect<T>;
-        embed?: T | EmbedBlockSelect<T>;
-      };
-  meta?:
-    | T
-    | {
-        title?: T;
-        image?: T;
-        description?: T;
-      };
-  publishedAt?: T;
-  slug?: T;
-  slugLock?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ContentBlock_select".
- */
-export interface ContentBlockSelect<T extends boolean = true> {
-  columns?:
-    | T
-    | {
-        size?: T;
-        richText?: T;
-        enableLink?: T;
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-              appearance?: T;
-            };
-        id?: T;
-      };
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PullQuoteBlock_select".
- */
-export interface PullQuoteBlockSelect<T extends boolean = true> {
-  quote?: T;
-  attribution?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ImageBlock_select".
- */
-export interface ImageBlockSelect<T extends boolean = true> {
-  layout?: T;
-  image?: T;
-  imageTwo?: T;
-  caption?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BookShelfBlock_select".
- */
-export interface BookShelfBlockSelect<T extends boolean = true> {
-  heading?: T;
-  books?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "EventListBlock_select".
- */
-export interface EventListBlockSelect<T extends boolean = true> {
-  heading?: T;
-  mode?: T;
-  limit?: T;
-  events?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CallToActionBlock_select".
- */
-export interface CallToActionBlockSelect<T extends boolean = true> {
-  richText?: T;
-  links?:
-    | T
-    | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-              appearance?: T;
-            };
-        id?: T;
-      };
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BioSplitBlock_select".
- */
-export interface BioSplitBlockSelect<T extends boolean = true> {
-  image?: T;
-  imagePosition?: T;
-  richText?: T;
-  links?:
-    | T
-    | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-              appearance?: T;
-            };
-        id?: T;
-      };
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PressStripBlock_select".
- */
-export interface PressStripBlockSelect<T extends boolean = true> {
-  heading?: T;
-  quotes?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FAQBlock_select".
- */
-export interface FAQBlockSelect<T extends boolean = true> {
-  heading?: T;
-  items?:
-    | T
-    | {
-        question?: T;
-        answer?: T;
-        id?: T;
-      };
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "EmbedBlock_select".
- */
-export interface EmbedBlockSelect<T extends boolean = true> {
-  provider?: T;
-  url?: T;
-  caption?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
+  _order?: T;
   title?: T;
   heroImage?: T;
   content?: T;
-  relatedPosts?: T;
-  categories?: T;
+  publishedAt?: T;
   meta?:
     | T
     | {
         title?: T;
         image?: T;
         description?: T;
-      };
-  publishedAt?: T;
-  authors?: T;
-  populatedAuthors?:
-    | T
-    | {
-        id?: T;
-        name?: T;
       };
   slug?: T;
   slugLock?: T;
@@ -1339,6 +664,7 @@ export interface PostsSelect<T extends boolean = true> {
  * via the `definition` "books_select".
  */
 export interface BooksSelect<T extends boolean = true> {
+  _order?: T;
   title?: T;
   subtitle?: T;
   coverImage?: T;
@@ -1379,7 +705,6 @@ export interface EventsSelect<T extends boolean = true> {
   kind?: T;
   startDate?: T;
   endDate?: T;
-  venue?: T;
   cityOverride?: T;
   description?: T;
   ticketNote?: T;
@@ -1401,19 +726,6 @@ export interface EventsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "venues_select".
- */
-export interface VenuesSelect<T extends boolean = true> {
-  name?: T;
-  city?: T;
-  region?: T;
-  address?: T;
-  website?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "press-quotes_select".
  */
 export interface PressQuotesSelect<T extends boolean = true> {
@@ -1421,19 +733,7 @@ export interface PressQuotesSelect<T extends boolean = true> {
   source?: T;
   sourceUrl?: T;
   context?: T;
-  relatedBook?: T;
   featured?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories_select".
- */
-export interface CategoriesSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  slugLock?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1491,22 +791,6 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "redirects_select".
- */
-export interface RedirectsSelect<T extends boolean = true> {
-  from?: T;
-  to?:
-    | T
-    | {
-        type?: T;
-        reference?: T;
-        url?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1580,99 +864,43 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site".
- */
-export interface Site {
-  id: number;
-  navItems?:
-    | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: number | Post;
-              } | null)
-            | ({
-                relationTo: 'books';
-                value: number | Book;
-              } | null)
-            | ({
-                relationTo: 'events';
-                value: number | Event;
-              } | null);
-          url?: string | null;
-          label: string;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  footerNavItems?:
-    | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: number | Post;
-              } | null)
-            | ({
-                relationTo: 'books';
-                value: number | Book;
-              } | null)
-            | ({
-                relationTo: 'events';
-                value: number | Event;
-              } | null);
-          url?: string | null;
-          label: string;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Where "Book a reading" points. Use /contact to route through the form, or paste an external scheduler link.
-   */
-  bookingUrl?: string | null;
-  contactEmail?: string | null;
-  contactPhone?: string | null;
-  socials?:
-    | {
-        platform: 'instagram' | 'x' | 'facebook' | 'youtube' | 'tiktok';
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
-  announcementEnabled?: boolean | null;
-  announcementMessage?: string | null;
-  announcementLinkUrl?: string | null;
-  announcementLinkLabel?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
+ * The words at the top of your homepage and in the “About” card near the bottom. Change the text, then press “Publish changes”. (Upcoming events and quotes are managed under “Add & edit”.)
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home".
  */
 export interface Home {
   id: number;
+  /**
+   * Type first and last name. The last name automatically appears in italics.
+   */
   heroHeading: string;
   /**
-   * The one-line "writer, scholar, poet, tarot reader" framing.
+   * One short line, e.g. “Professional tarot card reader and author”.
    */
   heroSubheading?: string | null;
+  /**
+   * A few sentences shown beside your photo at the very top of the homepage.
+   */
   heroRichText?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * The longer “About” card just above the footer. Press Enter for a new paragraph.
+   */
+  aboutRichText?: {
     root: {
       type: string;
       children: {
@@ -1694,10 +922,6 @@ export interface Home {
           type?: ('reference' | 'custom') | null;
           newTab?: boolean | null;
           reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
             | ({
                 relationTo: 'posts';
                 value: number | Post;
@@ -1723,27 +947,9 @@ export interface Home {
   modules?:
     (BioSplitBlock | BookShelfBlock | EventListBlock | PressStripBlock | PullQuoteBlock | CallToActionBlock)[] | null;
   /**
-   * Falls back to the Hero tab’s photo if left empty.
+   * Falls back to the hero photo if left empty.
    */
   aboutImage?: (number | null) | Media;
-  /**
-   * Rendered as the magazine-style About card just above the footer. Reuses the Hero tab’s heading/subheading for the card’s title and badge — this field is body paragraphs only.
-   */
-  aboutRichText?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
   meta?: {
     title?: string | null;
     /**
@@ -1758,73 +964,364 @@ export interface Home {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "seoDefaults".
+ * via the `definition` "BioSplitBlock".
  */
-export interface SeoDefault {
+export interface BioSplitBlock {
+  image: number | Media;
+  imagePosition?: ('left' | 'right') | null;
+  richText?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  links?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'posts';
+                value: number | Post;
+              } | null)
+            | ({
+                relationTo: 'books';
+                value: number | Book;
+              } | null)
+            | ({
+                relationTo: 'events';
+                value: number | Event;
+              } | null);
+          url?: string | null;
+          label: string;
+          /**
+           * Choose how the link should be rendered.
+           */
+          appearance?: ('default' | 'outline') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'bioSplit';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BookShelfBlock".
+ */
+export interface BookShelfBlock {
+  heading?: string | null;
+  /**
+   * Choose specific books, or leave empty to automatically show books marked "Feature on homepage book shelf".
+   */
+  books?: (number | Book)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'bookShelf';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "EventListBlock".
+ */
+export interface EventListBlock {
+  heading?: string | null;
+  mode?: ('upcoming' | 'selected') | null;
+  /**
+   * How many upcoming events to show.
+   */
+  limit?: number | null;
+  events?: (number | Event)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'eventList';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PressStripBlock".
+ */
+export interface PressStripBlock {
+  heading?: string | null;
+  /**
+   * Choose specific quotes, or leave empty to automatically show quotes marked "Feature on homepage / Press page".
+   */
+  quotes?: (number | PressQuote)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'pressStrip';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PullQuoteBlock".
+ */
+export interface PullQuoteBlock {
+  quote: string;
+  /**
+   * e.g. "Riverfront Times" or "Julia Gordon-Bramer"
+   */
+  attribution?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'pullQuote';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CallToActionBlock".
+ */
+export interface CallToActionBlock {
+  richText?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  links?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'posts';
+                value: number | Post;
+              } | null)
+            | ({
+                relationTo: 'books';
+                value: number | Book;
+              } | null)
+            | ({
+                relationTo: 'events';
+                value: number | Event;
+              } | null);
+          url?: string | null;
+          label: string;
+          /**
+           * Choose how the link should be rendered.
+           */
+          appearance?: ('default' | 'outline') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cta';
+}
+/**
+ * The words on your Tarot page. Change any text, then press “Publish changes” to put it live. If you empty a box, the original text comes back.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tarotPage".
+ */
+export interface TarotPage {
   id: number;
+  heroEyebrow?: string | null;
+  heroTitle?: string | null;
+  heroText?: string | null;
   /**
-   * Appended to every page title that doesn’t set its own, e.g. "About | Julia Gordon-Bramer".
+   * The button links to your Contact page.
    */
-  titleSuffix?: string | null;
+  heroButton?: string | null;
+  formatCard?: {
+    label?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  rateCard?: {
+    label?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  paymentCard?: {
+    label?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  bringLabel?: string | null;
+  bringStatement?: string | null;
+  bringText1?: string | null;
+  bringText2?: string | null;
   /**
-   * Used when a page has no meta description of its own.
+   * The button links to your Contact page.
    */
-  defaultDescription?: string | null;
-  defaultOgImage?: (number | null) | Media;
-  organizationName?: string | null;
+  bringButton?: string | null;
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
 /**
+ * The words on the main Decoding Sylvia Plath page. (The essays themselves are under “Essays”.) Change any text, then press “Publish changes” to put it live. If you empty a box, the original text comes back.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site_select".
+ * via the `definition` "decodingPage".
  */
-export interface SiteSelect<T extends boolean = true> {
-  navItems?:
-    | T
-    | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-            };
-        id?: T;
-      };
-  footerNavItems?:
-    | T
-    | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-            };
-        id?: T;
-      };
-  bookingUrl?: T;
-  contactEmail?: T;
-  contactPhone?: T;
+export interface DecodingPage {
+  id: number;
+  heroEyebrow?: string | null;
+  heroTitle?: string | null;
+  /**
+   * Press Enter for a new paragraph. Select words and use the buttons above for italic, bold or a link.
+   */
+  heroIntro?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Type just the words — the quotation marks are added for you.
+   */
+  quote?: string | null;
+  quoteSource?: string | null;
+  photoCaption?: string | null;
+  methodLabel?: string | null;
+  methodStatement?: string | null;
+  methodText?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  credentialsLabel?: string | null;
+  credential1?: {
+    label?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  credential2?: {
+    label?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  credential3?: {
+    label?: string | null;
+    title?: string | null;
+    text?: string | null;
+  };
+  essaysLabel?: string | null;
+  /**
+   * The number of essays is added automatically in front of this, e.g. “40 essays so far, one per 1956 poem.”
+   */
+  essaysHeading?: string | null;
+  essaysNote?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The heading and introduction at the top of your Books page. (The books themselves are under “Books”.) Press “Publish changes” and it goes live.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "booksPage".
+ */
+export interface BooksPage {
+  id: number;
+  heading?: string | null;
+  /**
+   * Tip: if you add or remove a book, check this sentence still matches.
+   */
+  intro?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The heading and introduction at the top of your Events page. (Individual events are under “Upcoming events”.) Press “Publish changes” and it goes live.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "eventsPage".
+ */
+export interface EventsPage {
+  id: number;
+  heading?: string | null;
+  intro?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The words on your Contact page. Your email address and phone number are under “Contact details”. Press “Publish changes” and it goes live.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contactPage".
+ */
+export interface ContactPage {
+  id: number;
+  eyebrow?: string | null;
+  heading?: string | null;
+  intro?: string | null;
+  /**
+   * Shown to a visitor right after they send you a message.
+   */
+  successMessage?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The email address and phone number shown on your Contact page. Leave a box empty to hide it.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site".
+ */
+export interface Site {
+  id: number;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  /**
+   * Where "Book a reading" points. Use /contact to route through the form, or paste an external scheduler link.
+   */
+  bookingUrl?: string | null;
   socials?:
-    | T
     | {
-        platform?: T;
-        url?: T;
-        id?: T;
-      };
-  announcementEnabled?: T;
-  announcementMessage?: T;
-  announcementLinkUrl?: T;
-  announcementLinkLabel?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
+        platform: 'instagram' | 'x' | 'facebook' | 'youtube' | 'tiktok';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  announcementEnabled?: boolean | null;
+  announcementMessage?: string | null;
+  announcementLinkUrl?: string | null;
+  announcementLinkLabel?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1834,6 +1331,7 @@ export interface HomeSelect<T extends boolean = true> {
   heroHeading?: T;
   heroSubheading?: T;
   heroRichText?: T;
+  aboutRichText?: T;
   heroImage?: T;
   links?:
     | T
@@ -1861,7 +1359,6 @@ export interface HomeSelect<T extends boolean = true> {
         cta?: T | CallToActionBlockSelect<T>;
       };
   aboutImage?: T;
-  aboutRichText?: T;
   meta?:
     | T
     | {
@@ -1876,13 +1373,237 @@ export interface HomeSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "seoDefaults_select".
+ * via the `definition` "BioSplitBlock_select".
  */
-export interface SeoDefaultsSelect<T extends boolean = true> {
-  titleSuffix?: T;
-  defaultDescription?: T;
-  defaultOgImage?: T;
-  organizationName?: T;
+export interface BioSplitBlockSelect<T extends boolean = true> {
+  image?: T;
+  imagePosition?: T;
+  richText?: T;
+  links?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BookShelfBlock_select".
+ */
+export interface BookShelfBlockSelect<T extends boolean = true> {
+  heading?: T;
+  books?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "EventListBlock_select".
+ */
+export interface EventListBlockSelect<T extends boolean = true> {
+  heading?: T;
+  mode?: T;
+  limit?: T;
+  events?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PressStripBlock_select".
+ */
+export interface PressStripBlockSelect<T extends boolean = true> {
+  heading?: T;
+  quotes?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PullQuoteBlock_select".
+ */
+export interface PullQuoteBlockSelect<T extends boolean = true> {
+  quote?: T;
+  attribution?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CallToActionBlock_select".
+ */
+export interface CallToActionBlockSelect<T extends boolean = true> {
+  richText?: T;
+  links?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tarotPage_select".
+ */
+export interface TarotPageSelect<T extends boolean = true> {
+  heroEyebrow?: T;
+  heroTitle?: T;
+  heroText?: T;
+  heroButton?: T;
+  formatCard?:
+    | T
+    | {
+        label?: T;
+        title?: T;
+        text?: T;
+      };
+  rateCard?:
+    | T
+    | {
+        label?: T;
+        title?: T;
+        text?: T;
+      };
+  paymentCard?:
+    | T
+    | {
+        label?: T;
+        title?: T;
+        text?: T;
+      };
+  bringLabel?: T;
+  bringStatement?: T;
+  bringText1?: T;
+  bringText2?: T;
+  bringButton?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "decodingPage_select".
+ */
+export interface DecodingPageSelect<T extends boolean = true> {
+  heroEyebrow?: T;
+  heroTitle?: T;
+  heroIntro?: T;
+  quote?: T;
+  quoteSource?: T;
+  photoCaption?: T;
+  methodLabel?: T;
+  methodStatement?: T;
+  methodText?: T;
+  credentialsLabel?: T;
+  credential1?:
+    | T
+    | {
+        label?: T;
+        title?: T;
+        text?: T;
+      };
+  credential2?:
+    | T
+    | {
+        label?: T;
+        title?: T;
+        text?: T;
+      };
+  credential3?:
+    | T
+    | {
+        label?: T;
+        title?: T;
+        text?: T;
+      };
+  essaysLabel?: T;
+  essaysHeading?: T;
+  essaysNote?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "booksPage_select".
+ */
+export interface BooksPageSelect<T extends boolean = true> {
+  heading?: T;
+  intro?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "eventsPage_select".
+ */
+export interface EventsPageSelect<T extends boolean = true> {
+  heading?: T;
+  intro?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contactPage_select".
+ */
+export interface ContactPageSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  intro?: T;
+  successMessage?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site_select".
+ */
+export interface SiteSelect<T extends boolean = true> {
+  contactEmail?: T;
+  contactPhone?: T;
+  bookingUrl?: T;
+  socials?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  announcementEnabled?: T;
+  announcementMessage?: T;
+  announcementLinkUrl?: T;
+  announcementLinkLabel?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1906,10 +1627,6 @@ export interface TaskSchedulePublish {
     type?: ('publish' | 'unpublish') | null;
     locale?: string | null;
     doc?:
-      | ({
-          relationTo: 'pages';
-          value: number | Page;
-        } | null)
       | ({
           relationTo: 'posts';
           value: number | Post;

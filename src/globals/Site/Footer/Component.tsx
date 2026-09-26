@@ -2,14 +2,12 @@ import { getCachedGlobal } from '@/utilities/getGlobals'
 import Link from 'next/link'
 import React from 'react'
 
-import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
 import { socialIcons, socialLabels } from '@/utilities/socialMeta'
 
 export async function Footer() {
   const siteData = await getCachedGlobal('site', 1)()
 
-  const navItems = siteData?.footerNavItems || []
   const socials = siteData?.socials || []
 
   return (
@@ -21,15 +19,6 @@ export async function Footer() {
         </Link>
 
         <div className="flex flex-col-reverse items-start gap-4 md:flex-row md:items-center">
-          <nav className="flex flex-col gap-4 md:flex-row">
-            {navItems.map(({ link }, i) => (
-              <CMSLink
-                className="nav-link-glow text-ink hover:text-metal"
-                key={i}
-                {...link}
-              />
-            ))}
-          </nav>
           {socials.length > 0 && (
             <nav className="flex items-center gap-4">
               {socials.map((social, i) => {

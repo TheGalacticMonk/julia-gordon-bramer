@@ -17,7 +17,8 @@ export const TypingWordmark: React.FC<Props> = ({ className }) => (
   <span className={cn(styles.wrapper, className)} aria-label={TEXT}>
     <span className={styles.cmd} aria-hidden="true">
       <span className={styles.cmdReveal}>
-        <span className={styles.cmdFocus}>{FOCUS}</span> <span className={styles.cmdAccent}>{ACCENT}</span>
+        <span className={styles.cmdFocus}>{FOCUS}</span>{' '}
+        <span className={styles.cmdAccent}>{ACCENT}</span>
       </span>
     </span>
   </span>

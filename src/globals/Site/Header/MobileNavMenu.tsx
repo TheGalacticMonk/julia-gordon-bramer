@@ -3,14 +3,12 @@
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
-import type { Site } from '@/payload-types'
-
 import { CMSLink } from '@/components/Link'
 import { socialIcons, socialLabels } from '@/utilities/socialMeta'
 import { cn } from '@/utilities/ui'
 import styles from './hamburger.module.css'
+import type { NavLink } from './navItems'
 
-type NavLink = NonNullable<Site['navItems']>[number]['link']
 type Social = { platform: 'instagram' | 'x'; url: string }
 
 interface MobileNavMenuProps {
@@ -40,10 +38,7 @@ export const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
   }, [pathname])
 
   return (
-    <label
-      aria-label="Menu"
-      className={cn(styles.main, 'text-ink', className)}
-    >
+    <label aria-label="Menu" className={cn(styles.main, 'text-ink', className)}>
       {/* Visible label text — hidden below `sm` where the header row is tightest (wordmark +
           theme toggle + this control, on the narrowest phones) so the hamburger stays icon-only
           there. `aria-label` on the <label> above already gives the control an accessible name
@@ -68,7 +63,11 @@ export const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
       <section className={styles['menu-container']}>
         {navItems.map(({ link }, i) => {
           const href = resolveHref(link)
-          const isActive = href ? (href === '/' ? pathname === '/' : pathname.startsWith(href)) : false
+          const isActive = href
+            ? href === '/'
+              ? pathname === '/'
+              : pathname.startsWith(href)
+            : false
 
           return (
             <CMSLink

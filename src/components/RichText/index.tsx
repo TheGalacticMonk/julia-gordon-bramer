@@ -1,9 +1,4 @@
-import { ImageBlock } from '@/blocks/ImageBlock/Component'
-import {
-  DefaultNodeTypes,
-  SerializedBlockNode,
-  SerializedLinkNode,
-} from '@payloadcms/richtext-lexical'
+import { DefaultNodeTypes, SerializedLinkNode } from '@payloadcms/richtext-lexical'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 import {
   JSXConvertersFunction,
@@ -11,40 +6,22 @@ import {
   RichText as ConvertRichText,
 } from '@payloadcms/richtext-lexical/react'
 
-import type {
-  CallToActionBlock as CTABlockProps,
-  ImageBlock as ImageBlockProps,
-} from '@/payload-types'
-import { CallToActionBlock } from '@/blocks/CallToAction/Component'
-import { PullQuote } from '@/blocks/PullQuote/Component'
-import type { PullQuoteBlock as PullQuoteBlockProps } from '@/payload-types'
 import { cn } from '@/utilities/ui'
 import { getCollectionPath } from '@/utilities/collectionPath'
 
-type NodeTypes =
-  | DefaultNodeTypes
-  | SerializedBlockNode<CTABlockProps>
-  | SerializedBlockNode<ImageBlockProps>
-  | SerializedBlockNode<PullQuoteBlockProps>
+type NodeTypes = DefaultNodeTypes
 
 const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
   const { value, relationTo } = linkNode.fields.doc!
   if (typeof value !== 'object') {
     throw new Error('Expected value to be an object')
   }
-  return getCollectionPath(relationTo, value.slug, value)
+  return getCollectionPath(relationTo, value.slug)
 }
 
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
   ...defaultConverters,
   ...LinkJSXConverter({ internalDocToHref }),
-  blocks: {
-    imageBlock: ({ node }) => (
-      <ImageBlock className="col-start-1 col-span-3" {...node.fields} enableGutter={false} />
-    ),
-    cta: ({ node }) => <CallToActionBlock {...node.fields} />,
-    pullQuote: ({ node }) => <PullQuote className="col-start-2" {...node.fields} />,
-  },
 })
 
 type Props = {
