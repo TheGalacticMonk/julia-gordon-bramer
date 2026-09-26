@@ -78,6 +78,10 @@ const getStaticEssayFallback = (slug: string): Post | null => {
     id: 0,
     title: essay.title,
     slug: essay.slug,
+    meta: {
+      title: essay.title,
+      description: essay.excerpt,
+    },
     content: {
       root: {
         type: 'root',
@@ -166,7 +170,7 @@ export default async function EssayPage({ params: paramsPromise }: Args) {
           {heroImage && (
             <figure className={styles.imageFigure}>
               <div className={styles.imageFrame}>
-                <Media resource={heroImage} />
+                <Media resource={heroImage} size="(max-width: 640px) calc(100vw - 5rem), 48rem" />
               </div>
               {heroImage.alt && (
                 <figcaption className={styles.imageCaption}>{heroImage.alt}</figcaption>
@@ -196,7 +200,18 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const post =
     (await queryEssayBySlug({ slug: decodedSlug })) || getStaticEssayFallback(decodedSlug)
 
-  return generateMeta({ doc: post, path: `/decoding-sylvia-plath/${decodedSlug}` })
+  const archiveEssay = scholarshipEssays.find((essay) => essay.slug === decodedSlug)
+  const postWithDescription = post
+    ? {
+        ...post,
+        meta: {
+          ...post.meta,
+          description: post.meta?.description || archiveEssay?.excerpt,
+        },
+      }
+    : null
+
+  return generateMeta({ doc: postWithDescription, path: `/decoding-sylvia-plath/${decodedSlug}` })
 }
 
 const queryEssayBySlug = cache(async ({ slug }: { slug: string }) => {
