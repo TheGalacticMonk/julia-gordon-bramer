@@ -1,6 +1,7 @@
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
+import Link from 'next/link'
 import React, { cache } from 'react'
 
 import { JsonLd } from '@/components/JsonLd'
@@ -55,58 +56,72 @@ export default async function BookPage({ params: paramsPromise }: Args) {
       {draft && <LivePreviewListener />}
       <JsonLd data={bookSchema(book, seoDefaults?.organizationName || 'Julia Gordon-Bramer')} />
 
-      <div className="container grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,20rem)_1fr]">
-        <div>
-          {book.coverImage && typeof book.coverImage === 'object' && (
-            <Media resource={book.coverImage} imgClassName="w-full border border-rule" />
-          )}
-        </div>
+      <div className="container">
+        <Link
+          href="/books"
+          className="mb-6 inline-block font-sans text-base text-metal hover:text-ink"
+        >
+          ← Back to Books
+        </Link>
 
-        <div>
-          <h1 className="text-4xl">{book.title}</h1>
-          {book.subtitle && <p className="mt-2 font-display text-xl text-ink-muted">{book.subtitle}</p>}
-          {(book.publisher || book.publishYear) && (
-            <p className="mt-3 font-sans text-sm text-ink-muted">
-              {book.publisher}
-              {book.publisher && book.publishYear ? ', ' : ''}
-              {book.publishYear}
-              {book.isbn ? ` · ISBN ${book.isbn}` : ''}
-            </p>
-          )}
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,20rem)_1fr]">
+          <div>
+            {book.coverImage && typeof book.coverImage === 'object' && (
+              <Media resource={book.coverImage} imgClassName="w-full border border-rule" />
+            )}
+          </div>
 
-          {book.description && (
-            <RichText className="mt-6 max-w-none" data={book.description} enableGutter={false} />
-          )}
+          <div>
+            <h1 className="text-4xl">{book.title}</h1>
+            {book.subtitle && (
+              <p className="mt-2 font-display text-xl text-ink-muted">{book.subtitle}</p>
+            )}
+            {(book.publisher || book.publishYear) && (
+              <p className="mt-3 font-sans text-sm text-ink-muted">
+                {book.publisher}
+                {book.publisher && book.publishYear ? ', ' : ''}
+                {book.publishYear}
+                {book.isbn ? ` · ISBN ${book.isbn}` : ''}
+              </p>
+            )}
 
-          {book.retailers && book.retailers.length > 0 && (
-            <div className="mt-8 flex flex-wrap gap-3">
-              {book.retailers.map((retailer, index) => (
-                <a
-                  key={index}
-                  href={retailer.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-sm bg-primary px-5 py-2.5 font-sans text-sm font-medium text-primary-foreground motion-safe:transition-opacity hover:opacity-90"
-                >
-                  Buy from {retailer.retailer === 'other' && retailer.label ? retailer.label : retailerLabel(retailer.retailer)}
-                </a>
-              ))}
-            </div>
-          )}
+            {book.description && (
+              <RichText className="mt-6 max-w-none" data={book.description} enableGutter={false} />
+            )}
 
-          {pressQuotes.length > 0 && (
-            <div className="mt-10 flex flex-col gap-6 border-t border-rule pt-6">
-              {pressQuotes.map((quote) => (
-                <figure key={quote.id} className="pull-quote">
-                  <blockquote>&ldquo;{quote.quote}&rdquo;</blockquote>
-                  <figcaption>
-                    {quote.source}
-                    {quote.context ? ` — ${quote.context}` : ''}
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
-          )}
+            {book.retailers && book.retailers.length > 0 && (
+              <div className="mt-8 flex flex-wrap gap-3">
+                {book.retailers.map((retailer, index) => (
+                  <a
+                    key={index}
+                    href={retailer.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-sm bg-primary px-5 py-2.5 font-sans text-sm font-medium text-primary-foreground motion-safe:transition-opacity hover:opacity-90"
+                  >
+                    Buy from{' '}
+                    {retailer.retailer === 'other' && retailer.label
+                      ? retailer.label
+                      : retailerLabel(retailer.retailer)}
+                  </a>
+                ))}
+              </div>
+            )}
+
+            {pressQuotes.length > 0 && (
+              <div className="mt-10 flex flex-col gap-6 border-t border-rule pt-6">
+                {pressQuotes.map((quote) => (
+                  <figure key={quote.id} className="pull-quote">
+                    <blockquote>&ldquo;{quote.quote}&rdquo;</blockquote>
+                    <figcaption>
+                      {quote.source}
+                      {quote.context ? ` — ${quote.context}` : ''}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </article>
