@@ -15,11 +15,25 @@ import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import { blogPostingSchema } from '@/utilities/schemaOrg'
-import PageClient from './page.client'
+import { ForceHeaderDark } from '@/components/ForceHeaderDark'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
+
+// Scholarship essays are Posts too, but they live at /decoding-sylvia-plath/<slug> instead
+// (see src/app/(frontend)/decoding-sylvia-plath/[slug]/page.tsx) — excluded here so a stale or
+// guessed /blog/<essay-slug> URL 404s instead of serving the same essay at a second URL.
+const queryScholarshipCategoryId = cache(async () => {
+  const payload = await getPayload({ config: configPromise })
+  const { docs } = await payload.find({
+    collection: 'categories',
+    limit: 1,
+    where: { slug: { equals: 'scholarship' } },
+  })
+  return docs[0]?.id
+})
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
+  const categoryId = await queryScholarshipCategoryId()
   const posts = await payload.find({
     collection: 'posts',
     draft: false,
@@ -29,6 +43,7 @@ export async function generateStaticParams() {
     select: {
       slug: true,
     },
+    where: categoryId ? { categories: { not_in: [categoryId] } } : undefined,
   })
 
   const params = posts.docs.map(({ slug }) => {
@@ -58,13 +73,15 @@ export default async function Post({ params: paramsPromise }: Args) {
 
   return (
     <article className="pt-16 pb-16">
-      <PageClient />
+      <ForceHeaderDark />
 
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
 
       {draft && <LivePreviewListener />}
-      <JsonLd data={blogPostingSchema(post, seoDefaults?.organizationName || 'Julia Gordon-Bramer')} />
+      <JsonLd
+        data={blogPostingSchema(post, seoDefaults?.organizationName || 'Julia Gordon-Bramer')}
+      />
 
       <PostHero post={post} />
 
@@ -96,6 +113,7 @@ const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
   const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayload({ config: configPromise })
+  const categoryId = await queryScholarshipCategoryId()
 
   const result = await payload.find({
     collection: 'posts',
@@ -105,9 +123,10 @@ const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
     overrideAccess: draft,
     pagination: false,
     where: {
-      slug: {
-        equals: slug,
-      },
+      and: [
+        { slug: { equals: slug } },
+        ...(categoryId ? [{ categories: { not_in: [categoryId] } }] : []),
+      ],
     },
   })
 

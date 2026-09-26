@@ -36,7 +36,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
 
   const href =
     type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
-      ? getCollectionPath(reference.relationTo, reference.value.slug)
+      ? getCollectionPath(reference.relationTo, reference.value.slug, reference.value)
       : url
 
   if (!href) return null

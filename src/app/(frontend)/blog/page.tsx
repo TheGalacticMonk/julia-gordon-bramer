@@ -35,8 +35,8 @@ export default async function Page() {
         <p className="mt-4 text-pretty text-ink-muted">
           Tour news, essays, and the occasional dispatch from the road — alongside the
           Sylvia Plath scholarship. Looking for the essay series specifically?{' '}
-          <Link className="text-metal underline" href="/scholarship">
-            Visit the Scholarship page
+          <Link className="text-metal underline" href="/decoding-sylvia-plath">
+            Visit the Decoding Sylvia Plath page
           </Link>
           .
         </p>

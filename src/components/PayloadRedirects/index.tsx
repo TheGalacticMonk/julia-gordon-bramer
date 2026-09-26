@@ -29,13 +29,13 @@ export const PayloadRedirects: React.FC<Props> = async ({ disableNotFound, url }
       const id = redirectItem.to?.reference?.value
 
       const document = (await getCachedDocument(collection, id)()) as Page | Post
-      redirectUrl = getCollectionPath(collection, document?.slug)
+      redirectUrl = getCollectionPath(collection, document?.slug, document)
     } else {
+      const value = redirectItem.to?.reference?.value
       redirectUrl = getCollectionPath(
         redirectItem.to?.reference?.relationTo,
-        typeof redirectItem.to?.reference?.value === 'object'
-          ? redirectItem.to?.reference?.value?.slug
-          : '',
+        typeof value === 'object' ? value?.slug : '',
+        value,
       )
     }
 

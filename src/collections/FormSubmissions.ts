@@ -19,7 +19,7 @@ export const FormSubmissions: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'email', 'reason', 'handled', 'createdAt'],
+    defaultColumns: ['name', 'email', 'phone', 'reason', 'handled', 'createdAt'],
     group: 'Inbox',
     description: 'Messages from the contact form. Mark a message handled once you’ve replied.',
   },
@@ -33,6 +33,11 @@ export const FormSubmissions: CollectionConfig = {
       name: 'email',
       type: 'email',
       required: true,
+    },
+    {
+      name: 'phone',
+      type: 'text',
+      label: 'Phone (optional)',
     },
     {
       name: 'reason',

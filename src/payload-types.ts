@@ -844,6 +844,7 @@ export interface FormSubmission {
   id: number;
   name: string;
   email: string;
+  phone?: string | null;
   reason: 'reading' | 'invite' | 'press' | 'general';
   message: string;
   /**
@@ -1460,6 +1461,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface FormSubmissionsSelect<T extends boolean = true> {
   name?: T;
   email?: T;
+  phone?: T;
   reason?: T;
   message?: T;
   handled?: T;

@@ -1,0 +1,14 @@
+import type { Metadata } from 'next'
+import Link from 'next/link'
+
+import { generateMeta } from '@/utilities/generateMeta'
+
+export default function PressPage() {
+  return <article className="pb-24">
+    <section className="section-base"><div className="container max-w-4xl py-16 md:py-24"><p className="font-sans text-sm font-semibold uppercase tracking-[0.16em] text-metal">Press &amp; speaking</p><h1 className="mt-4 text-5xl leading-[0.95] sm:text-7xl">Invite Julia into the conversation.</h1><p className="mt-8 max-w-2xl text-lg leading-8 text-ink-muted">Julia speaks on tarot, Sylvia Plath, mysticism, poetry, creativity, and the practice of finding meaning in unexpected places.</p></div></section>
+    <section className="section-raised"><div className="container grid gap-12 py-16 md:grid-cols-[1.1fr_0.9fr] md:py-24"><div className="space-y-8"><div><h2 className="text-3xl">Topics</h2><ul className="mt-5 grid gap-3 text-lg text-ink-muted sm:grid-cols-2"><li className="border-b border-rule pb-3">Tarot as a language</li><li className="border-b border-rule pb-3">The occult Sylvia Plath</li><li className="border-b border-rule pb-3">Poetry and mysticism</li><li className="border-b border-rule pb-3">Creative practice</li><li className="border-b border-rule pb-3">Writing from experience</li><li className="border-b border-rule pb-3">Tarot Life Lessons</li></ul></div><div><h2 className="text-3xl">Formats</h2><p className="mt-4 max-w-xl text-lg leading-8 text-ink-muted">Talks, readings, workshops, panels, book events, classroom visits, interviews, podcasts, and media appearances.</p></div></div><aside className="reading-card h-fit p-7"><p className="font-sans text-sm uppercase tracking-wider text-metal">Selected credentials</p><ul className="mt-5 space-y-5 text-lg leading-7"><li><strong>Top Ten Psychic</strong><br /><span className="text-ink-muted">Psychic St. Louis</span></li><li><strong>St. Louis&rsquo; Number One Fortune-Teller</strong><br /><span className="text-ink-muted">CBS Radio</span></li><li><strong>St. Louis&rsquo; Best Local Poet</strong><br /><span className="text-ink-muted">Riverfront Times, 2013</span></li></ul></aside></div></section>
+    <section className="section-base"><div className="container flex flex-col gap-6 py-16 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="text-3xl">Planning an event?</h2><p className="mt-2 text-ink-muted">Send the details and Julia will be in touch.</p></div><Link href="/contact" className="w-fit border border-metal bg-metal px-6 py-3 font-sans font-semibold uppercase tracking-wider text-metal-ink transition-opacity hover:opacity-85">Invite Julia</Link></div></section>
+  </article>
+}
+
+export async function generateMetadata(): Promise<Metadata> { return generateMeta({ doc: { meta: { title: 'Press & Speaking', description: 'Invite Julia Gordon-Bramer to speak, teach, read, or join your media conversation.' }, slug: 'press' } }) }

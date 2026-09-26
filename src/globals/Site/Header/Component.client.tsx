@@ -22,7 +22,7 @@ const headerNavItems: Array<{ link: NavLink }> = [
   {
     link: {
       type: 'custom',
-      url: '/scholarship',
+      url: '/decoding-sylvia-plath',
       label: 'DECODING SYLVIA PLATH',
     },
   },
@@ -33,7 +33,7 @@ const headerNavItems: Array<{ link: NavLink }> = [
 // compare against the URL a given nav item actually points to.
 const resolveHref = (link: NavLink): string | null => {
   if (link.type === 'reference' && typeof link.reference?.value === 'object' && link.reference.value?.slug) {
-    return getCollectionPath(link.reference.relationTo, link.reference.value.slug)
+    return getCollectionPath(link.reference.relationTo, link.reference.value.slug, link.reference.value)
   }
   return link.url || null
 }

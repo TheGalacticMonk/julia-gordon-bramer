@@ -9,6 +9,7 @@ import configPromise from '@payload-config'
 const contactSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(200),
   email: z.string().trim().email('Enter a valid email address'),
+  phone: z.string().trim().max(40).optional().or(z.literal('')),
   reason: z.enum(['reading', 'invite', 'press', 'general']),
   message: z.string().trim().min(1, 'Message is required').max(5000),
   // Honeypot — real users never fill this in; bots that fill every field do.
@@ -22,6 +23,7 @@ export async function submitContactForm(formData: FormData) {
   const parsed = contactSchema.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
+    phone: formData.get('phone') || undefined,
     reason: formData.get('reason'),
     message: formData.get('message'),
     company: formData.get('company') || undefined,
@@ -43,6 +45,7 @@ export async function submitContactForm(formData: FormData) {
     data: {
       name: parsed.data.name,
       email: parsed.data.email,
+      phone: parsed.data.phone || undefined,
       reason: parsed.data.reason,
       message: parsed.data.message,
     },
