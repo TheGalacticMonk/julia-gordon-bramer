@@ -11,7 +11,7 @@ A short guide to changing the words on your website, and adding essays, books an
 
 You'll see your **home screen**. It has big buttons for the things you'll do most:
 
-- **Edit a page:** Home, Tarot, Decoding Sylvia Plath, Books, Events, Contact, and your contact details.
+- **Edit a page:** Home, Tarot, Decoding Sylvia Plath, Books, Events and Contact.
 - **Add to your website:** a new essay, a new book, or a new upcoming event.
 - **Quotes:** your "In the Press" quotes.
 
@@ -34,12 +34,6 @@ When you're happy, press **Publish changes** (top right). Your website updates w
 **Longer text** (like the introduction on the Home page) has a small toolbar: **B** for bold, *I* for italic, and a link button. To make a link, select some words first, click the link button and paste the web address.
 
 **Emptied a box by mistake?** If you leave a box empty, the original wording comes back on the website.
-
----
-
-## Contact details
-
-**Contact details** (from your home screen) is your email address and phone number, shown on the Contact page. It has no draft: it goes live as soon as you press **Save**. Leave a box empty to hide it.
 
 ---
 

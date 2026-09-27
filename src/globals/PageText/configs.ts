@@ -216,8 +216,7 @@ export const ContactPage = pageText({
   slug: 'contactPage',
   label: 'Contact page',
   path: '/contact',
-  description:
-    'The words on your Contact page. Your email address and phone number are under “Contact details”. Press “Publish changes” and it goes live.',
+  description: 'The words on your Contact page. Press “Publish changes” and it goes live.',
   fields: [
     text('eyebrow', 'Small line above the heading', contactDefaults.eyebrow),
     text('heading', 'Heading', contactDefaults.heading),

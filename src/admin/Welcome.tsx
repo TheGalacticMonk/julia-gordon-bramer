@@ -98,12 +98,6 @@ export default async function Welcome({ payload, permissions, user }: Props) {
           'The words on the Contact page and the thank-you message.',
           'mail',
         ),
-        page(
-          'site',
-          'Contact details',
-          'Your email address and phone number. Goes live when you press Save.',
-          'settings',
-        ),
       ],
     },
     {
@@ -212,8 +206,7 @@ export default async function Welcome({ payload, permissions, user }: Props) {
             </li>
             <li>
               <strong>Press “Publish changes”</strong> to put them live. The website updates within
-              seconds. Contact details and press quotes have no draft: they go live when you press
-              Save.
+              seconds. Press quotes have no draft: they go live when you press Save.
             </li>
           </ol>
         </section>
@@ -247,7 +240,6 @@ const pageNames: Record<string, string> = {
   booksPage: 'Books page',
   eventsPage: 'Events page',
   contactPage: 'Contact page',
-  site: 'Contact details',
 }
 
 const itemKinds = [

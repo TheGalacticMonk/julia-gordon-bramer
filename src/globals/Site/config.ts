@@ -1,37 +1,22 @@
 import type { GlobalConfig } from 'payload'
 
-import { adminOnlyField } from '@/access/editorVisibility'
-import { livePreviewFor } from '@/utilities/livePreview'
+import { adminOnlyField, hiddenFromEditors } from '@/access/editorVisibility'
 import { revalidateSite } from './hooks/revalidateSite'
 
-// Site-wide settings: socials, booking link, contact info, and the homepage announcement banner.
-// Julia only sees her contact email and phone (shown on the Contact page); the rest is
-// developer-only. The menu itself lives in code (globals/Site/Header/navItems.ts).
+// Site-wide settings: socials, booking link, and the homepage announcement banner. Developer-only:
+// nothing here is copy Julia edits. The menu itself lives in code (globals/Site/Header/navItems.ts).
 export const Site: GlobalConfig = {
   slug: 'site',
-  label: 'Contact details',
+  label: 'Site settings',
   access: {
     read: () => true,
   },
   admin: {
     group: 'Settings',
     hideAPIURL: true,
-    livePreview: livePreviewFor('/contact?preview=site'),
-    description:
-      'The email address and phone number shown on your Contact page. Leave a box empty to hide it.',
+    hidden: hiddenFromEditors,
   },
   fields: [
-    {
-      name: 'contactEmail',
-      label: 'Email address',
-      type: 'email',
-    },
-    {
-      name: 'contactPhone',
-      label: 'Phone number',
-      type: 'text',
-    },
-
     // ── Developer-only from here down ─────────────────────────────────────────────────────
     {
       name: 'bookingUrl',

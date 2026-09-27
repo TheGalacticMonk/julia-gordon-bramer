@@ -1277,7 +1277,7 @@ export interface EventsPage {
   createdAt?: string | null;
 }
 /**
- * The words on your Contact page. Your email address and phone number are under “Contact details”. Press “Publish changes” and it goes live.
+ * The words on your Contact page. Press “Publish changes” and it goes live.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contactPage".
@@ -1296,15 +1296,11 @@ export interface ContactPage {
   createdAt?: string | null;
 }
 /**
- * The email address and phone number shown on your Contact page. Leave a box empty to hide it.
- *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site".
  */
 export interface Site {
   id: number;
-  contactEmail?: string | null;
-  contactPhone?: string | null;
   /**
    * Where "Book a reading" points. Use /contact to route through the form, or paste an external scheduler link.
    */
@@ -1590,8 +1586,6 @@ export interface ContactPageSelect<T extends boolean = true> {
  * via the `definition` "site_select".
  */
 export interface SiteSelect<T extends boolean = true> {
-  contactEmail?: T;
-  contactPhone?: T;
   bookingUrl?: T;
   socials?:
     | T

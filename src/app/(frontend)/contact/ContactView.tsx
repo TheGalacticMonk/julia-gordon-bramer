@@ -10,17 +10,7 @@ const reasonOptions = [
   { value: 'general', label: 'General question' },
 ]
 
-export type ContactSite = { contactEmail?: string | null; contactPhone?: string | null } | null
-
-export const ContactView = ({
-  t,
-  site,
-  status,
-}: {
-  t: typeof contactDefaults
-  site: ContactSite
-  status?: string
-}) => {
+export const ContactView = ({ t, status }: { t: typeof contactDefaults; status?: string }) => {
   return (
     <article>
       <section className="section-base">
@@ -35,21 +25,6 @@ export const ContactView = ({
             </p>
             <h1 className="mt-2 text-4xl sm:text-5xl">{t.heading}</h1>
             <p className="mt-4 text-pretty text-ink-muted">{t.intro}</p>
-
-            {(site?.contactEmail || site?.contactPhone) && (
-              <p className="mt-4 text-sm text-ink-muted">
-                {site.contactEmail && (
-                  <>
-                    Prefer email?{' '}
-                    <a className="text-metal underline" href={`mailto:${site.contactEmail}`}>
-                      {site.contactEmail}
-                    </a>
-                  </>
-                )}
-                {site.contactEmail && site.contactPhone && ' · '}
-                {site.contactPhone}
-              </p>
-            )}
 
             {status === 'success' && (
               <p

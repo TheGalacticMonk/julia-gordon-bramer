@@ -31,7 +31,7 @@ const correctedOrigin = (req: { host?: string | null }): string => {
 const previewURL = (path: string, origin: string) =>
   `${origin}/next/preview?path=${encodeURIComponent(path)}`
 
-/** Live preview of a fixed public page (page text, contact details, press quotes). */
+/** Live preview of a fixed public page (page text, press quotes). */
 export const livePreviewFor = (path: string): LivePreviewConfig => ({
   // The preview sits beside the editor from the moment a page opens, like a split view.
   openByDefault: true,

@@ -44,14 +44,6 @@ export async function Footer() {
       </div>
       <div className="container flex flex-col gap-2 pb-8 text-sm text-ink-muted md:flex-row md:items-center md:justify-between">
         <p>&copy; {new Date().getFullYear()} Julia Gordon-Bramer. All rights reserved.</p>
-        {siteData?.contactEmail && (
-          <a
-            href={`mailto:${siteData.contactEmail}`}
-            className="nav-link-glow text-ink hover:text-metal"
-          >
-            {siteData.contactEmail}
-          </a>
-        )}
       </div>
     </footer>
   )
