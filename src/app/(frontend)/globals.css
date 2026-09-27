@@ -49,8 +49,8 @@
      site-wide — matching the homepage hero's font pairing. */
   --font-sans: var(--font-barlow-condensed);
   --font-mono: ui-monospace, monospace;
-  /* Same expressive display face used by the reference site. */
-  --font-display: var(--font-fraunces);
+  /* Display face for headings, the wordmark and drop caps. */
+  --font-display: var(--font-cormorant-garamond), 'Cormorant Garamond', serif;
   --font-reading: var(--font-inter);
 }
 

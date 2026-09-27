@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 import { cn } from '@/utilities/ui'
-import { Barlow_Condensed, Cormorant_Garamond, Fraunces, Inter } from 'next/font/google'
+import { Barlow_Condensed, Cormorant_Garamond, Inter } from 'next/font/google'
 import React from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
@@ -26,24 +26,15 @@ const inter = Inter({
   display: 'swap',
 })
 
-// Match the reference site: Fraunces for expressive display typography and Barlow Condensed
-// for labels and interface text. Inter remains reserved for comfortable long-form reading.
+// Cormorant Garamond for display typography (headings, the wordmark, drop caps) and Barlow
+// Condensed for labels and interface text. Inter is reserved for comfortable long-form reading.
 //
 // display: 'optional' (not 'swap') specifically because the header wordmark reserves its box
-// width by MEASURING this font (TypingWordmark.tsx's hidden sizer span) — 'swap' paints in a
-// fallback font first and swaps to Fraunces once it loads, and that swap changes the measured
-// width, producing a brief one-time layout jump right at load even with the reveal-width fix
-// in place. 'optional' still tries to use Fraunces if it's already cached/ready within the
-// browser's short block window (true almost always here, since next/font self-hosts and
-// preloads it), but never swaps it in LATE — so there's nothing left to cause that jump.
-const fraunces = Fraunces({
-  subsets: ['latin'],
-  variable: '--font-fraunces',
-  weight: 'variable',
-  style: ['normal', 'italic'],
-  display: 'optional',
-})
-
+// width by MEASURING Cormorant (TypingWordmark.tsx's hidden sizer span) — 'swap' paints in a
+// fallback font first and swaps once it loads, and that swap changes the measured width,
+// producing a brief one-time layout jump at load. 'optional' still uses the font when it's ready
+// within the browser's short block window (true almost always, since next/font self-hosts and
+// preloads it), but never swaps it in late — so there's nothing left to cause that jump.
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ['latin'],
   variable: '--font-cormorant-garamond',
@@ -62,12 +53,7 @@ const barlowCondensed = Barlow_Condensed({
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      className={cn(
-        inter.variable,
-        fraunces.variable,
-        cormorantGaramond.variable,
-        barlowCondensed.variable,
-      )}
+      className={cn(inter.variable, cormorantGaramond.variable, barlowCondensed.variable)}
       lang="en"
       suppressHydrationWarning
     >
