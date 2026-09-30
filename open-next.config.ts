@@ -3,9 +3,7 @@ import r2IncrementalCache from '@opennextjs/cloudflare/overrides/incremental-cac
 import d1NextTagCache from '@opennextjs/cloudflare/overrides/tag-cache/d1-next-tag-cache'
 
 // The Payload revalidate* hooks call revalidateTag/revalidatePath, which need an incremental
-// cache (R2) and a tag cache (D1) on Workers. A plain D1-backed tag cache, not Durable Objects —
-// DOs added multi-instance state coordination that broke Payload's admin Server Actions (every
-// upload/relationship-field drawer stuck on "UnrecognizedActionError").
+// cache (R2) and a tag cache (D1) on Workers.
 export default defineCloudflareConfig({
   incrementalCache: r2IncrementalCache,
   tagCache: d1NextTagCache,

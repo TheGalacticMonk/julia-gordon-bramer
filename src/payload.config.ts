@@ -34,12 +34,17 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(value) : undefined)
 
-// The Payload CLI (`payload migrate`, `generate:types`, `build`, …) runs in plain Node,
-// outside the Workers runtime, so bindings have to come from wrangler's platform proxy.
-const isCLI = process.argv.some((value) =>
-  realpath(value)?.endsWith(path.join('payload', 'bin.js')),
-)
+// CLI commands and Next's production build run outside the Worker. Use local Wrangler
+// bindings there; remote bindings are selected explicitly for production migrations.
+const isCLI = process.argv.some((value) => {
+  const resolved = realpath(value)
+  return (
+    resolved?.endsWith(path.join('payload', 'bin.js')) ||
+    resolved?.endsWith(path.join('next', 'dist', 'bin', 'next'))
+  )
+})
 const isProduction = process.env.NODE_ENV === 'production'
+const isBuild = process.env.NEXT_PHASE === 'phase-production-build'
 
 // Workers has no console-backed pino, so log structured JSON straight to the console.
 const createLog =
@@ -64,7 +69,7 @@ const cloudflareLogger = {
 } as unknown as PayloadLogger
 
 const cloudflare =
-  isCLI || !isProduction
+  isCLI || isBuild || !isProduction
     ? await getCloudflareContextFromWrangler()
     : await getCloudflareContext({ async: true })
 
@@ -158,8 +163,8 @@ function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
   return import(/* webpackIgnore: true */ `${'__wrangler'.replaceAll('_', '')}`).then(
     ({ getPlatformProxy }) =>
       getPlatformProxy({
-        environment: process.env.CLOUDFLARE_ENV,
-        remoteBindings: isProduction,
+        environment: process.env.PAYLOAD_REMOTE_BINDINGS === '1' ? 'remote' : process.env.CLOUDFLARE_ENV,
+        remoteBindings: process.env.PAYLOAD_REMOTE_BINDINGS === '1',
       } satisfies GetPlatformProxyOptions),
   )
 }

@@ -30,16 +30,12 @@
       "binding": "D1",
       "database_id": "e378f555-c239-4663-a683-6164b3cd83f9",
       "database_name": "julia-gordon-bramer",
-      "remote": true,
     },
-    // Next.js on-demand revalidation (revalidateTag / revalidatePath / unstable_cache). A plain
-    // D1-backed tag cache, not Durable Objects — DOs added multi-instance state coordination
-    // that broke Payload's admin Server Actions (drawers stuck on "UnrecognizedActionError").
+    // D1-backed tag cache for Next.js on-demand revalidation.
     {
       "binding": "NEXT_TAG_CACHE_D1",
       "database_id": "1fdb9dcf-fedc-4e98-a343-d1da159199cc",
       "database_name": "julia-gordon-bramer-next-tag-cache",
-      "remote": true,
     },
   ],
 
@@ -48,13 +44,11 @@
     {
       "binding": "R2",
       "bucket_name": "julia-gordon-bramer-media",
-      "remote": true,
     },
     // Next.js incremental cache (see open-next.config.ts)
     {
       "binding": "NEXT_INC_CACHE_R2_BUCKET",
       "bucket_name": "julia-gordon-bramer-cache",
-      "remote": true,
     },
   ],
 
@@ -72,6 +66,19 @@
   // deployed and tested without touching (or even having) a production environment.
   // Deploy with: wrangler deploy --env staging
   "env": {
+    "remote": {
+      "d1_databases": [
+        {
+          "binding": "D1",
+          "database_id": "e378f555-c239-4663-a683-6164b3cd83f9",
+          "database_name": "julia-gordon-bramer",
+          "remote": true,
+        },
+      ],
+      "r2_buckets": [
+        { "binding": "R2", "bucket_name": "julia-gordon-bramer-media", "remote": true },
+      ],
+    },
     "staging": {
       "name": "julia-gordon-bramer-staging",
       "vars": {

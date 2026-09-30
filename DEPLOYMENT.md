@@ -89,10 +89,9 @@ Schema changes **must** ship with a committed migration — production never aut
   with several parallel workers by default, and D1 (local **or** the real remote database) throws
   "database is locked" (`SQLITE_BUSY`) under concurrent queries from them. This is required, not
   just a local workaround.
-- The in-editor "Create New" media upload button (inside the Essays / Books picture field) is
-  currently broken — it throws `UnrecognizedActionError: Server Action ... was not found on the
-server`, reproducible even on a fresh page load. Not yet root-caused; suspected cause is Next's
-  Server Actions encryption key being generated per-isolate rather than pinned at build time, which
-  would make action IDs minted by one Workers isolate invalid on another. **Workaround:** upload
-  media via the Media collection directly (`/admin/collections/media/create`), which uses a plain
-  REST upload, not a Server Action.
+- The in-editor media controls use Payload's shared Server Action. It is defined at module scope
+  in `src/app/(payload)/serverFunction.ts` so Next includes it in the Worker action manifest.
+  The local Worker build confirms its action ID is registered and resolves at runtime. After
+  deployment, verify both “Add new” and “Choose from library” in an Essay or Book form.
+- CLI commands and local builds use local D1/R2 bindings. `deploy:database` explicitly selects
+  the `remote` Wrangler environment; do not run it for local verification.

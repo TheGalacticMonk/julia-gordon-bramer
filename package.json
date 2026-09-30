@@ -11,7 +11,7 @@
     "cf:deploy": "opennextjs-cloudflare deploy",
     "deploy": "pnpm run deploy:database && pnpm run deploy:app",
     "deploy:app": "pnpm run cf:build && pnpm run cf:deploy",
-    "deploy:database": "cross-env NODE_ENV=production PAYLOAD_SECRET=ignore payload migrate",
+    "deploy:database": "cross-env NODE_ENV=production PAYLOAD_REMOTE_BINDINGS=1 PAYLOAD_SECRET=ignore payload migrate",
     "preview": "pnpm run cf:build && opennextjs-cloudflare preview",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev --webpack",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
