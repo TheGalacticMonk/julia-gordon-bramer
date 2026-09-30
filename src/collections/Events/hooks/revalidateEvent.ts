@@ -10,21 +10,25 @@ export const revalidateEvent: CollectionAfterChangeHook<Event> = ({
   req: { payload, context },
 }) => {
   if (!context.disableRevalidate) {
+    // Calling revalidateTag/revalidatePath unconditionally on every save (including the
+    // draft autosave that fires mid-render when a new Event's "Add New" page first loads)
+    // crashes that render — Next.js forbids revalidating during render. Only revalidate when
+    // an Event's published state actually changed, same as the /events path calls below.
     if (doc._status === 'published') {
       payload.logger.info(`Revalidating event at path: /events/${doc.slug}`)
       revalidatePath(`/events/${doc.slug}`)
       revalidatePath('/events')
       revalidateTag('events-sitemap', 'max')
+      // The homepage's Upcoming module (EventList/Component.tsx) caches its query separately
+      // from the /events path above.
+      revalidateTag('homepage-events', 'max')
     }
 
     if (previousDoc?._status === 'published' && doc._status !== 'published') {
       revalidatePath(`/events/${previousDoc.slug}`)
       revalidatePath('/events')
+      revalidateTag('homepage-events', 'max')
     }
-
-    // The homepage's Upcoming module (EventList/Component.tsx) caches its query separately
-    // from this path — it's not part of the /events route this hook otherwise revalidates.
-    revalidateTag('homepage-events', 'max')
   }
   return doc
 }
