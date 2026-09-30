@@ -13,6 +13,12 @@ export function mergeText<T>(defaults: T, saved: unknown): T {
   if (isRichText(defaults)) {
     return (isRichText(saved) ? saved : defaults) as T
   }
+  // A repeatable list (e.g. Academic credentials): Julia's saved rows replace the built-in
+  // ones wholesale — items aren't merged field-by-field, since the list's length is hers to
+  // control (add/remove a row). Falls back to the defaults only until she's saved anything.
+  if (Array.isArray(defaults)) {
+    return (Array.isArray(saved) && saved.length > 0 ? saved : defaults) as T
+  }
   if (defaults && typeof defaults === 'object') {
     const out: Record<string, unknown> = {}
     for (const key of Object.keys(defaults)) {

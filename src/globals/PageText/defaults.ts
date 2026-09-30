@@ -69,21 +69,23 @@ export const decodingDefaults = {
     ],
   ) as DefaultTypedEditorState,
   credentialsLabel: 'Academic credentials',
-  credential1: {
-    label: 'Teaching',
-    title: 'Lindenwood University',
-    text: 'Graduate-level creative writing, St. Louis, Missouri.',
-  } as Card,
-  credential2: {
-    label: 'Journal',
-    title: 'Plath Profiles',
-    text: 'Contributor, volumes 2, 3, 4, 5, and 7.',
-  } as Card,
-  credential3: {
-    label: 'Conference',
-    title: 'UW–Milwaukee',
-    text: 'Presenter, Racial Formation/Racial Awareness Graduate Conference, 2014.',
-  } as Card,
+  credentials: [
+    {
+      label: 'Teaching',
+      title: 'Lindenwood University',
+      text: 'Graduate-level creative writing, St. Louis, Missouri.',
+    },
+    {
+      label: 'Journal',
+      title: 'Plath Profiles',
+      text: 'Contributor, volumes 2, 3, 4, 5, and 7.',
+    },
+    {
+      label: 'Conference',
+      title: 'UW–Milwaukee',
+      text: 'Presenter, Racial Formation/Racial Awareness Graduate Conference, 2014.',
+    },
+  ] as Card[],
   essaysLabel: 'The essays',
   essaysHeading: 'essays so far, one per 1956 poem.',
   essaysNote: 'Select any essay to read it in full.',

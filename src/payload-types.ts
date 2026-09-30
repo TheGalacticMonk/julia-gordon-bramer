@@ -1220,21 +1220,17 @@ export interface DecodingPage {
     [k: string]: unknown;
   } | null;
   credentialsLabel?: string | null;
-  credential1?: {
-    label?: string | null;
-    title?: string | null;
-    text?: string | null;
-  };
-  credential2?: {
-    label?: string | null;
-    title?: string | null;
-    text?: string | null;
-  };
-  credential3?: {
-    label?: string | null;
-    title?: string | null;
-    text?: string | null;
-  };
+  /**
+   * Add, remove, or reorder as many as you like.
+   */
+  credentials?:
+    | {
+        label?: string | null;
+        title?: string | null;
+        text?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   essaysLabel?: string | null;
   /**
    * The number of essays is added automatically in front of this, e.g. “40 essays so far, one per 1956 poem.”
@@ -1514,26 +1510,13 @@ export interface DecodingPageSelect<T extends boolean = true> {
   methodStatement?: T;
   methodText?: T;
   credentialsLabel?: T;
-  credential1?:
+  credentials?:
     | T
     | {
         label?: T;
         title?: T;
         text?: T;
-      };
-  credential2?:
-    | T
-    | {
-        label?: T;
-        title?: T;
-        text?: T;
-      };
-  credential3?:
-    | T
-    | {
-        label?: T;
-        title?: T;
-        text?: T;
+        id?: T;
       };
   essaysLabel?: T;
   essaysHeading?: T;

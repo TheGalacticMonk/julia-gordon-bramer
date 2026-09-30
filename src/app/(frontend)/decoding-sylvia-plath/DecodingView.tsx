@@ -80,27 +80,15 @@ export const DecodingView = ({
             {t.credentialsLabel}
           </p>
           <ul className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-3">
-            <li className="reading-card p-6">
-              <p className="font-sans text-sm uppercase tracking-wider text-metal">
-                {t.credential1.label}
-              </p>
-              <h2 className="mt-3 text-2xl">{t.credential1.title}</h2>
-              <p className="mt-3 leading-7 text-ink-muted">{t.credential1.text}</p>
-            </li>
-            <li className="reading-card p-6">
-              <p className="font-sans text-sm uppercase tracking-wider text-metal">
-                {t.credential2.label}
-              </p>
-              <h2 className="mt-3 text-2xl">{t.credential2.title}</h2>
-              <p className="mt-3 leading-7 text-ink-muted">{t.credential2.text}</p>
-            </li>
-            <li className="reading-card p-6">
-              <p className="font-sans text-sm uppercase tracking-wider text-metal">
-                {t.credential3.label}
-              </p>
-              <h2 className="mt-3 text-2xl">{t.credential3.title}</h2>
-              <p className="mt-3 leading-7 text-ink-muted">{t.credential3.text}</p>
-            </li>
+            {t.credentials.map((credential, index) => (
+              <li key={index} className="reading-card p-6">
+                <p className="font-sans text-sm uppercase tracking-wider text-metal">
+                  {credential.label}
+                </p>
+                <h2 className="mt-3 text-2xl">{credential.title}</h2>
+                <p className="mt-3 leading-7 text-ink-muted">{credential.text}</p>
+              </li>
+            ))}
           </ul>
         </div>
       </section>

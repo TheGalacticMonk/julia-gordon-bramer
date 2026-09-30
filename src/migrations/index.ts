@@ -5,6 +5,7 @@ import * as migration_20260926_215545_remove_pages_collection from './20260926_2
 import * as migration_20260926_220445_remove_cms_menu_items from './20260926_220445_remove_cms_menu_items';
 import * as migration_20260926_231500_fix_essay_and_book_order from './20260926_231500_fix_essay_and_book_order';
 import * as migration_20260927_005926_remove_contact_details_fields from './20260927_005926_remove_contact_details_fields';
+import * as migration_20260930_213615 from './20260930_213615';
 
 export const migrations = [
   {
@@ -40,6 +41,11 @@ export const migrations = [
   {
     up: migration_20260927_005926_remove_contact_details_fields.up,
     down: migration_20260927_005926_remove_contact_details_fields.down,
-    name: '20260927_005926_remove_contact_details_fields'
+    name: '20260927_005926_remove_contact_details_fields',
+  },
+  {
+    up: migration_20260930_213615.up,
+    down: migration_20260930_213615.down,
+    name: '20260930_213615'
   },
 ];

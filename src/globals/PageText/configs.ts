@@ -64,6 +64,20 @@ const card = (name: string, label: string, defaults: Card): Field => ({
   ],
 })
 
+const cardList = (name: string, label: string, defaults: Card[], description?: string): Field => ({
+  name,
+  type: 'array',
+  label,
+  defaultValue: defaults,
+  labels: { singular: 'Item', plural: 'Items' },
+  ...(description ? { admin: { description } } : {}),
+  fields: [
+    text('label', 'Small label above the title', ''),
+    text('title', 'Title', ''),
+    paragraph('text', 'Text', ''),
+  ],
+})
+
 const section = (label: string, fields: Field[], description?: string): Field => ({
   type: 'collapsible',
   label,
@@ -166,9 +180,12 @@ export const DecodingPage = pageText({
     ]),
     section('Academic credentials', [
       text('credentialsLabel', 'Section heading', decodingDefaults.credentialsLabel),
-      card('credential1', 'First box', decodingDefaults.credential1),
-      card('credential2', 'Second box', decodingDefaults.credential2),
-      card('credential3', 'Third box', decodingDefaults.credential3),
+      cardList(
+        'credentials',
+        'Credentials',
+        decodingDefaults.credentials,
+        'Add, remove, or reorder as many as you like.',
+      ),
     ]),
     section('Essay list', [
       text('essaysLabel', 'Small line above the sentence', decodingDefaults.essaysLabel),
