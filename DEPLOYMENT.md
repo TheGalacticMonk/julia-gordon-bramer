@@ -7,7 +7,7 @@ Payload CMS inside it. Config lives in `wrangler.jsonc` and `open-next.config.ts
 | ----------------- | --------------------------------------------------------------- |
 | Payload database  | D1 (`D1` binding, SQLite) — schema applied by `src/migrations/` |
 | Media uploads     | R2 bucket `julia-gordon-bramer-media` (`R2` binding)            |
-| Next.js caches    | R2 bucket `julia-gordon-bramer-cache` + Durable Objects         |
+| Next.js caches    | R2 bucket `julia-gordon-bramer-cache` + D1 `julia-gordon-bramer-next-tag-cache` |
 | `next/image`      | Cloudflare Images binding (`IMAGES`)                            |
 | Contact-form mail | [Resend](https://resend.com) HTTP API (`RESEND_API_KEY`)        |
 

@@ -32,6 +32,15 @@
       "database_name": "julia-gordon-bramer",
       "remote": true,
     },
+    // Next.js on-demand revalidation (revalidateTag / revalidatePath / unstable_cache). A plain
+    // D1-backed tag cache, not Durable Objects — DOs added multi-instance state coordination
+    // that broke Payload's admin Server Actions (drawers stuck on "UnrecognizedActionError").
+    {
+      "binding": "NEXT_TAG_CACHE_D1",
+      "database_id": "1fdb9dcf-fedc-4e98-a343-d1da159199cc",
+      "database_name": "julia-gordon-bramer-next-tag-cache",
+      "remote": true,
+    },
   ],
 
   "r2_buckets": [
@@ -49,19 +58,6 @@
     },
   ],
 
-  // Next.js on-demand revalidation (revalidateTag / revalidatePath / unstable_cache)
-  "durable_objects": {
-    "bindings": [
-      { "name": "NEXT_CACHE_DO_QUEUE", "class_name": "DOQueueHandler" },
-      { "name": "NEXT_TAG_CACHE_DO_SHARDED", "class_name": "DOShardedTagCache" },
-    ],
-  },
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_sqlite_classes": ["DOQueueHandler", "DOShardedTagCache"],
-    },
-  ],
   "services": [
     // Must match "name" above
     { "binding": "WORKER_SELF_REFERENCE", "service": "julia-gordon-bramer" },
@@ -91,6 +87,12 @@
           "database_name": "julia-gordon-bramer-staging",
           "remote": true,
         },
+        {
+          "binding": "NEXT_TAG_CACHE_D1",
+          "database_id": "b1faa169-8790-4801-9a23-2926ef7ca874",
+          "database_name": "julia-gordon-bramer-staging-next-tag-cache",
+          "remote": true,
+        },
       ],
       "r2_buckets": [
         {
@@ -102,18 +104,6 @@
           "binding": "NEXT_INC_CACHE_R2_BUCKET",
           "bucket_name": "julia-gordon-bramer-staging-cache",
           "remote": true,
-        },
-      ],
-      "durable_objects": {
-        "bindings": [
-          { "name": "NEXT_CACHE_DO_QUEUE", "class_name": "DOQueueHandler" },
-          { "name": "NEXT_TAG_CACHE_DO_SHARDED", "class_name": "DOShardedTagCache" },
-        ],
-      },
-      "migrations": [
-        {
-          "tag": "v1",
-          "new_sqlite_classes": ["DOQueueHandler", "DOShardedTagCache"],
         },
       ],
       "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "julia-gordon-bramer-staging" }],

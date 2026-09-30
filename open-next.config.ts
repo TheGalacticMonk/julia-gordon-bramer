@@ -1,16 +1,12 @@
 import { defineCloudflareConfig } from '@opennextjs/cloudflare/config'
 import r2IncrementalCache from '@opennextjs/cloudflare/overrides/incremental-cache/r2-incremental-cache'
-import { withRegionalCache } from '@opennextjs/cloudflare/overrides/incremental-cache/regional-cache'
-import doQueue from '@opennextjs/cloudflare/overrides/queue/do-queue'
-import doShardedTagCache from '@opennextjs/cloudflare/overrides/tag-cache/do-sharded-tag-cache'
+import d1NextTagCache from '@opennextjs/cloudflare/overrides/tag-cache/d1-next-tag-cache'
 
-// The Payload revalidate* hooks call revalidateTag/revalidatePath, which need an
-// incremental cache (R2), a tag cache and a queue (Durable Objects) on Workers.
+// The Payload revalidate* hooks call revalidateTag/revalidatePath, which need an incremental
+// cache (R2) and a tag cache (D1) on Workers. A plain D1-backed tag cache, not Durable Objects —
+// DOs added multi-instance state coordination that broke Payload's admin Server Actions (every
+// upload/relationship-field drawer stuck on "UnrecognizedActionError").
 export default defineCloudflareConfig({
-  incrementalCache: withRegionalCache(r2IncrementalCache, {
-    mode: 'long-lived',
-    bypassTagCacheOnCacheHit: true,
-  }),
-  queue: doQueue,
-  tagCache: doShardedTagCache({ baseShardSize: 12 }),
+  incrementalCache: r2IncrementalCache,
+  tagCache: d1NextTagCache,
 })
