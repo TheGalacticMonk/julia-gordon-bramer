@@ -54,11 +54,12 @@ Cloudflare dashboard → **Workers & Pages → Create → Import a repository**,
 Add these under **Settings → Variables and secrets** — as _both_ build variables and runtime secrets
 where noted, because pages are pre-rendered at build time against the remote D1:
 
-| Name                     | Where           | Notes                                                  |
-| ------------------------ | --------------- | ------------------------------------------------------ |
-| `PAYLOAD_SECRET`         | build + runtime | `openssl rand -hex 32`                                 |
-| `NEXT_PUBLIC_SERVER_URL` | build           | Inlined into client code; also set in `wrangler.jsonc` |
-| `RESEND_API_KEY`         | runtime         | Verify the sending domain in Resend first              |
+| Name                                | Where   | Notes                                                                     |
+| ------------------------------------ | ------- | -------------------------------------------------------------------------- |
+| `PAYLOAD_SECRET`                    | build + runtime | `openssl rand -hex 32`                                            |
+| `NEXT_PUBLIC_SERVER_URL`            | build   | Inlined into client code; also set in `wrangler.jsonc`                    |
+| `RESEND_API_KEY`                    | runtime | Verify the sending domain in Resend first                                 |
+| `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` | build   | `openssl rand -base64 32`. **Must stay fixed across builds** — Next.js otherwise mints a new key per build, and any Worker isolate running an older build can't decrypt Server Actions from a newer one, surfacing as random "Failed to find Server Action" errors and admin pages (e.g. collection "Add New") that silently fail to render. |
 
 Every push to the connected branch now migrates D1, builds and deploys. Then add the custom domain
 under the Worker's **Settings → Domains & Routes**.
