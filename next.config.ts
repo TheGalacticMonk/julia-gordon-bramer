@@ -1,4 +1,5 @@
 import { withPayload } from '@payloadcms/next/withPayload'
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare'
 import type { NextConfig } from 'next'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -56,7 +57,7 @@ const nextConfig: NextConfig = {
   redirects,
   turbopack: {
     root: path.resolve(dirname),
-    // Production builds only: dev still needs the real drizzle-kit for automatic schema push.
+    // Production builds use the stub; CLI migrations use the real drizzle-kit.
     resolveAlias:
       process.env.NODE_ENV === 'production'
         ? { 'drizzle-kit/api': './src/utilities/stubs/drizzle-kit-api.ts' }
@@ -64,4 +65,10 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default withPayload(nextConfig, { devBundleServerPackages: false })
+export default async function getConfig(): Promise<NextConfig> {
+  if (process.env.NODE_ENV === 'development') {
+    await initOpenNextCloudflareForDev()
+  }
+
+  return withPayload(nextConfig, { devBundleServerPackages: false })
+}

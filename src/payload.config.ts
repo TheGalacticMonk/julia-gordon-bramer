@@ -34,16 +34,17 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(value) : undefined)
 
-// CLI commands and Next's production build run outside the Worker. Use local Wrangler
-// bindings there; remote bindings are selected explicitly for production migrations.
+// CLI commands and Next's production build run outside the Worker. Workers Builds
+// must read the same remote D1 that deploy:database just migrated; local builds use
+// local bindings unless remote access is explicitly requested.
+const isProduction = process.env.NODE_ENV === 'production'
 const isCLI = process.argv.some((value) => {
   const resolved = realpath(value)
   return (
     resolved?.endsWith(path.join('payload', 'bin.js')) ||
-    resolved?.endsWith(path.join('next', 'dist', 'bin', 'next'))
+    (isProduction && resolved?.endsWith(path.join('next', 'dist', 'bin', 'next')))
   )
 })
-const isProduction = process.env.NODE_ENV === 'production'
 const isBuild = process.env.NEXT_PHASE === 'phase-production-build'
 
 // Workers has no console-backed pino, so log structured JSON straight to the console.
@@ -130,7 +131,11 @@ export default buildConfig({
     translations: adminTranslations,
   },
   editor: defaultLexical,
-  db: sqliteD1Adapter({ binding: cloudflare.env.D1 }),
+  db: sqliteD1Adapter({
+    binding: cloudflare.env.D1,
+    // Committed migrations own the schema. Automatic dev pushes can request destructive drops.
+    push: false,
+  }),
   // Workers can't open raw SMTP sockets, so email goes out through Resend's HTTP API.
   // With no RESEND_API_KEY set (local dev), Payload logs emails to the console instead.
   email: process.env.RESEND_API_KEY
@@ -160,11 +165,14 @@ export default buildConfig({
 
 // Adapted from https://github.com/opennextjs/opennextjs-cloudflare/blob/d00b3a13e42e65aad76fba41774815726422cc39/packages/cloudflare/src/api/cloudflare-context.ts#L328C36-L328C46
 function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
+  const useRemoteBindings =
+    process.env.PAYLOAD_REMOTE_BINDINGS === '1' || (isBuild && process.env.WORKERS_CI === '1')
+
   return import(/* webpackIgnore: true */ `${'__wrangler'.replaceAll('_', '')}`).then(
     ({ getPlatformProxy }) =>
       getPlatformProxy({
-        environment: process.env.PAYLOAD_REMOTE_BINDINGS === '1' ? 'remote' : process.env.CLOUDFLARE_ENV,
-        remoteBindings: process.env.PAYLOAD_REMOTE_BINDINGS === '1',
+        environment: useRemoteBindings ? 'remote' : process.env.CLOUDFLARE_ENV,
+        remoteBindings: useRemoteBindings,
       } satisfies GetPlatformProxyOptions),
   )
 }

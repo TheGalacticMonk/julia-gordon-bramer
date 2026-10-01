@@ -94,4 +94,6 @@ Schema changes **must** ship with a committed migration — production never aut
   The local Worker build confirms its action ID is registered and resolves at runtime. After
   deployment, verify both “Add new” and “Choose from library” in an Essay or Book form.
 - CLI commands and local builds use local D1/R2 bindings. `deploy:database` explicitly selects
-  the `remote` Wrangler environment; do not run it for local verification.
+  the `remote` Wrangler environment; Cloudflare Workers Builds (`WORKERS_CI=1`) also uses remote
+  D1 during static page generation, after migrations have run. Do not run `deploy:database` for
+  local verification.
