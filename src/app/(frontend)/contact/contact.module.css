@@ -136,3 +136,15 @@
   outline: 2px solid var(--sparkle);
   outline-offset: 3px;
 }
+
+.submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
+  transform: none;
+}
+
+.error {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--metal);
+}
