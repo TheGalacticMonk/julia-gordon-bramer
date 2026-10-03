@@ -111,23 +111,6 @@ export const DecodingView = ({
         </div>
       </section>
 
-      <section className="section-raised">
-        <div className="container py-16 md:py-24">
-          <div className="flex flex-wrap items-baseline justify-between gap-4">
-            <div>
-              <p className="font-sans text-sm font-semibold uppercase tracking-[0.16em] text-metal">
-                {t.essaysLabel}
-              </p>
-              <p className="mt-2 font-display text-3xl italic leading-tight">
-                {count} {t.essaysHeading}
-              </p>
-            </div>
-            <p className="max-w-sm text-sm text-ink-muted">{t.essaysNote}</p>
-          </div>
-
-          {children}
-        </div>
-      </section>
     </>
   )
 }
