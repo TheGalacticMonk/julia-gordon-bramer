@@ -43,6 +43,22 @@ export const ContactView = ({ t, status }: { t: typeof contactDefaults; status?:
                 again.
               </p>
             )}
+            {status === 'delivery-error' && (
+              <p
+                role="alert"
+                className="mt-8 rounded-md border border-metal bg-paper-raised p-4 text-sm"
+              >
+                Your message couldn&rsquo;t be sent right now. Please try again in a little while.
+              </p>
+            )}
+            {status === 'rate-limited' && (
+              <p
+                role="alert"
+                className="mt-8 rounded-md border border-metal bg-paper-raised p-4 text-sm"
+              >
+                Too many messages have been sent recently. Please wait a few minutes and try again.
+              </p>
+            )}
           </div>
         </div>
       </section>

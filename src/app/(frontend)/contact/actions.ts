@@ -1,10 +1,9 @@
 'use server'
 
-import { getPayload } from 'payload'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
-import configPromise from '@payload-config'
+const formspreeEndpoint = 'https://formspree.io/f/mjyknbpe'
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(200),
@@ -13,7 +12,7 @@ const contactSchema = z.object({
   reason: z.enum(['reading', 'invite', 'press', 'general']),
   message: z.string().trim().min(1, 'Message is required').max(5000),
   // Honeypot — real users never fill this in; bots that fill every field do.
-  company: z.string().max(0).optional(),
+  company: z.string().max(200).optional(),
 })
 
 // Works with JavaScript disabled: the <form> posts here directly via the `action`
@@ -38,18 +37,34 @@ export async function submitContactForm(formData: FormData) {
     redirect('/contact?status=success')
   }
 
-  const payload = await getPayload({ config: configPromise })
+  let response: Response
+  try {
+    response = await fetch(formspreeEndpoint, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: parsed.data.name,
+        email: parsed.data.email,
+        phone: parsed.data.phone || '',
+        reason: parsed.data.reason,
+        message: parsed.data.message,
+      }),
+      cache: 'no-store',
+    })
+  } catch {
+    redirect('/contact?status=delivery-error')
+  }
 
-  await payload.create({
-    collection: 'form-submissions',
-    data: {
-      name: parsed.data.name,
-      email: parsed.data.email,
-      phone: parsed.data.phone || undefined,
-      reason: parsed.data.reason,
-      message: parsed.data.message,
-    },
-  })
+  if (response.status === 429) {
+    redirect('/contact?status=rate-limited')
+  }
+
+  if (!response.ok) {
+    redirect('/contact?status=delivery-error')
+  }
 
   redirect('/contact?status=success')
 }
