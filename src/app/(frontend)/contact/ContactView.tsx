@@ -1,7 +1,7 @@
 'use client'
 
 import { ValidationError, useForm } from '@formspree/react'
-import { useState, type FormEvent } from 'react'
+import type { FormEvent } from 'react'
 
 import type { contactDefaults } from '@/globals/PageText/defaults'
 
@@ -17,17 +17,11 @@ const reasonOptions = [
 
 export const ContactView = ({ t, status }: { t: typeof contactDefaults; status?: string }) => {
   const [formState, submitToFormspree] = useForm('mjyknbpe')
-  const [botSubmitted, setBotSubmitted] = useState(false)
-  const succeeded = status === 'success' || formState.succeeded || botSubmitted
+  const succeeded = status === 'success' || formState.succeeded
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const fields = new FormData(event.currentTarget)
-
-    if (fields.get('company')) {
-      setBotSubmitted(true)
-      return
-    }
 
     // Send only visitor fields; the fallback Server Action adds its own hidden fields.
     void submitToFormspree({
@@ -91,21 +85,15 @@ export const ContactView = ({ t, status }: { t: typeof contactDefaults; status?:
         </div>
       </section>
 
-      <section className="section-raised">
-        <div className="container py-16 md:py-20">
-          <div className={`mx-auto max-w-xl ${styles.formPanel}`}>
-            {!succeeded && (
+      {!succeeded && (
+        <section className="section-raised">
+          <div className="container py-16 md:py-20">
+            <div className={`mx-auto max-w-xl ${styles.formPanel}`}>
               <form
                 action={submitContactForm}
                 onSubmit={handleSubmit}
                 className="flex flex-col gap-6"
               >
-                {/* Honeypot: hidden from real visitors via CSS, not `hidden`, so most bots still fill it in. */}
-                <div className="absolute left-[-9999px]" aria-hidden="true">
-                  <label htmlFor="company">Company</label>
-                  <input id="company" name="company" type="text" tabIndex={-1} autoComplete="off" />
-                </div>
-
                 <div className={styles.field}>
                   <label htmlFor="name" className={styles.label}>
                     Name
@@ -211,10 +199,10 @@ export const ContactView = ({ t, status }: { t: typeof contactDefaults; status?:
                   {formState.submitting ? 'Sending…' : 'Send message'}
                 </button>
               </form>
-            )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </article>
   )
 }
